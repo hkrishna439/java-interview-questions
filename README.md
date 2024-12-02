@@ -746,45 +746,2374 @@ Although not strictly required by the language, Java developers follow certain n
 
 
 
+### 11. What is the use of the import statement?
+
+The import statement in Java is used to allow access to classes, interfaces, or entire packages from another package, making it easier to use those classes in your program without needing to fully qualify their names each time.
+
+
+**Uses of the** `import` **Statement**:
+1. **Simplify Code:**
+
+* Instead of using fully qualified class names (e.g., `java.util.ArrayList`), you can use shorter class names by importing them (e.g., `ArrayList`).
+
+2. **Access Classes from Other Packages:**
+
+* Java classes are grouped into packages. The `import` statement allows you to access those classes directly.
+* Example:
+
+```java
+import java.util.Scanner;
+Scanner sc = new Scanner(System.in);
+
+```
+
+3. **Improves Readability:**
+
+* Using import makes the code more concise and readable, as it eliminates repetitive package prefixes.
+
+4. **Supports Modular Programming:**
+
+* Enables the reuse of existing libraries or utilities, fostering modular and scalable programming.
+
+**Types of Import Statements:**
+1. **Single Type Import:**
+
+* Imports a specific class or interface from a package.
+* Syntax:
+
+```java
+import packageName.ClassName;
+
+```
+* Example
+```java
+import java.util.ArrayList;
+ArrayList<Integer> list = new ArrayList<>();
+
+```
+
+2. **Wildcard Import:**
+
+* Imports all classes and interfaces from a package.
+* Syntax
+
+```java
+import packageName.*;
+
+```
+* Example
+```java
+import java.util.*;
+ArrayList<Integer> list = new ArrayList<>();
+HashMap<String, String> map = new HashMap<>();
+
+```
+* **Note**: Wildcard imports can lead to namespace conflicts and are generally discouraged in favor of explicit imports.
+
+
+3. **Static Import:**
+
+* Imports static members (fields and methods) of a class so that they can be accessed directly without class qualification.
+* Syntax:
+
+```java
+import static packageName.ClassName.staticMember;
+
+```
+* Example
+
+```java
+import static java.lang.Math.PI;
+import static java.lang.Math.sqrt;
+
+double radius = 5;
+double area = PI * radius * radius;
+double result = sqrt(area);
+
+```
+
+**Key Points About `import`:**
+1. **No Need to Import `java.lang`:**
+
+* Classes in the `java.lang` package (e.g., `String`, `Math`, `Object`) are automatically imported.
+
+2. **Fully Qualified Names Can Bypass Import:**
+
+* Instead of using `import`, you can use a class's fully qualified name in the code.
+* Example:
+```java
+java.util.ArrayList<Integer> list = new java.util.ArrayList<>();
+
+```
+3. **Static Import for Constants and Utility Methods:**
+
+* Static imports are especially useful for constants and utility methods, making the code cleaner.
+* Example
+```java
+import static java.lang.Math.*;
+
+double value = pow(2, 3); // No need to write Math.pow()
+
+```
+4. **Custom Packages:**
+
+* If you define your own packages, you can use the import statement to use classes from those packages in other parts of your project.
+* Example:
+```java
+package mypackage;
+
+public class MyClass {
+    public void display() {
+        System.out.println("Hello from MyClass");
+    }
+}
+
+```
+```java
+import mypackage.MyClass;
+
+public class Main {
+    public static void main(String[] args) {
+        MyClass obj = new MyClass();
+        obj.display();
+    }
+}
+
+```
+
+
+### 12. What is a constructor in Java?
+
+A **constructor** in Java is a special method used to initialize objects. It is called automatically when an object is created. Unlike regular methods, constructors do not have a return type (not even `void`) and must have the same name as the class.
+
+**Characteristics of Constructors:**
+1. **Same Name as the Class:**
+
+    - The constructor's name must match the class name exactly.
+2. **No Return Type:**
+
+   - Constructors do not have a return type, not even void.
+3. **Called Automatically:**
+
+    - Constructors are invoked automatically when an object is instantiated.
+4. **Overloading Allowed:**
+
+    - Multiple constructors can exist in a class with different parameter lists (constructor overloading).
+
+
+**Types of Constructors:**
+1. **Default Constructor (No-Argument Constructor):**
+
+    - If no constructor is defined explicitly, Java provides a default constructor that initializes the object with default values.
+
+```java
+public class Example {
+    int number;
+    String text;
+
+    // Default constructor
+    public Example() {
+        number = 0;
+        text = "Default";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example obj = new Example();
+        System.out.println("Number: " + obj.number); // Output: 0
+        System.out.println("Text: " + obj.text);    // Output: Default
+    }
+}
+
+```
+
+2. **Parameterized Constructor:**
+
+    - A constructor that accepts arguments to initialize an object with specific values.
+
+```java
+public class Example {
+    int number;
+    String text;
+
+    // Parameterized constructor
+    public Example(int num, String txt) {
+        number = num;
+        text = txt;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example obj = new Example(42, "Hello");
+        System.out.println("Number: " + obj.number); // Output: 42
+        System.out.println("Text: " + obj.text);    // Output: Hello
+    }
+}
+
+```
+3. **Copy Constructor:**
+
+    - Used to create a new object as a copy of an existing object. Java does not provide a built-in copy constructor, but you can implement one manually.
+
+```java
+public class Example {
+    int number;
+    String text;
+
+    // Parameterized constructor
+    public Example(int num, String txt) {
+        number = num;
+        text = txt;
+    }
+
+    // Copy constructor
+    public Example(Example obj) {
+        this.number = obj.number;
+        this.text = obj.text;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Example obj1 = new Example(42, "Hello");
+        Example obj2 = new Example(obj1); // Copy constructor called
+        System.out.println("Number: " + obj2.number); // Output: 42
+        System.out.println("Text: " + obj2.text);    // Output: Hello
+    }
+}
+
+```
+![img_15.png](img_15.png)
+
+**Best Practices:**
+1. **Use Parameterized Constructors for Flexibility:**
+
+    - Parameterized constructors make it easier to create objects with specific values.
+2. **Use `this` Keyword:**
+
+    - Use this to differentiate between class fields and constructor parameters if their names are the same.
+
+```java
+public class Example {
+    int number;
+
+    public Example(int number) {
+        this.number = number; // Distinguishes between field and parameter
+    }
+}
+
+```
+3. **Avoid Heavy Logic in Constructors:**
+
+    - Keep constructors simple and avoid including complex logic that could make the code harder to maintain.
+
+4. Use **constructor chaining** (this(...)) to call one constructor from another within the same class to avoid duplicate code.
+
+Example of Constructor Chaining:
+```java
+public class Employee {
+    String name;
+    int id;
+
+    // Constructor chaining
+    public Employee() {
+        this("Default Name", 0); // Calls the parameterized constructor
+    }
+
+    public Employee(String name, int id) {
+        this.name = name;
+        this.id = id;
+    }
+
+    public void display() {
+        System.out.println("Name: " + name + ", ID: " + id);
+    }
+
+    public static void main(String[] args) {
+        Employee emp1 = new Employee();
+        Employee emp2 = new Employee("John", 101);
+
+        emp1.display(); // Output: Name: Default Name, ID: 0
+        emp2.display(); // Output: Name: John, ID: 101
+    }
+}
+
+```
+
+
+**Common Use Case:**\
+Constructors are commonly used to enforce object immutability by requiring all essential values to be set at the time of object creation.
+
+```java
+public class Person {
+    private final String name;
+    private final int age;
+
+    // Parameterized constructor
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public int getAge() {
+        return age;
+    }
+}
+
+```
+**Constructor Overloading:**\
+Java allows overloading of constructors, which means you can have multiple constructors with different parameter lists.
+
+Example:
+```java
+public class Person {
+    String name;
+    int age;
+
+    // Default Constructor
+    public Person() {
+        this.name = "Default Name";
+        this.age = 0;
+    }
+
+    // Parameterized Constructor
+    public Person(String name) {
+        this.name = name;
+        this.age = 0;
+    }
+
+    // Another Parameterized Constructor
+    public Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    public void display() {
+        System.out.println("Name: " + name + ", Age: " + age);
+    }
+
+    public static void main(String[] args) {
+        Person p1 = new Person();
+        Person p2 = new Person("Bob");
+        Person p3 = new Person("Charlie", 30);
+
+        p1.display(); // Output: Name: Default Name, Age: 0
+        p2.display(); // Output: Name: Bob, Age: 0
+        p3.display(); // Output: Name: Charlie, Age: 30
+    }
+}
+
+```
+
+**Why Use Constructors?**
+1. **Object Initialization:**
+    - Ensures the object is in a valid state after creation.
+2. **Code Simplicity:**
+   - Automatically sets up the object during creation, reducing manual initialization.
+3. **Overloaded Flexibility:**
+   - Allows multiple ways of initializing an object by overloading constructors.
+
+### 13.Can a constructor be static or final?
+
+**1. Static Constructor:**
+*    **No, constructors cannot be static in Java.**
+*    A constructor is meant to initialize an instance of a class, and it operates on instance-level data.
+*    The `static` keyword is used for class-level methods or fields, which are shared among all instances and are not tied to any specific object.
+*    Since constructors are inherently tied to the creation of objects (instances), making them static contradicts their purpose.
+
+**Why Not Static?**
+- A `static` method can be called without creating an instance of a class, but constructors are specifically designed to create instances. Hence, they cannot be static.
+
+**2. Final Constructor:**
+*    **No, constructors cannot be declared as `final` in Java.**
+*    The final keyword prevents method overriding. However, constructors are not inherited and cannot be overridden by subclasses. Thus, there is no reason or provision to declare a constructor as `final`.
+
+**Why Not Final?**
+* The `final` keyword is applicable only to methods, classes, and variables, and it serves no purpose for constructors because:
+    1. Constructors are not inherited.
+    2. Constructors are not designed to be overridden.
+
+
+**What Can Be Done Instead?**
+* You can use the `final` keyword for fields or methods to enforce immutability or prevent method overriding.
+* Static initialization blocks (`static { ... }`) can be used to initialize class-level static data, but they are not constructors.
+
+**Example: Static Initialization Block**\
+If you need something like a "static constructor" for class-level initialization:
+```java
+public class StaticExample {
+    static int staticValue;
+
+    // Static block for initialization
+    static {
+        staticValue = 100;
+        System.out.println("Static block executed.");
+    }
+
+    public StaticExample() {
+        System.out.println("Constructor executed.");
+    }
+
+    public static void main(String[] args) {
+        System.out.println("Static value: " + staticValue);
+        StaticExample obj = new StaticExample();
+    }
+}
+
+```
+**Output:**
+```
+Static block executed.
+Static value: 100
+Constructor executed.
+
+```
+
+### 14. What is the String class in Java?
+The `String` class in Java represents a sequence of characters. It is a widely used class in Java, and all string literals (e.g., "`Hello`") are instances of the `String` class. Strings are immutable, meaning once created, their content cannot be changed.
+
+**Key Features of the String Class:**
+1. **Immutability:**
+
+    - A String object cannot be modified after it is created. Any modification results in the creation of a new string.
+
+Example:
+```java
+String str = "Hello";
+str = str + " World";
+System.out.println(str); // Output: Hello World
+
+```
+2. **Stored in String Pool:**
+
+    - String literals are stored in the **String Constant Pool** for memory efficiency. If a string with the same value already exists, the reference to the existing object is returned.
+3. **Java’s Built-in Methods:**
+
+    - The `String` class provides many methods for string manipulation, such as concatenation, comparison, length calculation, substring extraction, etc.
+4. **Implements `Serializable` and `Comparable`:**
+
+   - Strings can be serialized and compared lexicographically using the `Comparable` interface.
+
+**Creating Strings:**
+1. **Using String Literals:**
+```java
+String str = "Hello";
+
+```
+2. Using the `new` Keyword:
+```java
+String str = new String("Hello");
+
+```
+This creates a new object in the heap, even if the same string exists in the pool.
+
+![img_16.png](img_16.png)
+
+**Example: Using the String Class**
+```java
+public class StringExample {
+    public static void main(String[] args) {
+        String str1 = "Java";
+        String str2 = new String("Java");
+
+        // String methods
+        System.out.println("Length: " + str1.length());              // Output: Length: 4
+        System.out.println("Char at 2: " + str1.charAt(2));          // Output: Char at 2: v
+        System.out.println("Substring: " + str1.substring(1, 3));    // Output: Substring: av
+        System.out.println("Equals: " + str1.equals(str2));          // Output: Equals: true
+        System.out.println("Contains 'va': " + str1.contains("va")); // Output: Contains 'va': true
+
+        // Immutability demonstration
+        String str3 = str1.concat(" Programming");
+        System.out.println("Original: " + str1);                     // Output: Original: Java
+        System.out.println("New String: " + str3);                  // Output: New String: Java Programming
+    }
+}
+
+```
+**Advantages of String Immutability:**
+1. **Security:**
+
+    - Strings used in sensitive operations (e.g., passwords or database connections) cannot be modified.
+2. **Thread Safety:**
+
+    - Immutable objects are inherently thread-safe.
+3. **String Pool Efficiency:**
+
+    - Reduces memory overhead as duplicate literals point to the same object.
+
+### 15. What is the difference between String, StringBuilder, and StringBuffer?
+![img_17.png](img_17.png)
+
+**1. String**
+*    **Definition**: Strings are immutable, meaning their value cannot be changed once created.
+*    **Usage**: Suitable when the content of the string is not frequently modified.
+*    **Examples**:
+
+```java
+String str = "Hello";
+str = str + " World"; // Creates a new object
+System.out.println(str); // Output: Hello World
+
+```
+**Advantages:**
+
+* Immutable strings are thread-safe.
+* Efficient memory management using String Pool.
+**Disadvantages:**
+
+- Poor performance for frequent modifications due to the creation of new objects.
+
+**2. StringBuilder**
+*    **Definition**: A mutable class for creating and manipulating strings.
+*    **Thread-Safety**: Not thread-safe (not synchronized).
+*    **Usage**: Suitable for single-threaded environments where frequent string modifications are needed.
+   
+**Example:**
+```java
+StringBuilder sb = new StringBuilder("Hello");
+sb.append(" World"); // Modifies the same object
+System.out.println(sb.toString()); // Output: Hello World
+
+```
+**Advantages:**\
+    - Faster than String and StringBuffer due to no synchronization overhead.\
+**Disadvantages:**\
+    - Cannot be safely used in multi-threaded environments.
+
+**3. StringBuffer**
+*    **Definition**: A thread-safe, mutable class for creating and modifying strings.
+*    **Thread-Safety**: Thread-safe due to synchronized methods.
+*    **Usage**: Suitable for multi-threaded environments where string modifications are needed.
+   
+**Example**:
+```java
+StringBuffer sb = new StringBuffer("Hello");
+sb.append(" World"); // Modifies the same object
+System.out.println(sb.toString()); // Output: Hello World
+
+```
+**Advantages**:\
+    - Ensures thread safety in multi-threaded applications.\
+**Disadvantages**:\
+    - Slower than StringBuilder due to synchronization overhead.
+
+
+**Performance Comparison**
+1. **String:**
+
+    - Inefficient for frequent modifications.
+    - Every modification creates a new object.
+2. **StringBuilder:**
+
+    - Fastest for single-threaded operations.
+    - Avoids object creation for every modification.
+3. **StringBuffer:**
+
+    - Slower than StringBuilder due to synchronization but ensures thread safety.
+
+![img_18.png](img_18.png)
+
+**Example: Comparing Usage**
+```java
+public class StringComparison {
+    public static void main(String[] args) {
+        // String (Immutable)
+        String str = "Java";
+        str = str + " Programming";
+        System.out.println("String: " + str);
+
+        // StringBuilder (Mutable, not thread-safe)
+        StringBuilder sb = new StringBuilder("Java");
+        sb.append(" Programming");
+        System.out.println("StringBuilder: " + sb);
+
+        // StringBuffer (Mutable, thread-safe)
+        StringBuffer sbf = new StringBuffer("Java");
+        sbf.append(" Programming");
+        System.out.println("StringBuffer: " + sbf);
+    }
+}
+
+```
+**Output:**
+```
+String: Java Programming
+StringBuilder: Java Programming
+StringBuffer: Java Programming
+
+```
+### 16. What is the difference between == and .equals()?
+
+The difference between `==` and `.equals()` in Java lies in what they compare and how they are implemented. Here's a detailed explanation:
+
+**1. == Operator**
+* **Purpose**: Compares memory references (object identity).
+* **Usage**: Checks if two references point to the same memory location.
+* **Scope**:
+  - For **primitives**, compares the actual value.
+  - For **objects**, compares the references.
+     
+**Example:**
+```java
+String str1 = new String("Hello");
+String str2 = new String("Hello");
+
+System.out.println(str1 == str2); // Output: false (different memory locations)
+
+```
+- In this case, even though the content of `str1` and `str2` is the same, `==` returns `false` because they are two different objects in memory.
+
+**2.** `.equals()` **Method**
+* **Purpose**: Compares content (object equality).
+* **Usage**: Checks if two objects are logically "equal."
+* **Default Behavior**:
+  - In the base `Object class`, `.equals()` is equivalent to `==` unless overridden.
+  
+- **Override**: Classes like `String`, `Integer`, etc., override `.equals()` to compare values instead of references.
+
+**Example**
+```java
+String str1 = new String("Hello");
+String str2 = new String("Hello");
+
+System.out.println(str1.equals(str2)); // Output: true (content is the same)
+
+```
+- Here, `.equals()` returns `true` because the content of `str1` and `str2` is identical.
+![img_19.png](img_19.png)
+
+**Example: Comparing Strings**
+
+```java
+public class ComparisonExample {
+    public static void main(String[] args) {
+        String s1 = "Java";
+        String s2 = "Java";
+        String s3 = new String("Java");
+
+        // Using ==
+        System.out.println(s1 == s2); // true (same reference in String Pool)
+        System.out.println(s1 == s3); // false (different memory locations)
+
+        // Using .equals()
+        System.out.println(s1.equals(s2)); // true (same content)
+        System.out.println(s1.equals(s3)); // true (same content)
+    }
+}
+
+```
+**Custom Objects**\
+By default, `.equals()` in user-defined classes behaves like `==` unless explicitly overridden.
+
+Example:
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+public class CustomEqualsExample {
+    public static void main(String[] args) {
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        System.out.println(p1 == p2);          // false (different objects)
+        System.out.println(p1.equals(p2));    // false (default equals is same as ==)
+    }
+}
+
+```
+To compare objects logically:
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return name.equals(person.name);
+    }
+}
+
+public class CustomEqualsExample {
+    public static void main(String[] args) {
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        System.out.println(p1.equals(p2));    // true (logical equality)
+    }
+}
+
+```
+### 17. How does Java handle null values?
+Java provides several ways to handle null values effectively. Understanding and managing `null` is crucial to avoid common runtime exceptions like `NullPointerException`. Below are the details:
+
+**1. What is null in Java?**
+* **Definition**: `null` is a special literal in Java representing the absence of a value or an uninitialized object reference.
+* It can be assigned to any reference type but not to primitives.
+
+**2. Null Handling and Common Scenarios**\
+**a. Checking for** `null`
+- Before accessing an object or calling its methods, check whether it is null.
+
+**Example:**
+```java
+String name = null;
+if (name != null) {
+    System.out.println(name.length());
+} else {
+    System.out.println("Name is null");
+}
+
+```
+**b. Avoiding** `NullPointerException`
+- A NullPointerException occurs when attempting to access or modify a null object.
+
+**Common Scenarios:**
+
+1. Accessing methods or fields of a `null` object.
+2. Using `null` in a collection without checking.
+3. Auto-unboxing a `null` value to a primitive.
+
+**Example of Exception:**
+```java
+String name = null;
+System.out.println(name.length()); // Throws NullPointerException
+
+```
+**c. Using `Optional` (from Java 8)**
+- Purpose: `Optional` is a container object used to represent optional or absent values.
+- It provides a more expressive way to handle `null`.
+
+**Example**
+```java
+import java.util.Optional;
+
+public class OptionalExample {
+    public static void main(String[] args) {
+        Optional<String> optionalName = Optional.ofNullable(null);
+        System.out.println(optionalName.orElse("Default Name")); // Outputs: Default Name
+    }
+}
+
+```
+**d. Default Initialization**
+- Local variables must be explicitly initialized; otherwise, they cannot be used.
+- Instance and static variables are initialized to null by default if they are references.
+Example:
+```java
+class Example {
+    String name; // Defaults to null
+
+    void printName() {
+        System.out.println(name); // Safe to access, prints: null
+    }
+}
+
+```
+**e. Using Ternary Operator**
+- Simplify null checks with a ternary operator.
+
+**Example:**
+
+```java
+String name = null;
+String displayName = (name != null) ? name : "Default Name";
+System.out.println(displayName); // Outputs: Default Name
+
+```
+**3. Best Practices for Handling null**
+1. **Initialize Objects Properly:**
+
+   - Always initialize variables with meaningful defaults or valid objects.
+2. **Use Optional for Return Values:**
+
+    - For methods that may return null, consider returning Optional instead.
+
+Example:
+```java
+public Optional<String> getName() {
+    return Optional.ofNullable(null);
+}
+
+```
+3. **Check Parameters for `null` in Methods:**
+    - Validate input arguments explicitly to prevent unexpected behavior.
+
+**Example**
+
+```java
+public void printLength(String text) {
+    if (text == null) {
+        throw new IllegalArgumentException("Input cannot be null");
+    }
+    System.out.println(text.length());
+}
+
+```
+4. **Leverage Annotations:**
+
+    - Use annotations like `@NonNull` or `@Nullable` (from libraries like Lombok or Checker Framework) to enforce null constraints during compile time.
+5. **Use Collections Carefully:**
+
+    - Avoid inserting `null` into collections, as it can lead to unpredictable results in certain cases like sorting.
+
+
+**4. Null-Safe Techniques**
+**a. Null-Safe Navigation (Ternary Alternative)**
+
+Example:
+```java
+String name = null;
+System.out.println(name != null ? name.toUpperCase() : "Default Name");
+
+```
+**b. Null-Safe API with Java 8**\
+**Stream Example:**
+```java
+List<String> names = Arrays.asList("Alice", null, "Bob");
+names.stream()
+     .filter(Objects::nonNull) // Skip null values
+     .forEach(System.out::println);
+
+```
+**5. How Java Frameworks Handle null**
+1. **Spring Framework:**
+
+    - Use `@Nullable` for parameters or return values that can be `null`.
+    - Use dependency injection to manage object initialization and avoid `null`.
+2. **Hibernate:**
+
+    - Supports null values for optional database fields.
+    - Use `@NotNull` to enforce non-null constraints.
+
+
+**6. Tools for Null Checks**
+* **IDE Support**: Modern IDEs like IntelliJ IDEA and Eclipse warn about potential `null` references.
+* **Static Analysis Tools**: Tools like FindBugs, SpotBugs, or SonarQube detect possible `null` pointer issues at compile time.
+
+
+### 18. What is the use of the instanceof operator?
+The `instanceof` operator in Java is used to check whether an object is an instance of a specific class or a subclass thereof. It is a binary operator that returns a boolean value (`true` or `false`). This operator helps ensure type safety and avoid runtime exceptions like `ClassCastException`.
+
+**Syntax**
+```java
+object instanceof ClassName
+
+```
+* `object`: The reference to the object being checked.
+* `ClassName`: The class or interface to be checked against.
+
+**Key Features**
+1. **Returns** `true` **if the object is an instance of the given class or subclass**.
+2. **Returns** `false` **if the object is** `null`.
+3. Can also be used to check if an object implements a specific interface.
+
+**Examples**\
+**1. Basic Usage**
+```java
+class Animal {}
+class Dog extends Animal {}
+
+public class InstanceofExample {
+    public static void main(String[] args) {
+        Animal animal = new Dog();
+        
+        System.out.println(animal instanceof Dog);   // true
+        System.out.println(animal instanceof Animal); // true
+        System.out.println(animal instanceof String); // false
+    }
+}
+
+```
+**2. Preventing `ClassCastException`**
+    - The instanceof operator is often used to ensure safe casting.
+
+**Example:**
+```java
+class Animal {}
+class Dog extends Animal {}
+
+public class SafeCastingExample {
+    public static void main(String[] args) {
+        Animal animal = new Dog();
+
+        if (animal instanceof Dog) {
+            Dog dog = (Dog) animal; // Safe downcasting
+            System.out.println("Animal is a Dog.");
+        }
+    }
+}
+
+```
+**3. Checking for Interface Implementation**
+```java
+interface Flyable {}
+class Bird implements Flyable {}
+
+public class InterfaceCheck {
+    public static void main(String[] args) {
+        Flyable bird = new Bird();
+        
+        System.out.println(bird instanceof Flyable); // true
+        System.out.println(bird instanceof Bird);    // true
+    }
+}
+
+```
+**Special Cases**
+1. **With** `null`
+   - The `instanceof` operator always returns `false` for `null`.
+
+**Example**
+```java
+Dog dog = null;
+System.out.println(dog instanceof Dog); // false
+
+```
+2. **With Parent-Child Relationships**
+   - If a child object is referenced by a parent class, instanceof still detects the actual type.
+
+**Example**
+```java
+Animal animal = new Dog();
+System.out.println(animal instanceof Dog);    // true
+System.out.println(animal instanceof Animal); // true
+
+```
+3. **With Interfaces**
+   - instanceof works seamlessly with interfaces.
+
+**Example**:
+```java
+interface Movable {}
+class Car implements Movable {}
+
+Movable movable = new Car();
+System.out.println(movable instanceof Movable); // true
+System.out.println(movable instanceof Car);     // true
+
+```
+**Common Use Cases**
+1. **Type Checking for Polymorphism:**
+
+    - When dealing with polymorphic references, use `instanceof` to determine the actual object type.
+2. **Avoiding Runtime Errors:**
+
+    - Prevents `ClassCastException` by ensuring safe type casting.
+3. **Dynamic Type Identification:**
+
+    - Helps identify the runtime type of objects for specific operations.
+4. **Checking Interface Implementation:**
+
+    - Verify if an object implements a specific interface.
+
+
+**Limitations and Considerations**
+1. **Overuse Can Indicate Poor Design:**
+    - Excessive use of instanceof might suggest the need for better design patterns, such as polymorphism or the use of abstract methods.
+2. **Compile-Time Type Must Be Compatible:**
+   - If the reference type is not related to the class being checked, the code will fail at compile time.
+   
+Example:
+```java
+String str = "Hello";
+System.out.println(str instanceof Dog); // Compilation Error: Dog is unrelated to String
+
+```
+### 19. What is the difference between checked and unchecked exceptions?
+
+In Java, exceptions are classified into two types: **checked exceptions** and **unchecked exceptions**. They differ in how they are handled by the programmer and the compiler.
+
+**1. Checked Exceptions**\
+Checked exceptions are exceptions that **must be handled** by the programmer. These exceptions are checked at compile time, meaning the compiler forces the programmer to either catch the exception using a `try-catch` block or declare it in the method signature using the `throws` keyword.
+
+* **Subclass of** `Exception` but not `RuntimeException`.
+* Typically represent recoverable conditions and external errors (e.g., file not found, network issues, etc.).
+
+**Examples of Checked Exceptions:**
+* `IOException`
+* `SQLException`
+* `ClassNotFoundException`
+* `FileNotFoundException`
+
+**How to handle checked exceptions:**
+- Use a `try-catch` block to catch the exception:
+
+```java
+try {
+    // code that might throw a checked exception
+    FileReader file = new FileReader("file.txt");
+} catch (IOException e) {
+    // handle exception
+    e.printStackTrace();
+}
+
+```
+- Declare the exception in the method signature using `throws`
+
+```java
+public void readFile() throws IOException {
+    FileReader file = new FileReader("file.txt");
+}
+
+```
+**2. Unchecked Exceptions**
+Unchecked exceptions, also known as **runtime exceptions**, are exceptions that **do not need to be explicitly handled** by the programmer. These exceptions are checked at **runtime** rather than compile time, meaning the compiler does not require the programmer to catch them or declare them in the method signature.
+
+* **Subclass of** `RuntimeException`.
+* Typically represent programming errors or logic errors, such as incorrect inputs or violations of invariants.
+* These exceptions usually cannot be recovered from within the program, and they indicate issues that should be fixed during development rather than handled at runtime.
+
+**Examples of Unchecked Exceptions:**
+* `NullPointerException`
+* `ArrayIndexOutOfBoundsException`
+* `ArithmeticException`
+* `IllegalArgumentException`
+
+**How to handle unchecked exceptions:**
+While you don't have to explicitly catch or declare unchecked exceptions, you can still handle them using a `try-catch` block if needed:
+```java
+try {
+    int result = 10 / 0; // ArithmeticException (divide by zero)
+} catch (ArithmeticException e) {
+    e.printStackTrace();
+}
+
+```
+![img_20.png](img_20.png)
+
+**When to Use Checked and Unchecked Exceptions:**
+* **Checked Exceptions**: Use checked exceptions when the program can recover from the exception or when the exception is caused by external factors, like file access or network issues, where handling it might allow the program to continue operating.
+
+* **Unchecked Exceptions**: Use unchecked exceptions for programming errors that are typically the result of logic mistakes, invalid arguments, or improper state (e.g., `NullPointerException`, `ArithmeticException`). These are often not recoverable and should be fixed in the code rather than handled at runtime.
+
+**Example of Both Types:**\
+**Checked Exception Example (IOException):**
+```java
+public void readFile() throws IOException {
+    FileReader file = new FileReader("file.txt");  // Might throw IOException
+}
+
+```
+You must handle or declare `IOException` using `try-catch` or throws.
+
+**Unchecked Exception Example (NullPointerException):**
+```java
+public void processData(String data) {
+    System.out.println(data.length());  // Might throw NullPointerException if data is null
+}
+
+```
+You are not required to handle or declare `NullPointerException`, but it’s best to ensure `data` is not `null` to avoid it.
+
+### 20. What is the purpose of the try-catch block?
+
+The **try-catch block** in Java is used for handling exceptions in a controlled manner. It allows you to write code that can potentially throw exceptions (runtime or checked exceptions), while also providing a mechanism to catch and handle those exceptions without crashing the program. This helps to maintain normal program flow even when unexpected situations arise.
+
+**Purpose of the try-catch Block:**
+1. **Exception Handling:**
+
+    - The main purpose of a `try-catch` block is to handle exceptions that might occur during the execution of code inside the `try` block. It prevents the application from crashing by catching exceptions and allowing the program to recover from them.
+2. **Graceful Degradation:**
+
+    - When an exception occurs, instead of terminating the program, a `try-catch` block can help handle the exception and allow the application to continue executing other tasks or provide a meaningful error message.
+3. **Separation of Error Handling:**
+
+    - The `try` block contains the code that might throw an exception, while the `catch` block is used to handle the exception. This separates normal code execution from error handling, making the program more readable and maintainable.
+4. **Error Logging:**
+
+    - The `catch` block provides a place where you can log the exception details, making it easier to debug issues by inspecting the exception message and stack trace.
+
+**Syntax of try-catch Block:**
+
+```java
+try {
+    // Code that may throw an exception
+    int result = 10 / 0;  // ArithmeticException (divide by zero)
+} catch (ArithmeticException e) {
+    // Code to handle the exception
+    System.out.println("Exception occurred: " + e.getMessage());
+}
+
+```
+**How it works:**
+1. The code in the `try` block is executed first.
+2. If an exception occurs during the execution of the `try` block, the remaining code in the `try` block is skipped, and the control moves to the `catch` block.
+3. If the exception type matches the type specified in the `catch` block (or any of its parent types), the code in the `catch` block is executed.
+4. After the `catch` block is executed, the program continues with the code after the entire `try-catch `block.
+
+
+**Example**
+```java
+public class TryCatchExample {
+    public static void main(String[] args) {
+        try {
+            // Code that may throw an exception
+            int[] numbers = {1, 2, 3};
+            int result = numbers[5];  // ArrayIndexOutOfBoundsException
+        } catch (ArrayIndexOutOfBoundsException e) {
+            // Handle exception
+            System.out.println("Exception caught: " + e.getMessage());
+        }
+        
+        System.out.println("Program continues after exception.");
+    }
+}
+
+```
+**Output**
+```
+Exception caught: Index 5 out of bounds for length 3
+Program continues after exception.
+
+```
+In this example:
+
+* The `try` block attempts to access an array index that doesn't exist, causing an `ArrayIndexOutOfBoundsException`.
+* The `catch` block catches the exception and prints an error message.
+* The program continues execution after the `catch` block, demonstrating graceful error handling.
+
+
+**Benefits of Using try-catch:**
+* **Prevent Application Crashes:** By handling exceptions, the application doesn't terminate abruptly when an error occurs.
+* **Error Reporting:** You can catch specific exceptions and report them, either through logging or user-friendly messages.
+* **Clean Code:** Separating error handling from normal logic makes the code cleaner and easier to maintain.
+* **Flexible Error Handling:** Multiple `catch` blocks can be used to handle different types of exceptions in different ways.
+
+**Important Points:**
+- **Multiple catch blocks:** A try block can have multiple `catch` blocks to handle different types of exceptions.
+
+```java
+try {
+    // code
+} catch (IOException e) {
+    // Handle IOException
+} catch (SQLException e) {
+    // Handle SQLException
+}
+
+```
+- **Catch-all Exception:** A generic `Exception` can be caught to handle any exception not already handled.
+```java
+try {
+    // code
+} catch (Exception e) {
+    // Handle all exceptions
+}
+
+```
+
+- Finally block: Optionally, a `finally` block can be used to execute code after the `try-catch` block, regardless of whether an exception occurred or not. This is useful for cleanup operations (e.g., closing file streams or database connections).
+
+```java
+try {
+    // code
+} catch (Exception e) {
+    // handle exception
+} finally {
+    // cleanup code, always executed
+}
+
+```
+
+### 21. Explain abstraction with an example.
+
+Abstraction is one of the core principles of Object-Oriented Programming (OOP). It is the concept of hiding the implementation details and showing only the essential features of an object. Abstraction allows a user to interact with an object or class through a simplified interface, without needing to understand the complexities behind it.
+
+In Java, **abstraction** can be achieved using:
+
+1. Abstract classes
+2. Interfaces
+
+By abstracting out complex implementation details, we can focus on what the object does rather than how it does it.
+
+**Key Features of Abstraction:**
+1. **Hides Complexity:** Only essential features are exposed, while the internal workings are hidden.
+2. **Provides a Simple Interface:** A simplified way to interact with an object.
+3. **Achieved with Abstract Classes or Interfaces:** Abstract classes can have both abstract methods (methods without a body) and concrete methods (methods with a body). Interfaces provide a contract that any implementing class must follow.
+
+**Example 1: Abstraction using Abstract Class**\
+Consider a scenario where we want to model a Vehicle. A vehicle has some common properties like `speed`, `color`, etc., but how it moves (e.g., `drive()`) can vary between different types of vehicles (e.g., car, bike).
+
+In this example, we will use an abstract class to provide a common template for all vehicles, leaving the specifics of how the vehicle moves to be defined by the concrete subclasses.
+
+```java
+// Abstract class
+abstract class Vehicle {
+    // Common properties
+    String color;
+    int speed;
+
+    // Concrete method
+    public void start() {
+        System.out.println("Vehicle started.");
+    }
+
+    // Abstract method (does not have implementation)
+    public abstract void move();  // Different vehicles will implement this method in their way
+}
+
+// Concrete class 1
+class Car extends Vehicle {
+    public Car(String color, int speed) {
+        this.color = color;
+        this.speed = speed;
+    }
+
+    // Implementing the abstract method
+    public void move() {
+        System.out.println("Car is driving at speed " + speed + " km/h");
+    }
+}
+
+// Concrete class 2
+class Bike extends Vehicle {
+    public Bike(String color, int speed) {
+        this.color = color;
+        this.speed = speed;
+    }
+
+    // Implementing the abstract method
+    public void move() {
+        System.out.println("Bike is moving at speed " + speed + " km/h");
+    }
+}
+
+public class AbstractionExample {
+    public static void main(String[] args) {
+        // Create instances of Car and Bike
+        Vehicle car = new Car("Red", 120);
+        Vehicle bike = new Bike("Black", 80);
+
+        // Start the vehicles
+        car.start();
+        bike.start();
+
+        // Move the vehicles (different implementations)
+        car.move();  // "Car is driving at speed 120 km/h"
+        bike.move(); // "Bike is moving at speed 80 km/h"
+    }
+}
+
+```
+**Explanation:**
+* **Abstract Class** `Vehicle`: This class has an abstract method `move()` that does not have an implementation. The concrete classes Car and `Bike` provide their specific implementations of the `move()` method.
+* **Concrete Classes** `Car` **and** `Bike`: These classes inherit from `Vehicle` and provide implementations for the abstract `move()` method.
+* `start()` method: This is a concrete method in the `Vehicle` class, which all vehicles can use without modification.
+
+**Output:**
+```
+Vehicle started.
+Vehicle started.
+Car is driving at speed 120 km/h
+Bike is moving at speed 80 km/h
+
+```
+
+**Example 2: Abstraction using Interfaces**\
+An interface in Java defines a contract that implementing classes must follow. It can have only abstract methods (in earlier versions of Java), but with Java 8, interfaces can also have default and static methods with implementations.
+
+In this example, we’ll model **Shape** objects (like a `Circle` and a `Rectangle`).
+```java
+// Interface
+interface Shape {
+    // Abstract method
+    void draw();
+
+    // Default method (from Java 8 onwards)
+    default void color() {
+        System.out.println("Coloring the shape...");
+    }
+}
+
+// Concrete class 1
+class Circle implements Shape {
+    public void draw() {
+        System.out.println("Drawing a Circle");
+    }
+}
+
+// Concrete class 2
+class Rectangle implements Shape {
+    public void draw() {
+        System.out.println("Drawing a Rectangle");
+    }
+}
+
+public class AbstractionExample {
+    public static void main(String[] args) {
+        Shape circle = new Circle();
+        Shape rectangle = new Rectangle();
+
+        circle.draw();     // Drawing a Circle
+        circle.color();    // Coloring the shape...
+        
+        rectangle.draw();  // Drawing a Rectangle
+        rectangle.color(); // Coloring the shape...
+    }
+}
+
+```
+**Explanation:**
+* **Interface `Shape`:** This defines the abstract method `draw() `and a default method `color()`. All classes implementing `Shape` must provide their own implementation of `draw()`, but they can inherit the default` color()` method.
+* **Concrete Classes** `Circle` **and** `Rectangle`: These classes implement the `Shape` interface and provide their specific implementations of the `draw()` method.
+
+**Output**
+```
+Drawing a Circle
+Coloring the shape...
+Drawing a Rectangle
+Coloring the shape...
+```
+
+**Key Differences Between Abstract Class and Interface for Abstraction:**
+1. **Abstract Class:**
+
+   1. Can have both abstract and concrete methods.
+   2. Can have instance variables.
+   3. A class can extend only one abstract class (since Java supports single inheritance).
+   4. Abstract classes are used when there is a "is-a" relationship.
+
+2. **Interface:**
+
+   1. Can only have abstract methods (until Java 8, but now it can have default and static methods).
+   2. Cannot have instance variables, only constants (static final variables).
+   3. A class can implement multiple interfaces (supports multiple inheritance).
+   4. Interfaces are used when a class needs to follow a certain contract, but doesn't necessarily have an "is-a" relationship.
+
+### 22. Explain encapsulation with an example.
+
+**Encapsulation** is one of the fundamental principles of Object-Oriented Programming (OOP). It is the process of bundling the data (variables) and methods (functions) that operate on that data into a single unit, typically a class. Encapsulation also involves restricting direct access to some components of an object to maintain control over its data and protect it from unintended interference.
+
+**Key Features of Encapsulation:**
+1. **Data Hiding**: The internal details of an object (its state) are hidden from the outside world. Only the relevant information is exposed through public methods.
+2. **Controlled Access**: Access to the data is provided using getter and setter methods.
+3. **Improved Security**: It helps prevent unauthorized access or accidental modification of data.
+
+**Benefits of Encapsulation:**
+* Improves **code maintainability** and **readability**.
+* Protects the integrity of the object's state by enforcing rules on how data is accessed and modified.
+* Promotes modularization by allowing you to change the internal implementation of a class without affecting the external code.
+
+**Example: Encapsulation in a Class**\
+Let’s consider a simple example of a **Bank Account**. A bank account has private data such as `accountNumber`, `balance`, etc. Users can access and update these fields only through controlled methods.
+
+```java
+class BankAccount {
+    // Private fields (data hiding)
+    private String accountNumber;
+    private double balance;
+
+    // Constructor to initialize account
+    public BankAccount(String accountNumber, double initialBalance) {
+        this.accountNumber = accountNumber;
+        if (initialBalance >= 0) {
+            this.balance = initialBalance;
+        } else {
+            System.out.println("Initial balance cannot be negative.");
+            this.balance = 0;
+        }
+    }
+
+    // Getter for account number (read-only field)
+    public String getAccountNumber() {
+        return accountNumber;
+    }
+
+    // Getter for balance
+    public double getBalance() {
+        return balance;
+    }
+
+    // Method to deposit money (controlled access)
+    public void deposit(double amount) {
+        if (amount > 0) {
+            balance += amount;
+            System.out.println("Deposited: " + amount);
+        } else {
+            System.out.println("Deposit amount must be positive.");
+        }
+    }
+
+    // Method to withdraw money (controlled access)
+    public void withdraw(double amount) {
+        if (amount > 0 && amount <= balance) {
+            balance -= amount;
+            System.out.println("Withdrew: " + amount);
+        } else if (amount > balance) {
+            System.out.println("Insufficient balance.");
+        } else {
+            System.out.println("Withdrawal amount must be positive.");
+        }
+    }
+}
+
+public class EncapsulationExample {
+    public static void main(String[] args) {
+        // Create a BankAccount object
+        BankAccount account = new BankAccount("1234567890", 5000);
+
+        // Access account details using getter methods
+        System.out.println("Account Number: " + account.getAccountNumber());
+        System.out.println("Balance: " + account.getBalance());
+
+        // Deposit money
+        account.deposit(1000);
+        System.out.println("Balance after deposit: " + account.getBalance());
+
+        // Withdraw money
+        account.withdraw(2000);
+        System.out.println("Balance after withdrawal: " + account.getBalance());
+
+        // Attempt an invalid operation
+        account.withdraw(10000); // Insufficient balance
+    }
+}
+
+```
+**Explanation:**
+1. **Private Fields:**
+    - The fields `accountNumber` and `balance` are declared `private`. This means they cannot be accessed directly from outside the class.
+
+2. **Public Methods:**
+   - Methods like `getBalance()`, `deposit()`, and `withdraw()` are public and allow controlled access to the private fields.
+   - These methods validate input before performing any operation, ensuring the object's state remains consistent.
+
+3. **Data Hiding:**
+   - Direct access to `balance` is restricted. You can only modify it using controlled methods that implement business rules (e.g., ensuring deposits are positive and withdrawals do not exceed the balance).
+
+**Output:**
+```yaml
+Account Number: 1234567890
+Balance: 5000.0
+Deposited: 1000.0
+Balance after deposit: 6000.0
+Withdrew: 2000.0
+Balance after withdrawal: 4000.0
+Insufficient balance.
+```
+
+**Advantages of Encapsulation:**
+1. **Improved Security**: Private data can only be accessed through authorized methods.
+2. **Flexibility**: Internal implementation can change without affecting external code.
+3. **Code Reusability**: Methods encapsulate behavior, making the code modular and reusable.
+
+Encapsulation ensures that objects maintain control over their state while providing a well-defined interface for interaction.
+
+### 23. Explain inheritance with an example.
+**Inheritance** is one of the fundamental concepts of Object-Oriented Programming (OOP) in Java. It allows a class (child or subclass) to inherit the properties (fields) and behaviors (methods) of another class (parent or superclass).
+
+This mechanism promotes **code reuse** and establishes a relationship between classes, enabling hierarchical classifications.
+
+**Key Features of Inheritance:**
+1. **Code Reusability**: Subclasses can reuse code from their parent class, reducing redundancy.
+2. **Method Overriding**: Subclasses can provide a specific implementation of a method that is already defined in the parent class.
+3. **Polymorphism**: Inheritance is a foundation for achieving polymorphism in Java.
+
+**Syntax:**\
+To create a subclass, use the `extends` keyword:
+```java
+class Parent {
+    // Parent class members
+}
+
+class Child extends Parent {
+    // Child class members
+}
+
+```
+**Example: Inheritance in Action**\
+Let’s consider a real-world example of **Vehicle** and its subclasses **Car** and **Bike**.
+```java
+// Parent class
+class Vehicle {
+    // Common properties of all vehicles
+    private String brand;
+    private int speed;
+
+    // Constructor
+    public Vehicle(String brand, int speed) {
+        this.brand = brand;
+        this.speed = speed;
+    }
+
+    // Method to display vehicle information
+    public void displayInfo() {
+        System.out.println("Brand: " + brand + ", Speed: " + speed + " km/h");
+    }
+
+    // Method to simulate starting the vehicle
+    public void start() {
+        System.out.println(brand + " is starting...");
+    }
+}
+
+// Child class - Car
+class Car extends Vehicle {
+    private int numberOfDoors;
+
+    public Car(String brand, int speed, int numberOfDoors) {
+        super(brand, speed); // Call the parent class constructor
+        this.numberOfDoors = numberOfDoors;
+    }
+
+    // Additional behavior specific to Car
+    public void openTrunk() {
+        System.out.println("Opening the trunk...");
+    }
+
+    @Override
+    public void displayInfo() {
+        super.displayInfo(); // Call the parent class method
+        System.out.println("Number of doors: " + numberOfDoors);
+    }
+}
+
+// Child class - Bike
+class Bike extends Vehicle {
+    private boolean hasCarrier;
+
+    public Bike(String brand, int speed, boolean hasCarrier) {
+        super(brand, speed);
+        this.hasCarrier = hasCarrier;
+    }
+
+    // Additional behavior specific to Bike
+    public void doWheelie() {
+        System.out.println("Doing a wheelie...");
+    }
+
+    @Override
+    public void displayInfo() {
+        super.displayInfo();
+        System.out.println("Has carrier: " + hasCarrier);
+    }
+}
+
+// Main class
+public class InheritanceExample {
+    public static void main(String[] args) {
+        // Create objects of Car and Bike
+        Car car = new Car("Toyota", 180, 4);
+        Bike bike = new Bike("Yamaha", 120, true);
+
+        // Display information and behaviors
+        System.out.println("Car Details:");
+        car.displayInfo();
+        car.start();
+        car.openTrunk();
+
+        System.out.println("\nBike Details:");
+        bike.displayInfo();
+        bike.start();
+        bike.doWheelie();
+    }
+}
+
+```
+**Explanation:**
+1. **Vehicle Class:**
+
+    - It is the parent class, containing properties (`brand` and `speed`) and behaviors (`displayInfo()` and `start()`) common to all vehicles.
+
+2. **Car and Bike Classes:**
+
+    - They are child classes that extend `Vehicle`.
+    - They add specific properties and methods, like `openTrunk()` for Car and `doWheelie()` for `Bike`.
+
+3. **Method Overriding:**
+
+    - Both `Car` and `Bike` override the `displayInfo() `method to include their unique properties while retaining common details from the parent class.
+
+4. **super Keyword:**
+
+    - Used to call the parent class constructor or methods.
+
+**Output:**
+```yaml
+Car Details:
+Brand: Toyota, Speed: 180 km/h
+Number of doors: 4
+Toyota is starting...
+Opening the trunk...
+
+Bike Details:
+Brand: Yamaha, Speed: 120 km/h
+Has carrier: true
+Yamaha is starting...
+Doing a wheelie...
+```
+**Advantages of Inheritance:**
+1. **Reusability**: Common code resides in the parent class, avoiding duplication in subclasses.
+2. **Extensibility**: New functionalities can be added in subclasses without altering existing code.
+3. **Polymorphism**: Inheritance enables method overriding, which is a key feature of polymorphism.
+
+**When Not to Use Inheritance:**
+1. Avoid using inheritance when classes have weak or no logical relationships. Instead, prefer **composition**.
+2. Be cautious about tightly coupling the child class to the parent class, which may reduce flexibility.
 
 
 
+### 24. Explain polymorphism with an example.
+
+**Polymorphism** means "many forms." In Java, it allows objects to be treated as instances of their parent class while still executing their specific behaviors. It is a key feature of Object-Oriented Programming (OOP) that enables code flexibility and reusability.
+
+**Types of Polymorphism in Java:**
+1. **Compile-Time Polymorphism (Method Overloading):**
+
+    - Achieved by defining multiple methods with the same name but different parameter lists in the same class.
+    - Resolved during compile time.
+
+2. **Run-Time Polymorphism (Method Overriding):**
+
+    - Achieved when a subclass provides a specific implementation of a method defined in its parent class.
+    - Resolved during runtime using **dynamic method dispatch**.
+
+**Example of Compile-Time Polymorphism (Method Overloading):**
+```java
+class Calculator {
+    // Method to add two integers
+    public int add(int a, int b) {
+        return a + b;
+    }
+
+    // Method to add three integers
+    public int add(int a, int b, int c) {
+        return a + b + c;
+    }
+
+    // Method to add two double values
+    public double add(double a, double b) {
+        return a + b;
+    }
+}
+
+public class CompileTimePolymorphismExample {
+    public static void main(String[] args) {
+        Calculator calc = new Calculator();
+
+        // Call different versions of the add method
+        System.out.println("Sum of two integers: " + calc.add(10, 20));
+        System.out.println("Sum of three integers: " + calc.add(10, 20, 30));
+        System.out.println("Sum of two doubles: " + calc.add(10.5, 20.3));
+    }
+}
+
+```
+**Output**
+```
+Sum of two integers: 30
+Sum of three integers: 60
+Sum of two doubles: 30.8
+
+```
+**Example of Run-Time Polymorphism (Method Overriding):**
+```java
+// Parent class
+class Animal {
+    // Method to make a sound
+    public void sound() {
+        System.out.println("Animals make sound");
+    }
+}
+
+// Child class - Dog
+class Dog extends Animal {
+    @Override
+    public void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+// Child class - Cat
+class Cat extends Animal {
+    @Override
+    public void sound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class RunTimePolymorphismExample {
+    public static void main(String[] args) {
+        // Parent class reference pointing to child class objects
+        Animal animal1 = new Dog();
+        Animal animal2 = new Cat();
+
+        // Call the overridden methods
+        animal1.sound(); // Calls Dog's sound method
+        animal2.sound(); // Calls Cat's sound method
+    }
+}
+
+```
+**Output**
+
+```
+Dog barks
+Cat meows
+
+```
+![img_21.png](img_21.png)
+
+**Advantages of Polymorphism:**
+1. **Code Reusability**: Reuse methods in different forms, avoiding redundancy.
+2. **Flexibility**: Write code in terms of the parent class and achieve specific behaviors at runtime.
+3. **Extensibility**: Add new functionality in subclasses without affecting existing code.
 
 
+**Real-World Analogy:**
+Imagine a **remote control** (parent class) that operates various devices like a **TV** or **Air Conditioner** (subclasses). The button actions (methods) remain the same (like turning on), but the actual behavior (displaying video vs. cooling the air) varies depending on the device.
+
+This is **polymorphism** in action: the same action (calling a method) performs different tasks depending on the object.
+
+### 25. What is the difference between an abstract class and an interface?
+
+Both **abstract** classes and **interfaces** are used to achieve abstraction in Java. However, they serve different purposes and have distinct characteristics.
+
+**Abstract Class**
+An **abstract class** is a class that can have both **abstract methods** (without implementation) and **concrete methods** (with implementation). It is meant to be inherited by subclasses to provide specific implementations of its abstract methods.
+
+**Key Features:**
+1. Can have both **abstract** and **non-abstract** methods.
+2. Supports fields (with or without modifiers) and can have state (variables).
+3. Can have constructors.
+4. Supports all types of access modifiers (`public`, `protected`, `private`, etc.) for its methods and fields.
+5. Allows inheritance using the `extends` keyword (single inheritance).
+
+**Example**:
+```java
+abstract class Animal {
+    // Abstract method (no implementation)
+    abstract void sound();
+
+    // Concrete method (has implementation)
+    void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+class Dog extends Animal {
+    @Override
+    void sound() {
+        System.out.println("Dog barks");
+    }
+}
+
+public class AbstractClassExample {
+    public static void main(String[] args) {
+        Animal myDog = new Dog();
+        myDog.sound(); // Dog barks
+        myDog.eat();   // This animal eats food.
+    }
+}
+
+```
+**Interface**
+An **interface** is a completely abstract class that defines a contract (set of methods) that a class must implement. It cannot have any concrete methods until Java 8 introduced default and static methods.
+
+**Key Features:**
+1. **By default, all methods are** `abstract` (until Java 8; default and static methods are now allowed).
+2. **Fields are implicitly** `public`, `static`, and `final`.
+3. A class can implement multiple interfaces (multiple inheritance).
+4. Methods are implicitly `public` and cannot have access modifiers other than `public`.
+
+**Example**:
+```java
+interface Animal {
+    // Abstract method
+    void sound();
+
+    // Default method (introduced in Java 8)
+    default void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+class Cat implements Animal {
+    @Override
+    public void sound() {
+        System.out.println("Cat meows");
+    }
+}
+
+public class InterfaceExample {
+    public static void main(String[] args) {
+        Animal myCat = new Cat();
+        myCat.sound(); // Cat meows
+        myCat.eat();   // This animal eats food.
+    }
+}
+
+```
+![img_22.png](img_22.png)
+
+**When to Use:**
+- **Use** abstract classes **when:**
+    - You want to share code (concrete methods) between related classes.
+    - You need constructors or non-static fields.
+- **Use** interfaces **when:**
+    - You want to define a contract for unrelated classes to implement.
+    - You need to achieve multiple inheritance.
+
+**Example Combining Both:**
+```java
+abstract class Vehicle {
+    abstract void move();
+
+    void fuel() {
+        System.out.println("Vehicles need fuel.");
+    }
+}
+
+interface Electric {
+    void chargeBattery();
+
+    default void ecoMode() {
+        System.out.println("Electric vehicle in eco mode.");
+    }
+}
+
+class Tesla extends Vehicle implements Electric {
+    @Override
+    void move() {
+        System.out.println("Tesla moves silently.");
+    }
+
+    @Override
+    public void chargeBattery() {
+        System.out.println("Tesla is charging.");
+    }
+}
+
+public class CombinedExample {
+    public static void main(String[] args) {
+        Tesla myTesla = new Tesla();
+        myTesla.move();
+        myTesla.fuel();
+        myTesla.chargeBattery();
+        myTesla.ecoMode();
+    }
+}
+
+```
+**Output**
+
+```
+Tesla moves silently.
+Vehicles need fuel.
+Tesla is charging.
+Electric vehicle in eco mode.
+
+```
+
+### 26. Can an abstract class have a constructor?
+
+Yes, an **abstract class** can have a constructor in Java.
+
+**Purpose of a Constructor in an Abstract Class**\
+Although you cannot instantiate an abstract class directly, its constructor is called when a subclass is instantiated. The constructor is typically used to initialize fields or perform setup tasks that are shared across subclasses.
+
+**Example**
+```java
+abstract class Vehicle {
+    String type;
+
+    // Constructor for the abstract class
+    Vehicle(String type) {
+        this.type = type;
+        System.out.println("Vehicle constructor called: " + type);
+    }
+
+    // Abstract method
+    abstract void move();
+}
+
+class Car extends Vehicle {
+    Car(String type) {
+        super(type); // Calls the abstract class constructor
+    }
+
+    @Override
+    void move() {
+        System.out.println("Car moves on roads.");
+    }
+}
+
+public class AbstractClassConstructorExample {
+    public static void main(String[] args) {
+        Vehicle myCar = new Car("Four-Wheeler");
+        myCar.move();
+    }
+}
+
+```
+**Output**
+```
+Vehicle constructor called: Four-Wheeler
+Car moves on roads.
+
+```
+**Key Points**
+1. **Abstract Class Constructor Invocation:**
+
+    - The constructor of an abstract class is invoked when a subclass object is created using the super keyword.
+
+2. **Use Cases:**
+
+    - Initialize fields common to all subclasses.
+    - Set up resources or configurations needed for the hierarchy.
+
+3. **Cannot Instantiate Directly:**
+
+    - While an abstract class can have a constructor, you cannot create an instance of an abstract class directly.
+
+4. **Mandatory Constructor Call:**
+
+    - If the abstract class has a parameterized constructor, its subclasses must call it explicitly using super().
+
+**Why Use a Constructor in an Abstract Class?**
+* To ensure consistent initialization logic for all subclasses.
+* To enforce specific initialization steps that subclasses might need.
+
+### 27. What are default methods in interfaces?
+
+**Default methods** in interfaces were introduced in **Java 8** to allow interfaces to have methods with implementations. This feature bridges the gap between interfaces and abstract classes by enabling interfaces to provide some default behavior without breaking existing code.
+
+**Key Features**
+1. **Defined with the `default` keyword:**
+
+    - A default method is declared using the `default` keyword in an interface.
+    - It must have a method body.
+2. **Backward Compatibility:**
+
+    - It enables adding new methods to an interface without requiring all implementing classes to modify their code.
+3. **Can Be Overridden:**
+
+    - Implementing classes can override default methods to provide their own implementation.
+4. **Multiple Inheritance:**
+
+    - If a class implements multiple interfaces with conflicting default methods, the class must explicitly override the method.
+
+**Syntax**
+```java
+public interface MyInterface {
+    default void myDefaultMethod() {
+        System.out.println("Default implementation");
+    }
+}
+
+```
+**Example**
+```java
+interface Vehicle {
+    void move(); // Abstract method
+
+    default void fuel() {
+        System.out.println("Vehicles need fuel.");
+    }
+}
+
+class Car implements Vehicle {
+    @Override
+    public void move() {
+        System.out.println("Car moves on roads.");
+    }
+
+    // Optionally, override the default method
+    @Override
+    public void fuel() {
+        System.out.println("Car runs on petrol or diesel.");
+    }
+}
+
+class Bicycle implements Vehicle {
+    @Override
+    public void move() {
+        System.out.println("Bicycle moves using pedals.");
+    }
+}
+
+public class DefaultMethodExample {
+    public static void main(String[] args) {
+        Vehicle car = new Car();
+        car.move();  // Car moves on roads.
+        car.fuel();  // Car runs on petrol or diesel.
+
+        Vehicle bicycle = new Bicycle();
+        bicycle.move(); // Bicycle moves using pedals.
+        bicycle.fuel(); // Vehicles need fuel.
+    }
+}
+
+```
+**Output**
+```
+Car moves on roads.
+Car runs on petrol or diesel.
+Bicycle moves using pedals.
+Vehicles need fuel.
+
+```
+**Multiple Inheritance Conflict**
+If a class implements multiple interfaces with the same default method, the class must override the method to resolve the conflict.
+
+**Example**:
+```java
+interface A {
+    default void show() {
+        System.out.println("Default method in A");
+    }
+}
+
+interface B {
+    default void show() {
+        System.out.println("Default method in B");
+    }
+}
+
+class C implements A, B {
+    @Override
+    public void show() {
+        System.out.println("Resolving conflict by overriding in C");
+    }
+}
+
+public class MultipleInheritanceExample {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.show();
+    }
+}
+
+```
+**Output**
+```
+Resolving conflict by overriding in C
+```
+
+**Advantages of Default Methods**
+1. **Backward Compatibility:**
+
+    - Allows evolving interfaces without breaking existing code.
+2. **Multiple Inheritance:**
+
+    - Provides behavior sharing without the need for abstract classes.
+3. **Simplifies Code:**
+    - Reduces boilerplate by providing reusable default implementations.
+
+**Key Points to Remember**
+1. Default methods cannot override methods from `java.lang.Object` (like `toString()` or `equals()`).
+2. They are not abstract but can be overridden by implementing classes.
+3. If a class implements an interface and provides its own implementation for a default method, the class's method is used.
+
+### 28. Can an interface extend another interface?
+
+Yes, **an interface can extend another interface** in Java. This is how you can create hierarchical relationships among interfaces, enabling one interface to inherit the methods of another.
+
+**Key Points**
+1. **Inheritance in Interfaces:**
+
+    - An interface can inherit another interface using the extends keyword.
+    - Unlike classes, interfaces can extend multiple interfaces.
+2. **All Methods Are Inherited:**
+
+    - The child interface inherits all methods (abstract and default) from the parent interface.
+    - The child interface can also declare additional methods.
+3. **No Method Implementation:**
+
+    - The child interface cannot provide method implementations (unless using default methods).
+4. **Classes Implementing Child Interfaces:**
+
+    - A class implementing a child interface must implement all methods from both the child and parent interfaces.
+
+**Key Takeaways**
+1. Interfaces can extend other interfaces (single or multiple) using the `extends` keyword.
+2. A class implementing the child interface must implement all methods from the entire interface hierarchy.
+3. This feature allows better abstraction, modularity, and flexibility in design.
 
 
+### 29. What is multiple inheritance in Java?
+**Multiple inheritance** refers to a feature where a class can inherit properties and behavior (methods) from more than one parent class or interface. Java supports multiple inheritance with **interfaces** but **does not allow it with classes** to avoid ambiguity problems, such as the **diamond problem**.
+
+**Multiple Inheritance with Classes**
+Java **does not support multiple inheritance** with classes directly. This decision was made to prevent conflicts and ambiguities when multiple parent classes define methods or fields with the same name. This issue is commonly referred to as the **diamond problem**.
+
+**Example: Diamond Problem in Classes**
+```java
+class A {
+    void show() {
+        System.out.println("Class A");
+    }
+}
+
+class B {
+    void show() {
+        System.out.println("Class B");
+    }
+}
+
+// Error: Java does not support multiple inheritance
+class C extends A, B {
+    // Ambiguity: Which `show` method should be inherited?
+}
+
+```
+**How Java Handles Multiple Inheritance**\
+**With Interfaces**\
+Java supports multiple inheritance with **interfaces** because interfaces only declare method signatures (no implementation in classic interfaces). Since Java 8, interfaces can also include default and static methods, but ambiguities can still be resolved explicitly.
+
+**Example: Multiple Inheritance with Interfaces**
+```java
+interface InterfaceA {
+    default void display() {
+        System.out.println("Display from InterfaceA");
+    }
+}
+
+interface InterfaceB {
+    default void display() {
+        System.out.println("Display from InterfaceB");
+    }
+}
+
+class MyClass implements InterfaceA, InterfaceB {
+    @Override
+    public void display() {
+        // Resolving ambiguity
+        InterfaceA.super.display();  // Calling InterfaceA's method
+        InterfaceB.super.display();  // Calling InterfaceB's method
+    }
+}
+
+public class MultipleInheritanceExample {
+    public static void main(String[] args) {
+        MyClass obj = new MyClass();
+        obj.display();
+    }
+}
+
+```
+**Output**
+```
+Display from InterfaceA
+Display from InterfaceB
+
+```
+
+**Why Java Does Not Support Multiple Inheritance with Classes**
+1. **Diamond Problem:**
+    - If a class inherits from two parent classes with methods of the same signature, it creates ambiguity about which method to use.
+2. **Complexity:**
+    - Resolving conflicts in the method and field inheritance can make the language complex and error-prone.
+3. **Better Alternatives:**
+   - Composition and interfaces provide safer and more manageable ways to achieve the same functionality.
+
+**Multiple Inheritance Alternatives in Java**\
+**1. Composition**\
+   Instead of extending multiple classes, a class can **contain objects** of other classes and reuse their functionality.
+
+```java
+class A {
+    void displayA() {
+        System.out.println("Display from A");
+    }
+}
+
+class B {
+    void displayB() {
+        System.out.println("Display from B");
+    }
+}
+
+class C {
+    A a = new A();
+    B b = new B();
+
+    void show() {
+        a.displayA();
+        b.displayB();
+    }
+}
+
+public class CompositionExample {
+    public static void main(String[] args) {
+        C obj = new C();
+        obj.show();
+    }
+}
+
+```
+**Output**
+```
+Display from A
+Display from B
+
+```
+**2. Using Interfaces**\
+   Interfaces allow multiple inheritance and provide flexibility for achieving abstraction and polymorphism.
+
+**Example**
+```java
+interface Animal {
+    void eat();
+}
+
+interface Bird {
+    void fly();
+}
+
+class Bat implements Animal, Bird {
+    @Override
+    public void eat() {
+        System.out.println("Bat eats insects.");
+    }
+
+    @Override
+    public void fly() {
+        System.out.println("Bat can fly.");
+    }
+}
+
+public class InterfaceExample {
+    public static void main(String[] args) {
+        Bat bat = new Bat();
+        bat.eat();
+        bat.fly();
+    }
+}
+
+```
+**Output**
+```
+Bat eats insects.
+Bat can fly.
+
+```
+
+### 30. What is the purpose of the Object class?
+
+The `Object` class is the root of the class hierarchy in Java. Every class in Java is either a direct or indirect subclass of the `Object` class. It provides a set of methods that are common to all objects in Java, which makes it a fundamental building block of the Java programming language.
+
+**Key Purposes of the Object Class**
+1. **Inheritance:**
+
+    - All classes in Java implicitly inherit from the `Object` class, either directly or indirectly.
+    - This ensures that every Java object has a standard set of behaviors.
+2. **Common Methods:**
+
+    - The `Object` class provides essential methods that all Java objects can use or override to define their own behavior.
+    - These methods include `toString()`, `equals()`, `hashCode()`, `clone()`, and others.
+3. **Polymorphism:**
+
+    - Since the `Object` class is the root of the hierarchy, a reference of type `Object` can hold a reference to any Java object. This is useful for generic programming.
+4. **Synchronization:**
+
+    - Methods like `wait()`, `notify()`, and `notifyAll()` are defined in the `Object` class to facilitate thread synchronization, as every Java object can be used as a monitor for synchronization.
+
+![img_23.png](img_23.png)
 
 
+**Examples of Object Class Methods**
+1. `toString()`\
+   The default implementation returns the class name followed by the hash code. It can be overridden for custom behavior.
+```java
+class Person {
+    String name;
+    int age;
 
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
 
+    @Override
+    public String toString() {
+        return "Person{name='" + name + "', age=" + age + "}";
+    }
+}
 
+public class ToStringExample {
+    public static void main(String[] args) {
+        Person person = new Person("Alice", 30);
+        System.out.println(person); // Calls toString() implicitly
+    }
+}
 
+```
+2. `equals()`
 
+```java
+class Person {
+    String name;
 
+    Person(String name) {
+        this.name = name;
+    }
 
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return name.equals(person.name);
+    }
+}
 
+public class EqualsExample {
+    public static void main(String[] args) {
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+        System.out.println(p1.equals(p2)); // true
+    }
+}
 
+```
+3. `hashCode()`\
+   Often overridden along with `equals()` to ensure consistent behavior when objects are used in hash-based collections.
+```java
+class Person {
+    String name;
 
+    Person(String name) {
+        this.name = name;
+    }
 
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+}
 
+public class HashCodeExample {
+    public static void main(String[] args) {
+        Person person = new Person("Alice");
+        System.out.println(person.hashCode()); // Prints hash code based on name
+    }
+}
 
+```
+**Importance in Java**
+* The `Object` class methods are the backbone of Java's object-oriented capabilities, enabling consistent behavior across all objects.
+* Overriding these methods (like `equals`, `hashCode`, `toString`) is common practice to define specific object behaviors for use cases like comparison, debugging, and storage in collections.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+By providing these fundamental methods, the `Object` class ensures uniformity and simplifies the design of the Java language.
 
 
 
