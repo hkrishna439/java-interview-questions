@@ -3116,6 +3116,1338 @@ public class HashCodeExample {
 By providing these fundamental methods, the `Object` class ensures uniformity and simplifies the design of the Java language.
 
 
+### 31. What is the difference between hashCode() and equals()?
+
+The `hashCode()` and `equals()` methods are two fundamental methods in Java's `Object` class. They play a crucial role in determining object equality and how objects are managed in collections like `HashMap`, `HashSet`, and `Hashtable`
+
+![img_24.png](img_24.png)
+
+![img_25.png](img_25.png)
+
+**Contract Between** `equals()` **and** `hashCode()`
+1. If two objects are equal (`equals()` returns `true`), they must have the same hash code.
+2. If two objects have the same hash code, they might not be equal (`equals()` can return `false`).
+
+Failure to maintain this contract can lead to unexpected behavior in hash-based collections like `HashMap` or `HashSet`.
+
+**Examples**\
+**Default Behavior**
+
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+public class DefaultExample {
+    public static void main(String[] args) {
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        System.out.println(p1.equals(p2)); // false (default behavior compares references)
+        System.out.println(p1.hashCode() == p2.hashCode()); // false (default hash codes differ)
+    }
+}
+
+```
+Overriding `equals()` and `hashCode()`
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return name.equals(person.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+}
+
+public class CustomExample {
+    public static void main(String[] args) {
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        System.out.println(p1.equals(p2)); // true (custom equality based on name)
+        System.out.println(p1.hashCode() == p2.hashCode()); // true (consistent hash codes)
+    }
+}
+
+```
+
+**Hash-Based Collections**\
+If `equals()` and` hashCode()` are not implemented correctly, hash-based collections like `HashSet` and `HashMap` may not behave as expected.
+
+**Example Without Proper Overrides**
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+}
+
+public class CollectionExample {
+    public static void main(String[] args) {
+        HashSet<Person> set = new HashSet<>();
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        set.add(p1);
+        set.add(p2);
+
+        System.out.println(set.size()); // Output: 2 (Objects are treated as different)
+    }
+}
+
+```
+**Example With Proper Overrides**
+```java
+class Person {
+    String name;
+
+    Person(String name) {
+        this.name = name;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return name.equals(person.name);
+    }
+
+    @Override
+    public int hashCode() {
+        return name.hashCode();
+    }
+}
+
+public class CollectionExample {
+    public static void main(String[] args) {
+        HashSet<Person> set = new HashSet<>();
+        Person p1 = new Person("Alice");
+        Person p2 = new Person("Alice");
+
+        set.add(p1);
+        set.add(p2);
+
+        System.out.println(set.size()); // Output: 1 (Objects are treated as equal)
+    }
+}
+
+```
+### 32. Can we override static methods in Java?
+
+No, **static methods cannot be overridden** in Java. However, they can be redeclared (hidden) in a subclass. This is because static methods belong to the class and not to any specific instance, and method overriding in Java applies only to instance methods.
+
+**Why Can't Static Methods Be Overridden?**
+1. **Binding at Compile-Time (Static Binding):** Static methods are resolved during compile-time using the reference type, not the actual object. Overriding involves runtime polymorphism (dynamic binding), which is not applicable to static methods.
+2. **Class-Level Association:** Since static methods belong to the class, they are not tied to a specific instance. Overriding requires an instance context to determine the correct method to invoke.
+
+**What Happens When You Declare a Static Method with the Same Name in a Subclass?**\
+This is known as **method hiding**, not overriding. The static method in the subclass hides the static method in the superclass, and which method gets called depends on the type of the reference at compile-time.
+
+**Example of Method Hiding**
+```java
+class Parent {
+    static void display() {
+        System.out.println("Static method in Parent");
+    }
+}
+
+class Child extends Parent {
+    static void display() {
+        System.out.println("Static method in Child");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Parent obj1 = new Parent();
+        Parent obj2 = new Child();
+
+        obj1.display(); // Output: Static method in Parent
+        obj2.display(); // Output: Static method in Parent (method hiding)
+    }
+}
+
+```
+In the above example:
+
+* `obj1.display()` calls` Parent`'s `display()` method because the reference type is `Parent`.
+* `obj2.display()` also calls `Parent`'s `display()` method because `static` methods are resolved based on reference type, not the actual object.
+
+![img_26.png](img_26.png)
+
+
+**Key Points**
+1. Static methods are not overridden; they are hidden.
+2. To use runtime polymorphism, you must use instance methods.
+3. Always use static methods when the behavior is tied to the class and does not require object state.
+
+### 33. What is method hiding?
+Method hiding occurs when a **static method** in a subclass has the **same name** and **method** **signature** as a static method in its superclass. Unlike instance methods (which support overriding), static methods belong to the class and are resolved at **compile-time** based on the reference type, not the object.
+
+**Key Characteristics of Method Hiding**
+1. **Static Context:** It applies only to static methods.
+2. **No Polymorphism:** It does not support runtime polymorphism. The method that gets called is determined at compile-time.
+3. **Reference Type Matters:** The version of the method that is executed depends on the type of the reference, not the object.
+
+**Example of Method Hiding**
+```java
+class Parent {
+    static void display() {
+        System.out.println("Static method in Parent");
+    }
+}
+
+class Child extends Parent {
+    static void display() {
+        System.out.println("Static method in Child");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Parent obj1 = new Parent();
+        Parent obj2 = new Child();
+        Child obj3 = new Child();
+
+        obj1.display(); // Output: Static method in Parent
+        obj2.display(); // Output: Static method in Parent (method hiding)
+        obj3.display(); // Output: Static method in Child
+    }
+}
+
+```
+**Explanation of the Example**
+1. `obj1.display()`: The reference type is `Parent`, so `Parent`'s `display()` method is called.
+2. `obj2.display()`: Even though the object is of type `Child`, the reference type is `Parent`, so `Parent`'s `display()` method is called.
+3. `obj3.display()`: Both the reference and the object are of type `Child`, so `Child`'s `display()` method is called.
+
+![img_27.png](img_27.png)
+
+**Key Takeaways**
+* Static methods cannot be overridden but can be hidden.
+* Method hiding depends on the `reference type`, while overriding depends on the `object type`.
+* Use method hiding carefully to avoid confusion, as it does not follow the same polymorphic behavior as overriding.
+
+### 34. What is the difference between final, finally, and finalize()?
+![img_28.png](img_28.png)
+
+**Detailed Explanation**
+1. `final`
+- **Purpose**:
+   - **Variables**: Prevents reassignment. (Makes the variable a constant.)
+   - **Methods**: Prevents overriding by subclasses.
+   - **Classes**: Prevents inheritance.
+
+- Example:
+```java
+final class FinalClass { } // Cannot be subclassed
+
+class Parent {
+    final void display() {
+        System.out.println("This method cannot be overridden");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        final int number = 10; // Cannot reassign
+        // number = 20; // Compilation error
+    }
+}
+
+```
+
+2. `finally`
+- **Purpose**: Used to execute important cleanup code like closing resources, regardless of whether an exception occurred or was caught.
+- **Behavior**:
+  - Executes after the `try` block, even if there is a `return` statement or an exception in the `try` block.
+  
+- Example:
+```java
+public class Main {
+    public static void main(String[] args) {
+        try {
+            int result = 10 / 0; // Exception occurs
+        } catch (ArithmeticException e) {
+            System.out.println("Exception caught: " + e.getMessage());
+        } finally {
+            System.out.println("Finally block always executes.");
+        }
+    }
+}
+
+```
+3. `finalize()`
+- **Purpose**:
+   - Called by the garbage collector before destroying an object to allow cleanup of resources.
+   - Deprecated in Java 9 due to unpredictability.
+- **Usage**: Rarely used. Developers prefer explicit cleanup (e.g., `try-with-resources` or closing resources in `finally`).
+   
+- Example:
+```java
+public class Main {
+    @Override
+    protected void finalize() throws Throwable {
+        System.out.println("Finalize method called before garbage collection.");
+    }
+
+    public static void main(String[] args) {
+        Main obj = new Main();
+        obj = null; // Eligible for GC
+        System.gc(); // Request garbage collection
+    }
+}
+
+```
+![img_29.png](img_29.png)
+
+**Key Takeaways**
+* Use `final` for defining constants, preventing inheritance, or restricting method overriding.
+* Use `finally` for resource cleanup during exception handling.
+* Avoid relying on `finalize()`; instead, use modern techniques like `try-with-resources` for resource management.
+
+### 35. Can you override a private method in Java?
+
+No, **you cannot override a private method in Java** because private methods are not accessible outside the class in which they are declared.
+
+**Reason**
+- **Private methods** are specific to the class they are defined in and are not visible to subclasses or other classes. Since overriding requires the method in the subclass to have the same signature and visibility, private methods cannot participate in this process.
+
+**What Happens If You Declare a Method with the Same Name in a Subclass?**\
+If you define a method with the same name in a subclass, it is not an override but a **new method** **specific to the subclass**. This is called **method hiding**, and the subclass method does not affect or override the private method in the superclass.
+
+**Example**
+```java
+class Parent {
+    private void display() {
+        System.out.println("Private method in Parent class");
+    }
+}
+
+class Child extends Parent {
+    // This is not overriding; it is a new method
+    public void display() {
+        System.out.println("Public method in Child class");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Parent parent = new Parent();
+        // parent.display(); // Compilation error: display() has private access in Parent
+
+        Child child = new Child();
+        child.display(); // Calls the display() method in Child class
+    }
+}
+
+```
+**Output**
+```
+Public method in Child class
+```
+**Key Takeaways:**
+1. **Private methods** cannot be overridden because they are not inherited by subclasses.
+2. Declaring a method with the same name in a subclass creates a **new method**, not an overridden one.
+3. The concept of overriding only applies to methods that are visible to the subclass (e.g., `protected`, `public`).
+
+### 36. Explain the super keyword with an example.
+
+The `super` keyword in Java is used to refer to the **immediate parent class** of the current object. It provides access to:
+
+1. **Parent class members** (fields and methods) that are hidden by the child class.
+2. **Parent class constructor** to initialize the parent class.
+
+**Uses of** `super`
+1. **Access Parent Class Fields**
+
+    - If a child class defines a field with the same name as a field in the parent class, you can use `super` to access the parent class version.
+2. **Invoke Parent Class Methods**
+
+    - If a child class overrides a method in the parent class, you can use `super` to call the parent class method.
+3. **Call Parent Class Constructor**
+
+    - Used in the child class constructor to initialize the parent class by explicitly invoking its constructor.
+
+**Example 1: Access Parent Class Fields**
+```java
+class Parent {
+    String name = "Parent Class";
+}
+
+class Child extends Parent {
+    String name = "Child Class";
+
+    public void displayNames() {
+        System.out.println("Child name: " + name); // Access child class field
+        System.out.println("Parent name: " + super.name); // Access parent class field
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Child child = new Child();
+        child.displayNames();
+    }
+}
+
+```
+**Output**
+```
+Child name: Child Class
+Parent name: Parent Class
+```
+**Example 2: Invoke Parent Class Methods**
+```java
+class Parent {
+    public void showMessage() {
+        System.out.println("Message from Parent class");
+    }
+}
+
+class Child extends Parent {
+    public void showMessage() {
+        System.out.println("Message from Child class");
+    }
+
+    public void displayMessages() {
+        super.showMessage(); // Calls parent class method
+        this.showMessage(); // Calls child class method
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Child child = new Child();
+        child.displayMessages();
+    }
+}
+
+```
+**Output**
+```
+Message from Parent class
+Message from Child class
+
+```
+**Example 3: Call Parent Class Constructor**
+
+```java
+class Parent {
+    public Parent() {
+        System.out.println("Parent class constructor called");
+    }
+}
+
+class Child extends Parent {
+    public Child() {
+        super(); // Calls Parent class constructor
+        System.out.println("Child class constructor called");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Child child = new Child();
+    }
+}
+
+```
+**Output**
+```
+Parent class constructor called
+Child class constructor called
+
+```
+**Key Points**
+1. `super` **must be the first statement** in the constructor if you are calling the parent class constructor.
+2. You can use `super` to access parent class members, even if they are shadowed by child class members.
+3. If you don’t explicitly call the parent class constructor using `super`, Java automatically calls the **default constructor** of the parent class.
+
+### 37. What is the difference between IS-A and HAS-A relationships?
+In Java, **IS-A** and **HAS-A** represent two types of relationships between classes. These relationships are foundational for object-oriented programming.
+
+**1. IS-A Relationship**
+* Definition: Represents **inheritance** or generalization.
+* It is a parent-child relationship where a subclass (child) **inherits** the behavior and properties of a superclass (parent).
+* Achieved using the `extends` keyword (for classes) or `implements` keyword (for interfaces).
+* Example: "**A Dog IS-A Animal**."
+
+**Key Characteristics:**
+* Facilitates code reuse through inheritance.
+* Polymorphism is achieved with IS-A.
+* Focuses on **what the subclass is**.
+
+**Example**
+```java
+class Animal {
+    void eat() {
+        System.out.println("This animal eats food.");
+    }
+}
+
+class Dog extends Animal {
+    void bark() {
+        System.out.println("Dog barks.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Dog dog = new Dog();
+        dog.eat();  // Inherited method
+        dog.bark(); // Specific to Dog class
+    }
+}
+
+```
+**Output**
+```
+This animal eats food.
+Dog barks.
+```
+**2. HAS-A Relationship**
+* **Definition**: Represents **composition** or aggregation.
+* It is a relationship where a class contains a reference to another class as a **field**.
+* Focuses on **what the class has** rather than what it is.
+* Example: "**A Car HAS-A Engine.**"
+   
+Key Characteristics:
+* Used to achieve code reuse without inheritance.
+* Helps in designing modular and loosely coupled systems.
+* Focuses on **what the class possesses**.
+
+* Example:
+```java
+class Engine {
+    void start() {
+        System.out.println("Engine starts.");
+    }
+}
+
+class Car {
+    Engine engine = new Engine(); // Car HAS-A Engine
+
+    void drive() {
+        engine.start();
+        System.out.println("Car is moving.");
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Car car = new Car();
+        car.drive();
+    }
+}
+
+```
+**Output**
+```
+Engine starts.
+Car is moving.
+```
+
+![img_30.png](img_30.png)
+
+**When to Use IS-A or HAS-A?**
+1. **IS-A:**
+    - Use when there is a clear parent-child relationship.
+    - Example: "A Rectangle IS-A Shape."
+
+2. **HAS-A:**
+   - Use when a class requires functionality provided by another class but does not need to inherit it.
+   - Example: "A Library HAS-A Collection of Books."
+
+By carefully analyzing the relationship between classes, you can decide whether to use inheritance (IS-A) or composition (HAS-A).
+
+### 38. How do you implement a singleton class in Java?
+A **singleton class** ensures that only **one instance** of the class is created and provides a **global point of access** to it. Singleton is widely used in scenarios like logging, caching, thread pools, and configuration settings.
+
+**Key Characteristics of a Singleton Class**
+1. Only one instance of the class exists throughout the application.
+2. Instance is globally accessible.
+3. Class controls its instance creation.
+
+**Steps to Implement a Singleton Class**
+1. **Private Constructor:** Restricts instantiation of the class from other classes.
+2. **Static Instance Variable:** Holds the single instance of the class.
+3. **Public Static Method:** Provides access to the instance.
+
+**1. Eager Initialization**\
+   The instance is created at the time of class loading.
+```java
+class Singleton {
+    // Static instance created eagerly
+    private static final Singleton INSTANCE = new Singleton();
+
+    // Private constructor
+    private Singleton() {}
+
+    // Public method to provide access to the instance
+    public static Singleton getInstance() {
+        return INSTANCE;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+
+        System.out.println(singleton1 == singleton2); // true
+    }
+}
+
+```
+**Pros:**
+* Simple to implement.
+* Thread-safe without synchronization.
+
+**Cons:**
+- Instance is created even if it's never used, which may waste resources.
+
+**2. Lazy Initialization**\
+   Instance is created only when it is needed.
+```java
+class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        Singleton singleton1 = Singleton.getInstance();
+        Singleton singleton2 = Singleton.getInstance();
+
+        System.out.println(singleton1 == singleton2); // true
+    }
+}
+
+```
+**Pros:**
+    - Instance is created only when needed.
+**Cons:**
+    - Not thread-safe.
+
+**3. Thread-Safe Singleton**\
+   To make lazy initialization thread-safe, synchronize the getInstance() method.
+
+```java
+class Singleton {
+    private static Singleton instance;
+
+    private Singleton() {}
+
+    public static synchronized Singleton getInstance() {
+        if (instance == null) {
+            instance = new Singleton();
+        }
+        return instance;
+    }
+}
+
+```
+**Cons:**
+- Synchronization can impact performance in multithreaded environments.
+
+**4. Double-Checked Locking**\
+   Optimizes the thread-safe implementation.
+
+```java
+class Singleton {
+    private static volatile Singleton instance;
+
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+        if (instance == null) { // First check
+            synchronized (Singleton.class) {
+                if (instance == null) { // Second check
+                    instance = new Singleton();
+                }
+            }
+        }
+        return instance;
+    }
+}
+
+```
+**Pros:**
+- Reduces synchronization overhead.
+- Thread-safe and efficient.
+
+**5. Bill Pugh Singleton (Using Inner Static Class)**\
+   The most efficient and widely used approach.
+
+```java
+class Singleton {
+    private Singleton() {}
+
+    // Inner static helper class
+    private static class Holder {
+        private static final Singleton INSTANCE = new Singleton();
+    }
+
+    public static Singleton getInstance() {
+        return Holder.INSTANCE;
+    }
+}
+
+```
+**Pros:**
+* Instance is created lazily and is thread-safe without synchronization.
+* Leverages the JVM's class-loading mechanism.
+
+![img_31.png](img_31.png)
+
+**Usage**\
+Singletons are used in scenarios where a single shared resource, such as a database connection pool, logging service, or configuration, is needed throughout the application.
+
+
+### 39. What is the Java Collections Framework?
+
+The **Java Collections Framework (JCF)** is a set of classes and interfaces in Java that provides a standard architecture for managing groups of objects. It includes algorithms and data structures like lists, sets, maps, and queues, making it easier to perform common operations such as sorting, searching, and traversing collections.
+
+**Key Components of the Java Collections Framework**\
+**1. Interfaces**\
+These define the abstract data types. Some important interfaces are:
+
+* **Collection**: The root interface for most collections.
+* **List**: An ordered collection allowing duplicate elements. Example: `ArrayList`, `LinkedList`.
+* **Set**: A collection that doesn't allow duplicate elements. Example: `HashSet`, `TreeSet`.
+* **Map**: A collection of key-value pairs. Example: `HashMap`, `TreeMap`.
+* **Queue**: A collection designed for holding elements before processing. Example: `PriorityQueue`, `LinkedList`.
+
+**2. Implementations (Classes)**\
+These are concrete implementations of the interfaces, providing specific functionalities:
+
+* **ArrayList**: A resizable array.
+* **LinkedList**: A doubly-linked list.
+* **HashSet**: A set backed by a hash table.
+* **TreeSet**: A sorted set implemented using a tree structure.
+* **HashMap**: A map backed by a hash table.
+* **TreeMap**: A sorted map implemented using a red-black tree
+
+**3. Algorithms**\
+   Utility methods in the Collections class provide algorithms to operate on collections:
+
+* Sorting (`Collections.sort()`).
+* Searching (`Collections.binarySearch()`).
+* Shuffling (`Collections.shuffle()`).
+* Reversing (`Collections.reverse()`).
+
+**Advantages of the Java Collections Framework**
+1. **Unified Architecture:** A common interface allows switching between different data structures without altering the code.
+2. **Predefined Methods:** Reduces development time by providing pre-built methods for operations like sorting and searching.
+3. **Efficiency**: Collections are optimized for performance.
+4. **Flexibility**: Offers a wide variety of data structures tailored to different use cases.
+5. **Thread-Safe Options:** Provides classes like Vector and Hashtable and utilities like Collections.synchronizedList() for multi-threaded environments.
+
+**Basic Example: Using List**
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+
+public class Main {
+    public static void main(String[] args) {
+        // Creating a list
+        ArrayList<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Orange");
+
+        // Sorting the list
+        Collections.sort(list);
+        System.out.println("Sorted List: " + list);
+
+        // Searching an element
+        int index = Collections.binarySearch(list, "Banana");
+        System.out.println("Index of 'Banana': " + index);
+    }
+}
+
+```
+**Output**
+```
+Sorted List: [Apple, Banana, Orange]
+Index of 'Banana': 1
+
+```
+**Hierarchy of the Collections Framework**
+
+```
+java.util
+  ├── Collection
+  │     ├── List
+  │     │     ├── ArrayList
+  │     │     └── LinkedList
+  │     ├── Set
+  │     │     ├── HashSet
+  │     │     └── TreeSet
+  │     └── Queue
+  │           └── PriorityQueue
+  └── Map
+        ├── HashMap
+        └── TreeMap
+
+```
+
+**Real-World Use Cases**
+* **List**: Managing ordered data like a to-do list.
+* **Set**: Removing duplicate entries from a data set.
+* **Map**: Storing key-value pairs like a dictionary or configuration settings.
+* **Queue**: Implementing task schedulers or message queues.
+
+The Java Collections Framework provides a robust foundation for working with data structures, making Java development more efficient and versatile.
+
+### 40. What is the difference between ArrayList and LinkedList?
+
+Both **ArrayList** and **LinkedList** are implementations of the List interface in Java Collections Framework, but they differ in their internal workings, performance, and use cases.
+
+![img_32.png](img_32.png)
+
+**Detailed Explanation with Examples**\
+**1. Random Access Performance**
+*    **ArrayList** provides constant time `O(1)` access to elements by index since it uses a resizable array.
+*    **LinkedList** requires traversing the list `(O(n))`, as elements are not stored contiguously.
+
+**Example**
+```java
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<String> arrayList = new ArrayList<>();
+        LinkedList<String> linkedList = new LinkedList<>();
+
+        // Adding elements
+        arrayList.add("A");
+        linkedList.add("A");
+
+        // Random access
+        System.out.println("ArrayList: " + arrayList.get(0)); // Fast
+        System.out.println("LinkedList: " + linkedList.get(0)); // Slower
+    }
+}
+
+```
+**2. Insertion Performance**
+*    **ArrayList** requires shifting elements when inserting or deleting in the middle of the list.
+*    **LinkedList** can insert or delete without shifting but requires node traversal to find the position.
+
+**Example**
+```java
+import java.util.ArrayList;
+import java.util.LinkedList;
+
+public class Main {
+    public static void main(String[] args) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        LinkedList<Integer> linkedList = new LinkedList<>();
+
+        // Adding elements to the middle of the list
+        for (int i = 0; i < 10000; i++) {
+            arrayList.add(i);
+            linkedList.add(i);
+        }
+
+        long startTime = System.nanoTime();
+        arrayList.add(5000, 999); // Slow due to shifting
+        long endTime = System.nanoTime();
+        System.out.println("ArrayList Insertion: " + (endTime - startTime) + " ns");
+
+        startTime = System.nanoTime();
+        linkedList.add(5000, 999); // Fast as no shifting
+        endTime = System.nanoTime();
+        System.out.println("LinkedList Insertion: " + (endTime - startTime) + " ns");
+    }
+}
+
+```
+**Key Points to Remember**
+* Use **ArrayList** when frequent read operations or random access is required.
+* Use **LinkedList** when frequent insertions and deletions are needed.
+* **Memory considerations:** **ArrayList** uses less memory compared to **LinkedList** due to the absence of node pointers.
+* Iterating through **ArrayList** is faster because of contiguous memory.
+
+**Choosing the right data structure depends on your specific use case and performance needs.**
+
+### 41. What is the difference between HashSet and TreeSet?
+
+Both **HashSet** and **TreeSet** are implementations of the Set interface in Java, but they have distinct differences in terms of performance, ordering, and underlying data structures.
+
+![img_33.png](img_33.png)
+
+**Detailed Explanation with Examples**\
+**1. Ordering of Elements**
+*    **HashSet** does not guarantee any order of the elements, meaning the elements can appear in any random order.
+*    **TreeSet**, on the other hand, sorts the elements based on their natural ordering (or by a **Comparator** if provided).
+   
+**Example:**
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        // HashSet (no specific order)
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add("Banana");
+        hashSet.add("Apple");
+        hashSet.add("Mango");
+        System.out.println("HashSet: " + hashSet); // Output may not be sorted
+        
+        // TreeSet (sorted order)
+        Set<String> treeSet = new TreeSet<>();
+        treeSet.add("Banana");
+        treeSet.add("Apple");
+        treeSet.add("Mango");
+        System.out.println("TreeSet: " + treeSet); // Output will be sorted
+    }
+}
+
+```
+**Output**
+```
+HashSet: [Banana, Apple, Mango]  // The order could vary.
+TreeSet: [Apple, Banana, Mango] // Sorted in ascending order.
+```
+**2. Performance**
+*    **HashSet** is backed by a hash table and offers average constant time performance `(O(1))` for the operations like **add**, **remove**, and **contains**.
+*    **TreeSet** is backed by a Red-Black tree and offers logarithmic time performance `(O(log n))` for the operations like **add**, **remove**, and **contains** due to the need to maintain sorted order.
+
+**Example**
+```java
+import java.util.*;
+
+public class PerformanceTest {
+    public static void main(String[] args) {
+        // Measure time for HashSet
+        Set<Integer> hashSet = new HashSet<>();
+        long start = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            hashSet.add(i);
+        }
+        long end = System.nanoTime();
+        System.out.println("HashSet time: " + (end - start) + " ns");
+
+        // Measure time for TreeSet
+        Set<Integer> treeSet = new TreeSet<>();
+        start = System.nanoTime();
+        for (int i = 0; i < 100000; i++) {
+            treeSet.add(i);
+        }
+        end = System.nanoTime();
+        System.out.println("TreeSet time: " + (end - start) + " ns");
+    }
+}
+
+```
+In this case, **HashSet** will generally perform better for insertions due to its `O(1)` time complexity, while **TreeSet** will take more time due to its `O(log n)` complexity for maintaining order.
+
+**3. Null Values**
+*    **HashSet** allows **null** elements (as it does not care about the order).
+*    **TreeSet** does **not allow null** elements because it requires a way to compare the elements (to maintain the sorted order), and `null` cannot be compared in this manner.
+   
+**Example**:
+```java
+import java.util.*;
+
+public class NullTest {
+    public static void main(String[] args) {
+        // HashSet allows null
+        Set<String> hashSet = new HashSet<>();
+        hashSet.add("Apple");
+        hashSet.add(null);  // This is allowed
+        System.out.println("HashSet with null: " + hashSet);
+        
+        // TreeSet does not allow null and will throw NullPointerException
+        try {
+            Set<String> treeSet = new TreeSet<>();
+            treeSet.add("Apple");
+            treeSet.add(null);  // This will throw NullPointerException
+        } catch (Exception e) {
+            System.out.println("Exception in TreeSet: " + e);
+        }
+    }
+}
+
+```
+**Output**
+```
+HashSet with null: [Apple, null]
+Exception in TreeSet: java.lang.NullPointerException
+
+```
+**Key Points to Remember**
+* **Use HashSet** when you do not care about sorting and need faster insertion and lookup.
+* **Use TreeSet** when you need elements to be sorted (in natural or custom order).
+* **TreeSet** has higher time complexity `(O(log n))` for common operations due to sorting, while **HashSet** offers constant time complexity `(O(1))` for common operations, making it more efficient in most cases.
+
+### 42. What is the difference between HashMap and Hashtable?
+**HashMap** and **Hashtable** are both used for storing key-value pairs in Java. They are part of the **Java Collections Framework** and implement the **Map** interface. However, they have several differences in terms of synchronization, null values, performance, and other characteristics.
+
+Here is a detailed comparison:
+![img_34.png](img_34.png)
+
+**Key Differences in Detail**
+**1. Thread Safety**
+*    **HashMap** is **not synchronized**, meaning it does not provide built-in thread safety. If multiple threads try to access a HashMap simultaneously, it could lead to inconsistent data unless external synchronization is provided (e.g., using Collections.synchronizedMap or other synchronization mechanisms).
+*    **Hashtable**, on the other hand, is **synchronized**. This means only one thread can access a Hashtable at a time, making it inherently thread-safe.
+
+**2. Null Keys and Values**
+*    **HashMap** allows **null keys** and **null values**. You can store a null value for any key, and you can store one null key.
+```java
+HashMap<String, String> hashMap = new HashMap<>();
+hashMap.put(null, "Value1");
+hashMap.put("Key2", null);
+
+```
+* **Hashtable** does **not allow null** for either keys or values. If you try to insert a `null` key or value, it throws a `NullPointerException`.
+
+```java
+Hashtable<String, String> hashtable = new Hashtable<>();
+hashtable.put(null, "Value1");  // Throws NullPointerException
+hashtable.put("Key2", null);    // Throws NullPointerException
+
+```
+**3. Performance**
+* **HashMap** is generally **faster** than Hashtable. Since it is not synchronized, multiple threads can access it simultaneously, which allows for better performance in single-threaded environments or when synchronization is managed externally.
+* **Hashtable** is **slower** because it is synchronized, and thread safety comes at the cost of performance. For every method invocation on a Hashtable, a lock must be acquired, which can become a bottleneck in multi-threaded applications.
+
+**4. Legacy Status**
+* **HashMap** is part of the **Java Collections Framework** (introduced in Java 1.2) and is preferred over Hashtable in most scenarios.
+* **Hashtable** is part of the **legacy classes** (since JDK 1.0) and has been retrofitted to implement the Map interface. It is considered outdated, and its usage is generally discouraged in modern Java programming in favor of HashMap or other classes.
+
+**5. Iteration**
+* **HashMap** uses an **Iterator** for iteration, which is **fail-fast**. If the map is modified during iteration (except through the iterator’s own remove method), a `ConcurrentModificationException` will be thrown.
+* **Hashtable** uses an **Enumerator**, which is **not fail-fast**. It does not throw an exception if the map is modified during iteration.
+
+**Code Example:**
+```java
+import java.util.*;
+
+public class MapExample {
+    public static void main(String[] args) {
+        // Example of HashMap
+        Map<String, String> hashMap = new HashMap<>();
+        hashMap.put("1", "One");
+        hashMap.put("2", "Two");
+        hashMap.put(null, "Null Key");
+        hashMap.put("3", null);
+        System.out.println("HashMap: " + hashMap);
+
+        // Example of Hashtable
+        Map<String, String> hashtable = new Hashtable<>();
+        hashtable.put("1", "One");
+        hashtable.put("2", "Two");
+        // hashtable.put(null, "Null Key");  // Throws NullPointerException
+        // hashtable.put("3", null);         // Throws NullPointerException
+        System.out.println("Hashtable: " + hashtable);
+    }
+}
+
+```
+**Output**
+```
+HashMap: {null=Null Key, 1=One, 2=Two, 3=null}
+Hashtable: {1=One, 2=Two}
+```
+
+### 43.How does a HashMap work internally?
+
+A `HashMap` in Java is a part of the **Java Collections Framework** and implements the `Map` interface. It is used to store key-value pairs, where each key is unique and is mapped to a specific value. Internally, a `HashMap` uses a **hash table** to store the data. Here's a detailed explanation of how it works internally:
+
+**1. Hashing and Hash Functions**\
+When a key-value pair is added to a HashMap, the key is first processed by a **hash function** to generate a **hash code**. This hash code determines where the corresponding entry (key-value pair) will be placed in the hash table.
+
+* The **hash code** of the key is calculated using the key’s `hashCode()` method. The hash code is then used to find the corresponding **bucket** in the hash table.
+* The **bucket** is essentially an index in the underlying array where the entry will be stored. The bucket index is computed by applying a modulo operation on the hash code to ensure that the index stays within the size of the internal array (i.e., the capacity of the hash table).
+
+```
+int index = hashCode(key) % capacity;
+```
+**2. Buckets**\
+The HashMap internally uses an **array** of **buckets**. Each bucket holds a linked list (or another form of storage, depending on Java version) to handle **collisions** (when two different keys hash to the same bucket). The size of this array is dynamic and grows as the map grows, based on its **load factor**.
+
+* **Initial Capacity:** The initial size of the array (default is 16).
+* **Load Factor**: The load factor determines when the `HashMap` should resize itself. The default load factor is **0.75**. This means that when the number of elements exceeds 75% of the current capacity, the `HashMap` will resize itself (usually doubling the size of the array).
+
+**3. Collisions and Chaining**\
+A **collision** occurs when two different keys hash to the same bucket. To handle this, HashMap uses a technique called **chaining**.
+
+* **Chaining** involves storing multiple entries at the same index (bucket) using a **linked list**. Each entry in the bucket contains the key-value pair along with a reference to the next entry (in case of a collision).
+* In recent versions of Java (Java 8 and later), when the number of elements in a bucket exceeds a certain threshold (e.g., 8 elements), the bucket switches from a **linked list** to a **balanced tree (Red-Black Tree)**, which improves the performance of search operations from `O(n)` to `O(log n)` for large chains.
+
+
+**4. Putting an Entry**\
+When a key-value pair is added to a `HashMap`:
+
+1. **Compute the hash code:** The `hashCode()` method of the key is called to compute the hash code.
+2. **Determine the bucket index:** The hash code is then used to compute the bucket index `(index = hashCode(key) % capacity)`.
+3. **Check for collisions:** If the bucket is empty, the key-value pair is inserted directly. If there is already an entry in the bucket (collision), the `HashMap` will either add the new entry to the end of the linked list (if it is a chain) or create a balanced tree (if the threshold is met).
+4. **Resize if necessary:** If the `HashMap` exceeds its load factor, it will **resize** (rehash) and reallocate the elements into a new array of a larger size.
+
+**5. Retrieving a Value**\
+To retrieve a value from the `HashMap`:
+
+1. **Compute the hash code:** The hash code of the key is calculated using the key’s `hashCode()` method.
+2. **Determine the bucket index:** The index is determined as `index = hashCode(key) % capacity`.
+3. **Find the key in the bucket:** The `HashMap` checks the linked list or tree at that bucket index to find the entry with the matching key.
+4. **Return the value:** If the key is found, its corresponding value is returned. If not, `null` is returned.
+
+**6. Removing an Entry**\
+To remove an entry:
+1. **Compute the hash code:** The hash code of the key is computed.
+2. **Find the bucket index:** The index for the bucket is determined.
+3. **Locate and remove the entry:** The `HashMap` searches the bucket for the key. If found, the entry is removed from the linked list or tree.
+
+**Example of How HashMap Works Internally**
+```java
+import java.util.*;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> map = new HashMap<>();
+        
+        map.put("A", 1);  // Key "A" will be hashed and mapped to a bucket
+        map.put("B", 2);  // Key "B" will be hashed and mapped to a bucket
+        map.put("C", 3);  // Key "C" will be hashed and mapped to a bucket
+        
+        // Retrieving the value
+        System.out.println("Value for key 'A': " + map.get("A"));  // Output: 1
+        System.out.println("Value for key 'B': " + map.get("B"));  // Output: 2
+    }
+}
+
+```
+**HashMap Internal Data Structure**
+1. **Array of Buckets:** The `HashMap` internally uses an array of buckets to store entries. The size of the array is dynamically increased when the load factor threshold is crossed.
+2. **Entry Object:** Each element in the bucket is an Entry object that contains:
+   - Key
+   - Value
+   - Hash code of the key
+   - Reference to the next Entry (for chaining/collisions)
+   
+**Performance Considerations**\
+- **Time Complexity:**
+  - **Average case:** The time complexity for **get** and **put** operations is `O(1)` in the average case, due to the hash-based structure.
+  - **Worst case:** In the case of many collisions (if the hash function is poor), the time complexity can degrade to `O(n)`, where n is the number of elements in the bucket. However, Java 8 introduced the balanced tree mechanism to mitigate this for large chains.
+
+- **Space Complexity:** The space complexity of a `HashMap` is` O(n)`, where n is the number of key-value pairs.
+
+### 44. What are fail-fast and fail-safe iterators?
+
+In Java, iterators are used to iterate over collections such as `List`, `Set`, or `Map`. **Fail-fast** and **fail-safe** are two types of iterators, and they differ in how they handle changes (such as modifications) made to the collection during iteration.
+
+**1. Fail-fast Iterator**\
+   A **fail-fast** iterator immediately throws a `ConcurrentModificationException` if the collection is modified (structurally changed) while it is being iterated. Structural changes refer to adding, removing, or changing elements in the collection.
+
+**Behavior:**
+* **Modifications during iteration:** If the collection is modified after the iterator is created, the fail-fast iterator will detect this and throw a `ConcurrentModificationException`.
+* **Example:** This happens if you modify the collection while using an iterator directly (e.g., by adding or removing elements from the collection).
+
+**Example of fail-fast behavior:**
+
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class FailFastExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Cherry");
+        
+        Iterator<String> iterator = list.iterator();
+        
+        // Modifying the collection while iterating will cause a ConcurrentModificationException
+        while (iterator.hasNext()) {
+            String fruit = iterator.next();
+            if (fruit.equals("Banana")) {
+                list.remove(fruit);  // This modification will throw ConcurrentModificationException
+            }
+        }
+    }
+}
+
+```
+**Why it happens:**
+- The **modCount** variable is used to track the number of structural changes made to the collection. If it changes while the iterator is active, it signals that the collection has been modified and a `ConcurrentModificationException` is thrown to prevent unpredictable behavior.
+
+**Collections that use fail-fast iterators:**
+* ArrayList
+* HashMap
+* HashSet
+* LinkedList
+
+**2. Fail-safe Iterator**\
+   A **fail-safe** iterator does not throw an exception if the collection is modified during iteration. Instead, it operates on a copy of the collection, so changes made to the original collection during iteration do not affect the iteration process.
+
+**Behavior:**
+* **Modifications during iteration:** Modifying the collection while iterating over it will not affect the fail-safe iterator. The iterator uses a copy of the collection, which ensures that structural changes do not interfere with the ongoing iteration.
+* **Example:** The `ConcurrentHashMap` and `CopyOnWriteArrayList` are examples of collections that use fail-safe iterators.
+
+**Example of fail-safe behavior:**
+```java
+import java.util.concurrent.CopyOnWriteArrayList;
+import java.util.Iterator;
+
+public class FailSafeExample {
+    public static void main(String[] args) {
+        CopyOnWriteArrayList<String> list = new CopyOnWriteArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Cherry");
+
+        Iterator<String> iterator = list.iterator();
+        
+        // Modifying the collection while iterating will NOT cause an exception
+        while (iterator.hasNext()) {
+            String fruit = iterator.next();
+            if (fruit.equals("Banana")) {
+                list.remove(fruit);  // This modification will NOT throw ConcurrentModificationException
+            }
+        }
+
+        // Output the list to see that the change was reflected
+        System.out.println(list);  // Output: [Apple, Cherry]
+    }
+}
+
+```
+**Why it happens:**
+- In **fail-safe** collections, a copy of the collection is iterated over, meaning any modifications (additions or deletions) to the original collection during iteration do not affect the current iteration process. Therefore, no exceptions are thrown.
+
+**Collections that use fail-safe iterators:**
+* CopyOnWriteArrayList
+* CopyOnWriteArraySet
+* ConcurrentHashMap
+* BlockingQueue classes
+
+![img_35.png](img_35.png)
+
+**When to Use:**
+* **Fail-fast** iterators are suitable when you are not dealing with concurrent modifications and need a fast, efficient iteration.
+* **Fail-safe** iterators are useful in multi-threaded environments where collections might be modified by different threads during iteration. However, they can come at a cost in terms of performance due to creating copies of collections.
+
+### 45. What is the difference between Iterator and ListIterator?
+
+The main difference between **Iterator** and **ListIterator** in Java lies in their functionality and the types of collections they can iterate over. Here's a detailed explanation:
+
+**1. Iterator:**\
+An `Iterator` is the most basic interface used to iterate over a collection. It provides methods to traverse through any **Collection** (such as `List`, `Set`, `Queue`) in a forward direction only.
+
+**Key Features of Iterator:**
+* **Traversal Direction:** It allows only **forward** traversal, meaning you can only iterate through the collection in one direction (from beginning to end).
+* **Methods:**
+  - `hasNext()`: Returns `true` if there are more elements to iterate through.
+  - `next()`: Returns the next element in the collection and advances the iterator.
+  - `remove()`: Removes the last element returned by the iterator (optional operation).
+
+- **Applicable Collections:** Can be used for **any** type of collection, including `List`, `Set`, and `Queue`.
+  
+**Example**:
+```java
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+
+public class IteratorExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Cherry");
+
+        Iterator<String> iterator = list.iterator();
+        
+        // Iterating in forward direction
+        while (iterator.hasNext()) {
+            System.out.println(iterator.next());
+        }
+    }
+}
+
+```
+**2. ListIterator:**\
+   `ListIterator` is a more advanced version of the `Iterator` interface, designed specifically for the `List` interface. It allows bidirectional traversal of a list (both forward and backward).
+
+**Key Features of ListIterator:**
+* **Traversal Direction:** It supports both forward and backward traversal. You can move to the next element or move backwards to the previous element.
+* **Methods:**
+  - `hasNext()`: Returns `true` if there are more elements in the forward direction.
+  - `next()`: Returns the next element in the forward direction and advances the iterator.
+  - `hasPrevious()`: Returns `true` if there are more elements in the backward direction.
+  - `previous()`: Returns the previous element and moves the iterator backward.
+  - `add(E e)`: Adds an element to the list at the current position.
+  - `set(E e)`: Replaces the last element returned by `next()` or `previous()` with the specified element.
+  - `remove()`: Removes the last element returned by the iterator (optional operation).
+  
+- **Applicable Collections:** `ListIterator` can only be used with `List` collections (such as `ArrayList`, `LinkedList`, etc.).
+
+**Example**:
+```java
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ListIterator;
+
+public class ListIteratorExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+        list.add("Cherry");
+
+        ListIterator<String> listIterator = list.listIterator();
+
+        // Iterating in forward direction
+        while (listIterator.hasNext()) {
+            System.out.println(listIterator.next());
+        }
+
+        System.out.println("----");
+
+        // Iterating in backward direction
+        while (listIterator.hasPrevious()) {
+            System.out.println(listIterator.previous());
+        }
+    }
+}
+
+```
+![img_37.png](img_37.png)
 
 
 
