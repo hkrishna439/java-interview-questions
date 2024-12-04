@@ -20,7 +20,7 @@
 17. [How does Java handle null values?](https://github.com/hkrishna439/java-interview-questions#17-how-does-java-handle-null-values)
 18. [What is the use of the instanceof operator?](https://github.com/hkrishna439/java-interview-questions#18-what-is-the-use-of-the-instanceof-operator)
 19. [What is the difference between checked and unchecked exceptions?](https://github.com/hkrishna439/java-interview-questions#19-what-is-the-difference-between-checked-and-unchecked-exceptions)
-20. [What is the purpose of the try-catch block?](https://github.com/hkrishna439/java-interview-questions#20-what-is-the-purpose-of-the-try-catch-block)\
+20. [What is the purpose of the try-catch block?](https://github.com/hkrishna439/java-interview-questions#20-what-is-the-purpose-of-the-try-catch-block)
 
 **Object-Oriented Programming (OOP)**
 21. [Explain abstraction with an example.](https://github.com/hkrishna439/java-interview-questions#21-explain-abstraction-with-an-example)
@@ -40,7 +40,7 @@
 35. [Can you override a private method in Java?](https://github.com/hkrishna439/java-interview-questions#35-can-you-override-a-private-method-in-java)
 36. [Explain the super keyword with an example.](https://github.com/hkrishna439/java-interview-questions#36-explain-the-super-keyword-with-an-example)
 37. [What is the difference between IS-A and HAS-A relationships?](https://github.com/hkrishna439/java-interview-questions#37-what-is-the-difference-between-is-a-and-has-a-relationships)
-38. [How do you implement a singleton class in Java?](https://github.com/hkrishna439/java-interview-questions#38-how-do-you-implement-a-singleton-class-in-java)\
+38. [How do you implement a singleton class in Java?](https://github.com/hkrishna439/java-interview-questions#38-how-do-you-implement-a-singleton-class-in-java)
 
 **Java Collections Framework**
 39. [What is the Java Collections Framework?](https://github.com/hkrishna439/java-interview-questions#39-what-is-the-java-collections-framework)
