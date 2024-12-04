@@ -4449,13 +4449,1572 @@ public class ListIteratorExample {
 ```
 ![img_37.png](img_37.png)
 
+### 46. What is the purpose of Comparable and Comparator?
+Both `Comparable` and `Comparator` are interfaces in Java used to define the order of objects. They are particularly helpful for sorting custom objects in collections like `ArrayList` or `TreeSet`.
+
+**1. Comparable Interface**\
+**Purpose:**
+* The `Comparable` interface is used to define the **natural ordering** of objects.
+* It is implemented by a class to allow its instances to be sorted using a single logic.
+
+**Methods:**
+- `int compareTo(Object o):`
+    - Compares the current object with the specified object.
+    - Returns:
+        - `0`: If the objects are equal.
+        - A negative integer: If the current object is less than the specified object.
+        - A positive integer: If the current object is greater than the specified object.
+
+**Example:**\
+Sorting a list of `Employee` objects based on their `id`:
+
+```java
+class Employee implements Comparable<Employee> {
+    private int id;
+    private String name;
+
+    public Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public int compareTo(Employee other) {
+        return this.id - other.id; // Natural ordering by id
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{id=" + id + ", name='" + name + "'}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(3, "John"));
+        employees.add(new Employee(1, "Alice"));
+        employees.add(new Employee(2, "Bob"));
+
+        Collections.sort(employees); // Uses compareTo
+        System.out.println(employees);
+    }
+}
+
+```
+**Output**
+```
+[Employee{id=1, name='Alice'}, Employee{id=2, name='Bob'}, Employee{id=3, name='John'}]
+```
+**2. Comparator Interface**
+**Purpose:**
+* The `Comparator` interface is used to define **custom ordering** of objects, allowing multiple sorting logics.
+* It is implemented as a separate class or defined as a lambda or anonymous function.
+
+**Methods:**
+- `int compare(Object o1, Object o2)`:
+    - Compares two objects for order.
+    - Returns:
+      - `0`: If the objects are equal.
+      - A negative integer: If the first object is less than the second.
+      - A positive integer: If the first object is greater than the second.
+
+**Example**:\
+Sorting `Employee` objects based on `name`:
+```java
+import java.util.*;
+
+class Employee {
+    private int id;
+    private String name;
+
+    public Employee(int id, String name) {
+        this.id = id;
+        this.name = name;
+    }
+
+    public int getId() {
+        return id;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    @Override
+    public String toString() {
+        return "Employee{id=" + id + ", name='" + name + "'}";
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<Employee> employees = new ArrayList<>();
+        employees.add(new Employee(3, "John"));
+        employees.add(new Employee(1, "Alice"));
+        employees.add(new Employee(2, "Bob"));
+
+        // Custom sorting by name
+        Collections.sort(employees, new Comparator<Employee>() {
+            @Override
+            public int compare(Employee e1, Employee e2) {
+                return e1.getName().compareTo(e2.getName());
+            }
+        });
+
+        System.out.println(employees);
+    }
+}
+
+```
+**Output**
+```
+[Employee{id=1, name='Alice'}, Employee{id=2, name='Bob'}, Employee{id=3, name='John'}]
+```
+Alternatively, you can use a **lambda**:
+```
+Collections.sort(employees, (e1, e2) -> e1.getName().compareTo(e2.getName()));
+```
+
+![img_38.png](img_38.png)
+
+**When to Use Which?**
+- **Use `Comparable` if:**
+
+    - The sorting logic is a core aspect of the object (e.g., sorting employees by their IDs).
+- **Use `Comparator` if:**
+
+    - You need multiple sorting logics (e.g., sorting employees by `name` or `salary`).
+    - The sorting logic should not modify the class.
+
+### 47. What is the difference between Vector and ArrayList?
+
+Both `Vector` and `ArrayList` are part of Java's Collection Framework and are used to store dynamic arrays. However, they have key differences in terms of synchronization, performance, and usage.
+
+![img_39.png](img_39.png)
+
+**Detailed Explanation**
+1. **Synchronization:**
+
+* **Vector**: Methods in Vector like `add()`, `remove()`, etc., are synchronized, making it thread-safe. This means multiple threads can access a `Vector` object without explicit synchronization.
+* **ArrayList**: Not synchronized, meaning it is faster but requires explicit synchronization when used in a multi-threaded environment.
+2. **Performance:**
+
+* Synchronization in `Vector` introduces a performance overhead, making `ArrayList` a better choice for single-threaded operations.
+3. **Resizing:**
+
+* **Vector** doubles its size whenever it needs to grow, which might consume more memory.
+* **ArrayList** increases its size by 50%, making it more memory-efficient.
+4. **Iterator Type:**
+
+* **Vector** supports the legacy `Enumeration` interface and also supports modern iterators like `Iterator` and `ListIterator`.
+* **ArrayList** only supports modern iterators.
+5. **Legacy vs. Modern:**
+
+* **Vector** is considered a legacy class and has largely been replaced by `ArrayList` in modern applications.
+* **ArrayList** is part of the `java.util` package and is the preferred choice for new development.
 
 
+**Example Comparison**\
+**Vector Example:**
+```java
+import java.util.*;
+
+public class VectorExample {
+    public static void main(String[] args) {
+        Vector<Integer> vector = new Vector<>();
+        vector.add(10);
+        vector.add(20);
+        vector.add(30);
+
+        System.out.println("Vector: " + vector);
+    }
+}
+
+```
+**ArrayList Example:**
+```java
+import java.util.*;
+
+public class ArrayListExample {
+    public static void main(String[] args) {
+        ArrayList<Integer> arrayList = new ArrayList<>();
+        arrayList.add(10);
+        arrayList.add(20);
+        arrayList.add(30);
+
+        System.out.println("ArrayList: " + arrayList);
+    }
+}
+
+```
+**When to Use Which?**
+- **Use `Vector`:**
+
+* In legacy code or when strict thread safety is required.
+* For multi-threaded applications without using external synchronization.
+- **Use `ArrayList`:**
+
+* In modern applications where synchronization is not a concern.
+* For better performance in single-threaded environments.
+
+For thread-safe alternatives in modern applications, consider using `CopyOnWriteArrayList` or synchronizing an `ArrayList` manually.
+
+### 48. How is LinkedHashMap different from HashMap?
+Both `HashMap` and `LinkedHashMap` are implementations of the `Map` interface in Java, but they differ in how they store and manage their entries.
+
+![img_40.png](img_40.png)
+**Detailed Explanation**
+1. **Order of Entries:**
+
+* **HashMap**: Does not guarantee any specific order of the entries.
+* **LinkedHashMap**: Maintains the order of entries. By default, it keeps insertion order, but it can also be configured to maintain access order by using the constructor with the `accessOrder` flag.
+2. **Internal Data Structure:**
+
+* **HashMap**: Uses a hash table where keys are hashed to determine their bucket for storage.
+* **LinkedHashMap**: Extends HashMap but adds a doubly linked list to maintain the order of entries.
+3. **Performance:**
+
+* **HashMap**: Performs slightly better due to the absence of ordering overhead.
+* **LinkedHashMap**: Slightly slower because it needs to maintain the linked list for ordering.
+4. **Use Cases:**
+
+* **HashMap**: Best for cases where you do not care about the order of elements and prioritize performance.
+* **LinkedHashMap**: Useful for scenarios where you need predictable iteration order or require an access-order-based cache.
+
+**Example Code**\
+**HashMap Example:**
+```java
+import java.util.HashMap;
+
+public class HashMapExample {
+    public static void main(String[] args) {
+        HashMap<Integer, String> hashMap = new HashMap<>();
+        hashMap.put(1, "One");
+        hashMap.put(2, "Two");
+        hashMap.put(3, "Three");
+
+        System.out.println("HashMap: " + hashMap); // Order not guaranteed
+    }
+}
+
+```
+**LinkedHashMap Example:**
+```java
+import java.util.LinkedHashMap;
+
+public class LinkedHashMapExample {
+    public static void main(String[] args) {
+        LinkedHashMap<Integer, String> linkedHashMap = new LinkedHashMap<>();
+        linkedHashMap.put(1, "One");
+        linkedHashMap.put(2, "Two");
+        linkedHashMap.put(3, "Three");
+
+        System.out.println("LinkedHashMap: " + linkedHashMap); // Maintains insertion order
+    }
+}
+
+```
+**Access Order Example in LinkedHashMap:**
+```java
+import java.util.LinkedHashMap;
+
+public class LinkedHashMapAccessOrder {
+    public static void main(String[] args) {
+        LinkedHashMap<Integer, String> accessOrderMap = new LinkedHashMap<>(16, 0.75f, true);
+        accessOrderMap.put(1, "One");
+        accessOrderMap.put(2, "Two");
+        accessOrderMap.put(3, "Three");
+
+        System.out.println("Before Access: " + accessOrderMap);
+        accessOrderMap.get(2); // Access key 2
+        System.out.println("After Access: " + accessOrderMap); // Key 2 moved to the end
+    }
+}
+
+```
+**Key Takeaways:**
+* Use `HashMap` for better performance when order is not important.
+* Use `LinkedHashMap` when you need predictable iteration order (insertion or access order).
+* For caches, `LinkedHashMap` is particularly useful with the access-order feature.
+
+### 49. What is ConcurrentHashMap?
+`ConcurrentHashMap` is a thread-safe implementation of the Map interface introduced in Java 1.5 as part of the `java.util.concurrent` package. It allows multiple threads to read and write to the map concurrently without requiring external synchronization, making it suitable for use in multi-threaded environments.
+
+**Key Features of ConcurrentHashMap:**
+1. **Thread-Safety:**
+
+* Multiple threads can operate on the map without corrupting its internal data structure.
+* It uses internal locks (bucket-level locking) to synchronize access to portions of the map, providing better performance than a synchronized `HashMap`.
+2. **No Blocking for Reads:**
+
+* Threads reading from the map are not blocked, even when write operations are occurring.
+3. **Fine-Grained Locking:**
+
+* The map is divided into segments (buckets), each with its own lock. Only the segment containing the key being modified is locked, allowing better concurrency compared to locking the entire map.
+4. **Null Keys and Values:**
+
+* Does not allow `null` keys or `null` values, unlike `HashMap`.
+5. **Performance:**
+
+* Designed for high concurrency, making it much faster than `Collections.synchronizedMap` for multi-threaded applications.
+
+**How Does ConcurrentHashMap Work Internally?**
+**Segmented Locks:**
+* The map is internally divided into a number of segments (default is 16 in Java 8).
+* Each segment can be independently locked, allowing multiple threads to work on different segments simultaneously.
+
+**Bucket-Level Locking:**
+* In Java 8, `ConcurrentHashMap` replaced the segment-based design with a bucket-level lock mechanism using the `synchronized` keyword and CAS (Compare-And-Swap) operations for better performance.
+
+**Key Methods in ConcurrentHashMap:**
+1. **put(K key, V value):**
+
+* Inserts a key-value pair into the map. If the key already exists, the value is updated.
+* Thread-safe with minimal blocking.
+2. **get(Object key):**
+
+* Retrieves the value associated with the given key.
+* Non-blocking and thread-safe.
+3. **computeIfAbsent(K key, Function<? super K, ? extends V> mappingFunction):**
+
+* Computes and inserts a value if the key is not already present in the map.
+4. **remove(Object key):**
+
+* Removes the entry for the specified key if it exists.
+5. **forEach(long parallelismThreshold, BiConsumer<? super K, ? super V> action):**
+
+* Parallel iteration over the entries, leveraging multi-threading.
+
+**Example Usage:**
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+    public static void main(String[] args) {
+        ConcurrentHashMap<Integer, String> map = new ConcurrentHashMap<>();
+
+        // Adding key-value pairs
+        map.put(1, "One");
+        map.put(2, "Two");
+        map.put(3, "Three");
+
+        // Retrieving a value
+        System.out.println("Value for key 1: " + map.get(1));
+
+        // Iterating over the map
+        map.forEach((key, value) -> {
+            System.out.println(key + " -> " + value);
+        });
+
+        // Updating a value
+        map.put(2, "Updated Two");
+        System.out.println("Updated Value for key 2: " + map.get(2));
+
+        // Concurrent Access Example
+        Runnable task = () -> map.putIfAbsent(4, "Four");
+        Thread t1 = new Thread(task);
+        Thread t2 = new Thread(task);
+        t1.start();
+        t2.start();
+    }
+}
+
+```
+![img_41.png](img_41.png)
+**When to Use ConcurrentHashMap?**
+* When you need a thread-safe map in a multi-threaded environment.
+* When high performance and scalability are critical.
+* In cases where frequent reads are required along with occasional writes, such as caching systems or real-time data processing.
 
 
+**Limitations of ConcurrentHashMap:**
+* Does not allow `null` keys or values.
+* Does not guarantee thread-safety for compound operations like `putIfAbsent` followed by `get`. For atomic compound actions, use methods like `computeIfAbsent`.
+
+By using `ConcurrentHashMap`, you can ensure safe and efficient operations in concurrent Java applications.
+
+### 50. Explain TreeMap with an example.
+
+`TreeMap` is a part of the Java Collections Framework and is an implementation of the `NavigableMap` interface. It is a sorted map that maintains its elements in ascending order, according to the natural ordering of its keys or a custom comparator provided at the time of creation.
+
+**Key Features of TreeMap:**
+1. **Sorted Order:**
+
+- Keys are sorted either by their natural ordering (`Comparable`) or by a specified comparator (`Comparator`).
+2. **Red-Black Tree Implementation:**
+
+- Internally, `TreeMap` uses a red-black tree, ensuring logarithmic time complexity for operations like `get`, `put`, and `remove`.
+3. **No null Keys:**
+
+- `TreeMap` does not allow `null` keys but allows multiple `null` values.
+4. **NavigableMap Methods:**
+
+- Provides methods like `higherKey`, `lowerKey`, `ceilingKey`, and `floorKey` for easy navigation among keys.
+5. **Thread Safety:**
+
+- It is not thread-safe. To use in a concurrent environment, you can wrap it with `Collections.synchronizedMap`
+
+**TreeMap Example:**\
+**Code Example: Basic Usage**
+```java
+import java.util.TreeMap;
+
+public class TreeMapExample {
+    public static void main(String[] args) {
+        // Creating a TreeMap
+        TreeMap<Integer, String> map = new TreeMap<>();
+
+        // Adding elements
+        map.put(3, "Three");
+        map.put(1, "One");
+        map.put(4, "Four");
+        map.put(2, "Two");
+
+        // Displaying the TreeMap
+        System.out.println("TreeMap: " + map);
+
+        // Accessing elements
+        System.out.println("Value for key 2: " + map.get(2));
+
+        // Removing an element
+        map.remove(3);
+        System.out.println("After removing key 3: " + map);
+
+        // Navigation methods
+        System.out.println("First Key: " + map.firstKey());
+        System.out.println("Last Key: " + map.lastKey());
+        System.out.println("Higher Key than 2: " + map.higherKey(2));
+        System.out.println("Lower Key than 4: " + map.lowerKey(4));
+    }
+}
+
+```
+**Output**
+```
+TreeMap: {1=One, 2=Two, 3=Three, 4=Four}
+Value for key 2: Two
+After removing key 3: {1=One, 2=Two, 4=Four}
+First Key: 1
+Last Key: 4
+Higher Key than 2: 4
+Lower Key than 4: 2
+
+```
+**Key Methods in TreeMap:**
+1. **put(K key, V value):**
+- Inserts a key-value pair into the map.
+2. **get(Object key):**
+- Retrieves the value associated with the specified key.
+3. **remove(Object key):**
+- Removes the mapping for the specified key.
+4. **firstKey() / lastKey():**
+- Returns the first or last key in the map.
+5. **higherKey(K key) / lowerKey(K key):**
+- Returns the smallest key greater than / largest key less than the given key.
+6. **headMap(K toKey):**
+- Returns a view of the map whose keys are strictly less than the specified key.
+7. **tailMap(K fromKey):**
+- Returns a view of the map whose keys are greater than or equal to the specified key.
+8. **subMap(K fromKey, K toKey):**
+- Returns a view of the map between the specified range of keys.
+
+**Custom Sorting with Comparator:**\
+You can provide a custom `Comparator` to sort the keys in a specific order.
+
+**Code Example: Custom Comparator**
+```java
+import java.util.Comparator;
+import java.util.TreeMap;
+
+public class CustomTreeMap {
+    public static void main(String[] args) {
+        // Custom Comparator for descending order
+        TreeMap<Integer, String> map = new TreeMap<>(Comparator.reverseOrder());
+
+        // Adding elements
+        map.put(3, "Three");
+        map.put(1, "One");
+        map.put(4, "Four");
+        map.put(2, "Two");
+
+        // Displaying the TreeMap
+        System.out.println("TreeMap with Custom Comparator: " + map);
+    }
+}
+
+```
+**Output**
+```
+TreeMap with Custom Comparator: {4=Four, 3=Three, 2=Two, 1=One}
+
+```
+![img_42.png](img_42.png)
+
+**When to Use TreeMap?**
+* When you need a sorted map.
+* When efficient navigation among keys is required.
+* For use cases like building dictionary-like structures, range queries, or any scenario requiring ordered keys.
+
+### 51. What is the difference between queue and deque?
+Both `Queue` and `Deque` are part of the Java Collections Framework and represent data structures used to store and manage elements. However, they serve different purposes and have distinct characteristics.
+
+**Queue**
+1. **Definition:**
+
+* A `Queue` is a collection that follows the **First-In-First-Out** (FIFO) principle, meaning elements are added at the end and removed from the front.
+2. **Key Features:**
+
+* **Operations**: `add()`, `offer()` (insert elements), `remove()`, `poll()` (remove and retrieve elements).
+  * Does not allow direct access to elements except at the head and tail.
+  * Common implementations: `LinkedList`, `PriorityQueue`.
+3. **Use Cases:**
+
+* Scheduling tasks (e.g., job scheduling in operating systems).
+* Storing elements to be processed in order.
+
+**Example:**
+```java
+import java.util.LinkedList;
+import java.util.Queue;
+
+public class QueueExample {
+    public static void main(String[] args) {
+        Queue<Integer> queue = new LinkedList<>();
+        queue.add(1);
+        queue.add(2);
+        queue.add(3);
+
+        System.out.println("Queue: " + queue); // Output: [1, 2, 3]
+
+        System.out.println("Removed: " + queue.poll()); // Removes 1
+        System.out.println("Queue after removal: " + queue); // [2, 3]
+    }
+}
+
+```
+**Deque (Double-Ended Queue)**
+1. **Definition:**
+
+* A `Deque` (short for Double-Ended Queue) is a generalized form of a `Queue` that allows adding and removing elements from both ends.
+2. **Key Features:**
+
+* **Operations:**
+  * From the front: `addFirst()`, `offerFirst()`, `pollFirst()`.
+  * From the rear: `addLast()`, `offerLast()`, `pollLast()`.
+* Can function as both a **Queue** (FIFO) and a **Stack** (Last-In-First-Out, LIFO).
+* Common implementations: `ArrayDeque`, `LinkedList`.
+3. **Use Cases:**
+
+* Sliding window problems.
+* Implementing stacks and queues.
+* Handling elements that need flexible addition/removal.
+
+4. **Example:**
+```java
+import java.util.Deque;
+import java.util.ArrayDeque;
+
+public class DequeExample {
+    public static void main(String[] args) {
+        Deque<Integer> deque = new ArrayDeque<>();
+        deque.addFirst(1);
+        deque.addLast(2);
+        deque.addLast(3);
+
+        System.out.println("Deque: " + deque); // Output: [1, 2, 3]
+
+        System.out.println("Removed from front: " + deque.pollFirst()); // Removes 1
+        System.out.println("Removed from rear: " + deque.pollLast()); // Removes 3
+        System.out.println("Deque after removals: " + deque); // [2]
+    }
+}
+
+```
+![img_43.png](img_43.png)
+
+**When to Use?**
+* Use **Queue** if the task strictly requires FIFO operations.
+* Use **Deque** for greater flexibility, where operations on both ends or stack-like behavior is needed.
+
+### 52. What is the PriorityQueue in Java?
+A `PriorityQueue` in Java is a part of the **Java Collections Framework** and is used to implement a data structure that maintains elements in a specific order based on their **priority** rather than their insertion order. By default, the priority is determined by the **natural ordering** of elements (e.g., for numbers, smaller values have higher priority). Alternatively, you can define custom priority using a **Comparator**.
+
+**Key Features**
+1. **Elements Ordered by Priority:**
+
+* Default order: Natural ordering (e.g., ascending for numbers).
+* Custom order: Defined by a `Comparator`.
+2. **Heap-Based Implementation:**
+
+* Internally implemented as a **min-heap** (default), meaning the smallest/largest element is always at the head of the queue.
+3. **No Null Elements:**
+
+* A `PriorityQueue` does not allow `null` values.
+4. **Non-Thread-Safe:**
+
+* Not synchronized. Use `PriorityBlockingQueue` if thread safety is required.
+5. **Insertion and Access:**
+
+* Adding elements: `offer()` or` add()`.
+* Accessing the highest-priority element: `peek()` (retrieves without removal).
+* Removing the highest-priority element: `poll()` (retrieves and removes).
+6. **Duplicates Allowed:**
+
+* It allows duplicate elements in the queue.
+
+**Constructors**
+- **Default PriorityQueue:**
+```java
+PriorityQueue<E> queue = new PriorityQueue<>();
+
+```
+- **With Initial Capacity:**
+```
+PriorityQueue<E> queue = new PriorityQueue<>(initialCapacity);
+```
+- **With Comparator:**
+```java
+PriorityQueue<E> queue = new PriorityQueue<>(comparator);
+
+```
+- **Copying from Another Collection**
+```java
+PriorityQueue<E> queue = new PriorityQueue<>(collection);
+
+```
+![img_44.png](img_44.png)
+
+**Example: Default Priority**
+```java
+import java.util.PriorityQueue;
+
+public class PriorityQueueExample {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>();
+
+        pq.add(10);
+        pq.add(5);
+        pq.add(20);
+
+        System.out.println("PriorityQueue: " + pq); // Output may not be sorted: [5, 10, 20]
+
+        System.out.println("Peek: " + pq.peek());  // Output: 5 (smallest element)
+        System.out.println("Poll: " + pq.poll()); // Output: 5 (removes the smallest element)
+
+        System.out.println("PriorityQueue after poll: " + pq); // Output: [10, 20]
+    }
+}
+
+```
+**Example: Custom Priority**\
+Using a **Comparator** to reverse the natural order:
+```java
+import java.util.PriorityQueue;
+import java.util.Comparator;
+
+public class CustomPriorityQueueExample {
+    public static void main(String[] args) {
+        PriorityQueue<Integer> pq = new PriorityQueue<>(Comparator.reverseOrder());
+
+        pq.add(10);
+        pq.add(5);
+        pq.add(20);
+
+        System.out.println("PriorityQueue: " + pq); // Output may not be sorted: [20, 10, 5]
+
+        System.out.println("Peek: " + pq.peek());  // Output: 20 (largest element)
+        System.out.println("Poll: " + pq.poll()); // Output: 20 (removes the largest element)
+
+        System.out.println("PriorityQueue after poll: " + pq); // Output: [10, 5]
+    }
+}
+
+```
+**Use Cases**
+1. **Task Scheduling:**
+
+* When tasks have priorities, and you need to execute them in a specific order.
+2. **Dijkstra's Algorithm:**
+
+* Used in graph algorithms for finding the shortest path.
+3. **Handling Events:**
+
+* Prioritize events based on importance or time.
+4. **Simulation Systems:**
+
+* Manage events in a prioritized queue for efficient processing.
+
+**Key Points to Remember**
+* The elements are **not stored in sorted order**; the priority order applies only to the head of the queue.
+* **Time Complexity:**
+  * Insertion: `O(log n)`.
+  * Deletion (poll): `O(log n)`.
+  * Peek: `O(1)`.
 
 
+### 53. Explain the Stack class with an example.
+The `Stack` class in Java is a part of the **Java Collections Framework** and extends the **Vector** class. It represents a **Last-In-First-Out (LIFO)** data structure, where the last element added to the stack is the first one to be removed.
+
+**Key Features**
+1. **LIFO Structure:**
+
+* Follows the "Last-In-First-Out" principle.
+2. **Inheritance:**
+
+* Extends the `Vector` class and inherits its properties and methods.
+3. **Legacy Class:**
+
+* Although `Stack` is part of the Java Collections Framework, it's considered a legacy class. For modern implementations, you can use `Deque`.
+4. **Methods:**
+
+* Provides specific methods for stack operations like `push`, `pop`, `peek`, `empty`, and `search`.
+
+**Constructors**
+- The `Stack` class provides a default no-argument constructor
+```java
+Stack<E> stack = new Stack<>();
+
+```
+![img_45.png](img_45.png)
+
+**Example: Basic Stack Operations**
+```java
+import java.util.Stack;
+
+public class StackExample {
+    public static void main(String[] args) {
+        // Create a stack
+        Stack<Integer> stack = new Stack<>();
+
+        // Push elements onto the stack
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+
+        System.out.println("Stack: " + stack); // Output: [10, 20, 30]
+
+        // Peek the top element
+        System.out.println("Peek: " + stack.peek()); // Output: 30
+
+        // Pop an element from the stack
+        System.out.println("Popped: " + stack.pop()); // Output: 30
+        System.out.println("Stack after pop: " + stack); // Output: [10, 20]
+
+        // Check if the stack is empty
+        System.out.println("Is stack empty? " + stack.empty()); // Output: false
+
+        // Search for an element in the stack
+        System.out.println("Position of 10: " + stack.search(10)); // Output: 2 (1-based index)
+    }
+}
+
+```
+**Advantages**
+* Easy-to-use methods for stack operations.
+* Built-in support for LIFO operations without additional coding.
+
+**Disadvantages**
+* The `Stack` class is a legacy class; newer implementations (e.g., `Deque`) are recommended for better performance and flexibility.
+
+**Modern Alternative: Using Deque as a Stack**\
+For a more modern approach, use the `Deque` interface with classes like `ArrayDeque`:
+```java
+import java.util.Deque;
+import java.util.ArrayDeque;
+
+public class DequeAsStackExample {
+    public static void main(String[] args) {
+        Deque<Integer> stack = new ArrayDeque<>();
+
+        stack.push(10);
+        stack.push(20);
+        stack.push(30);
+
+        System.out.println("Stack: " + stack); // Output: [30, 20, 10]
+        System.out.println("Peek: " + stack.peek()); // Output: 30
+        System.out.println("Popped: " + stack.pop()); // Output: 30
+        System.out.println("Stack after pop: " + stack); // Output: [20, 10]
+    }
+}
+
+```
+**Use Cases of Stack**
+1. **Expression Evaluation:**
+
+* Parsing and evaluating mathematical expressions (infix, postfix, prefix).
+2. **Backtracking:**
+
+* Used in algorithms like DFS (Depth-First Search).
+3. **Undo/Redo Operations:**
+
+* Managing states for undo/redo functionality.
+4. **Call Stack:**
+
+* Used internally in programming languages for method calls.
+5. **Bracket Matching:**
+
+* Checking balanced parentheses in expressions.
+
+### 54. How does HashSet handle duplicates?
+A HashSet in Java is part of the Java Collections Framework and is used to store unique elements. It **does not allow duplicate elements**. This uniqueness is maintained by using a **HashMap internally** and relying on the behavior of its methods, particularly `hashCode()` and `equals()`.
+
+**Mechanism to Prevent Duplicates**
+1. **HashMap Internally Used:**
+
+- A `HashSet` internally uses a `HashMap` to store its elements. Each element added to the `HashSet` is stored as a key in the `HashMap`, with a dummy value (usually a constant object).
+2. **Hashing:**
+
+- When you add an element to the HashSet, its `hashCode()` is computed to determine its bucket in the HashMap.
+3. **Checking for Equality:**
+
+* If two objects have the same hash code, the `equals()` method is used to check if they are equal.
+* If `equals()` returns `true`, the new element is considered a duplicate and not added to the set.
+
+**Flow of Adding an Element**
+1. Calculate the hash code of the element.
+2. Check the bucket corresponding to the hash code in the `HashMap`.
+3. If the bucket is empty, the element is added.
+4. If the bucket already contains one or more elements (hash collision):
+   - Compare the new element with the existing ones using the `equals()` method.
+   - If any element is found equal, the new element is not added.
+5. If no matching element is found, the new element is added to the bucket.
+
+**Example of Duplicate Handling**
+```java
+import java.util.HashSet;
+
+public class HashSetExample {
+    public static void main(String[] args) {
+        HashSet<String> set = new HashSet<>();
+
+        // Adding elements
+        set.add("Apple");
+        set.add("Banana");
+        set.add("Apple"); // Duplicate element
+
+        System.out.println(set); // Output: [Apple, Banana]
+    }
+}
+
+```
+**Custom Objects in HashSet**
+For user-defined objects, `hashCode()` and `equals()` methods must be overridden to ensure proper behavior when checking for duplicates.
+
+**Example:**
+```java
+import java.util.HashSet;
+import java.util.Objects;
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    // Override hashCode and equals
+    @Override
+    public int hashCode() {
+        return Objects.hash(name, age);
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null || getClass() != obj.getClass()) return false;
+        Person person = (Person) obj;
+        return age == person.age && name.equals(person.name);
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}
+
+public class CustomHashSetExample {
+    public static void main(String[] args) {
+        HashSet<Person> people = new HashSet<>();
+
+        people.add(new Person("Alice", 30));
+        people.add(new Person("Bob", 25));
+        people.add(new Person("Alice", 30)); // Duplicate
+
+        System.out.println(people); // Output: [Alice (30), Bob (25)]
+    }
+}
+
+```
+**Why HashSet Doesn't Allow Duplicates**\
+The combination of:
+
+1. **Hashing** to identify buckets.
+2. **equals() checks** to compare object equality ensures that no two identical objects are stored in the HashSet.
+
+**Key Points**
+* **hashCode()** ensures quick access to potential duplicates.
+* **equals()** ensures that two objects with the same hash code are indeed duplicates.
+* Proper implementation of `hashCode()` and `equals()` is crucial for user-defined objects.
+
+### 55. What are immutable collections in Java?
+**Immutable collections** are collections whose elements cannot be modified after they are created. This includes adding, removing, or updating elements. Immutable collections ensure thread safety and are often used in scenarios where data consistency is critical.
+
+In Java, immutable collections are provided as part of the `java.util` package from **Java 9 onwards** using the `java.util.Collections` utility or the new factory methods.
+
+**Advantages of Immutable Collections**
+1. **Thread Safety:** They can be safely shared between threads without synchronization.
+2. **Data Integrity:** Prevent unintended modifications to the collection, ensuring consistency.
+3. **Performance:** Avoid the overhead of locking mechanisms in multi-threaded environments.
+4. **Simpler Code:** No need to worry about concurrent modifications or unintended side effects.
+5. **Predictability:** The state of the collection remains constant after creation.
+
+**Creating Immutable Collections**
+1. **Using Java 9 Factory Methods**\
+   Java 9 introduced factory methods in collection interfaces like `List`, `Set`, and `Map`.
+
+**Examples:**
+- **Immutable List:**
+```java
+List<String> immutableList = List.of("Apple", "Banana", "Cherry");
+System.out.println(immutableList);
+// immutableList.add("Date"); // Throws UnsupportedOperationException
+
+```
+- **Immutable Set**:
+```java
+Set<String> immutableSet = Set.of("Apple", "Banana", "Cherry");
+System.out.println(immutableSet);
+
+```
+- **Immutable Map**
+```java
+Map<String, Integer> immutableMap = Map.of("Apple", 1, "Banana", 2, "Cherry", 3);
+System.out.println(immutableMap);
+
+```
+2. **Using `Collections.unmodifiableXXX()`**\
+       Before Java 9, immutable collections were created using the Collections.unmodifiableXXX() methods.
+
+**Example:**
+```java
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+public class ImmutableExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+
+        List<String> immutableList = Collections.unmodifiableList(list);
+        System.out.println(immutableList);
+
+        // immutableList.add("Cherry"); // Throws UnsupportedOperationException
+    }
+}
+
+```
+**Note: Modifying the original `list` will still affect the `immutableList` as it is a wrapper.**
+
+3. **Using Guava Library (Third-Party)**\
+   The **Guava** library provides methods to create immutable collections.
+
+**Example:**
+```java
+import com.google.common.collect.ImmutableList;
+
+public class ImmutableGuavaExample {
+    public static void main(String[] args) {
+        ImmutableList<String> immutableList = ImmutableList.of("Apple", "Banana", "Cherry");
+        System.out.println(immutableList);
+
+        // immutableList.add("Date"); // Throws UnsupportedOperationException
+    }
+}
+
+```
+**Common Characteristics of Immutable Collections**
+1. They do not allow `null` values (e.g., `Set.of()` and `Map.of()`).
+2. They throw `UnsupportedOperationException` for modification operations.
+3. They can be created directly with factory methods or by wrapping existing collections.
+
+**When to Use Immutable Collections**
+1. **Shared Data**: When multiple threads or components share a collection.
+2. **Constants**: When you want to define constant collections.
+3. **Security**: To ensure that the state of sensitive data remains unchanged.
+4. **Caching**: To cache data that should not be modified after initialization.
+![img_46.png](img_46.png)
+
+### 56. What are synchronized collections?
+Synchronized collections are collections that are designed to be thread-safe, meaning multiple threads can access and modify them without causing data inconsistency or corruption. These collections use synchronization mechanisms to ensure that only one thread can access a particular part of the collection at a time.
+
+In Java, synchronized collections are typically created using the `Collections.synchronizedXXX()` method, which wraps a given collection with synchronization logic.
+
+**Key Features of Synchronized Collections**
+* **Thread Safety:** They allow safe concurrent access by multiple threads.
+* **Locking Mechanism:** These collections use intrinsic locks to ensure that only one thread can perform an operation on the collection at a time.
+* **Performance Overhead:** Synchronization comes with performance costs due to locking mechanisms, especially in highly concurrent environments.
+
+**Creating Synchronized Collections**
+Java provides utility methods in the Collections class to create synchronized versions of common collections like `List`, `Set`, `Map`, etc.
+
+**Examples**:
+1. **Synchronized List:**
+```java
+import java.util.*;
+
+public class SynchronizedListExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+
+        List<String> synchronizedList = Collections.synchronizedList(list);
+        // Operations on synchronizedList are thread-safe
+    }
+}
+
+```
+2. **Synchronized Set:**
+```java
+import java.util.*;
+
+public class SynchronizedSetExample {
+    public static void main(String[] args) {
+        Set<String> set = new HashSet<>();
+        set.add("Apple");
+        set.add("Banana");
+
+        Set<String> synchronizedSet = Collections.synchronizedSet(set);
+        // Operations on synchronizedSet are thread-safe
+    }
+}
+
+```
+3. **Synchronized Map:**
+```java
+import java.util.*;
+
+public class SynchronizedMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("Apple", 1);
+        map.put("Banana", 2);
+
+        Map<String, Integer> synchronizedMap = Collections.synchronizedMap(map);
+        // Operations on synchronizedMap are thread-safe
+    }
+}
+
+```
+**How Synchronized Collections Work**
+* When you use Collections.synchronizedXXX() to wrap a collection, the returned collection is synchronized on the collection object itself. For example, when you add an element to a synchronized list, the list object is locked, and other threads cannot modify the list until the current thread completes the operation.
+* Even though synchronization is provided, if you need to iterate over a synchronized collection, you must manually synchronize on the collection to avoid potential ConcurrentModificationException.
+
+**Example of Iterating Over Synchronized Collections:**
+
+```java
+import java.util.*;
+
+public class SynchronizedIterationExample {
+    public static void main(String[] args) {
+        List<String> list = new ArrayList<>();
+        list.add("Apple");
+        list.add("Banana");
+
+        List<String> synchronizedList = Collections.synchronizedList(list);
+
+        // Synchronize on the list when iterating over it
+        synchronized (synchronizedList) {
+            Iterator<String> iterator = synchronizedList.iterator();
+            while (iterator.hasNext()) {
+                System.out.println(iterator.next());
+            }
+        }
+    }
+}
+
+```
+**Performance Considerations**
+* **Concurrency:** Synchronized collections may become a bottleneck in highly concurrent environments because they only allow one thread to access the collection at a time for write operations.
+* **Blocking**: Threads will block on synchronized collections when the lock is already held by another thread, which can lead to performance degradation under high contention.
+
+**Alternatives to Synchronized Collections**
+1. **Concurrent Collections:** In Java 5 and later, the `java.util.concurrent` package provides specialized thread-safe collections that perform better than synchronized collections. These collections are designed to allow high concurrency without the need for external synchronization.
+
+- **Examples:**
+    - `ConcurrentHashMap`
+    - `CopyOnWriteArrayList`
+    - `BlockingQueue`
+2. **Immutable Collections:** Another alternative is to use immutable collections (introduced in Java 9), which are inherently thread-safe as they do not allow any modification after creation.
 
 
+**When to Use Synchronized Collections**
+* **Low-concurrency scenarios:** When you don’t have a high number of threads accessing the collection.
+* **Legacy Systems:** If you are maintaining an older codebase that needs thread-safe collections but does not require high concurrency performance.
+
+**When Not to Use Synchronized Collections**
+* **High-concurrency scenarios:** Synchronized collections can lead to contention and performance bottlenecks in multi-threaded environments with many concurrent threads accessing the collection. In such cases, concurrent collections like `ConcurrentHashMap` are preferable.
+
+### 57. Explain the Collections utility class.
+The `Collections` class in Java, located in the `java.util` package, is a utility class that provides a set of static methods to operate on or return collections. It contains methods for sorting, searching, reversing, and performing other common operations on various types of collections like `List`, `Set`, and `Map`.
+
+This class cannot be instantiated because it has a private constructor, and all of its methods are static.
+
+**Key Methods of the `Collections` Class**
+Here are some of the most commonly used methods provided by the `Collections` utility class:
+
+1. **Sorting Methods:**
+- `sort(List<T> list)`: Sorts the specified list in ascending order according to the natural ordering of its elements (i.e., elements must implement `Comparable`).
+
+```java
+List<Integer> numbers = Arrays.asList(4, 2, 5, 1);
+Collections.sort(numbers);
+System.out.println(numbers); // Output: [1, 2, 4, 5]
+
+```
+- `sort(List<T> list, Comparator<? super T> c)`: Sorts the list using the provided comparator.
+
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+Collections.sort(names, (a, b) -> a.length() - b.length());  // Sort by length of names
+System.out.println(names);  // Output: [Bob, Alice, Charlie]
+
+```
+2. **Shuffling Methods:**
+- `shuffle(List<?> list)`: Randomly shuffles the elements in the specified list.
+```java
+List<String> list = Arrays.asList("A", "B", "C", "D");
+Collections.shuffle(list);
+System.out.println(list); // Output: Random order of elements
+
+```
+- `shuffle(List<?> list, Random r)`: Shuffles the list using the specified random number generator.
+```java
+Random rand = new Random();
+List<String> list = Arrays.asList("A", "B", "C", "D");
+Collections.shuffle(list, rand);
+System.out.println(list); // Output: Random order based on rand
+```
+3. **Reversing Methods:**
+- `reverse(List<?> list)`: Reverses the order of elements in the list.
+```java
+List<String> list = Arrays.asList("A", "B", "C", "D");
+Collections.reverse(list);
+System.out.println(list);  // Output: [D, C, B, A]
+
+```
+4. **Max/Min Methods:**
+- `max(Collection<? extends T> coll)`: Returns the maximum element of the collection according to the natural ordering.
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+System.out.println(Collections.max(numbers));  // Output: 5
+
+```
+- `min(Collection<? extends T> coll)`: Returns the minimum element of the collection according to the natural ordering.
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+System.out.println(Collections.min(numbers));  // Output: 1
+
+```
+- `max(Collection<? extends T> coll, Comparator<? super T> comp)`: Returns the maximum element using the specified comparator.
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+System.out.println(Collections.max(names, (a, b) -> a.length() - b.length()));  // Output: "Charlie"
+
+```
+- `min(Collection<? extends T> coll, Comparator<? super T> comp)`: Returns the minimum element using the specified comparator.
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+System.out.println(Collections.min(names, (a, b) -> a.length() - b.length()));  // Output: "Bob"
+
+```
+5. F**requency and Disjoint Methods:**
+- `frequency(Collection<?> c, Object o)`: Returns the number of occurrences of the specified element in the collection.
+
+```java
+List<String> list = Arrays.asList("A", "B", "A", "C", "A");
+System.out.println(Collections.frequency(list, "A"));  // Output: 3
+
+```
+-` disjoint(Collection<?> c1, Collection<?> c2)`: Returns true if the two collections have no elements in common.
+```java
+List<String> list1 = Arrays.asList("A", "B", "C");
+List<String> list2 = Arrays.asList("X", "Y", "Z");
+System.out.println(Collections.disjoint(list1, list2));  // Output: true
+
+```
+6. **Singleton and Empty Collections:**
+- `singleton(T o)`: Returns an immutable set containing only the specified object.
+```java
+Set<String> set = Collections.singleton("Hello");
+System.out.println(set);  // Output: [Hello]
+
+```
+- `emptyList()`: Returns an empty, immutable list.
+```java
+List<String> emptyList = Collections.emptyList();
+System.out.println(emptyList);  // Output: []
+
+```
+- `emptySet()`: Returns an empty, immutable set.
+```java
+Set<String> emptySet = Collections.emptySet();
+System.out.println(emptySet);  // Output: []
+
+```
+- `emptyMap()`: Returns an empty, immutable map.
+```java
+Map<String, String> emptyMap = Collections.emptyMap();
+System.out.println(emptyMap);  // Output: {}
+
+```
+7. **Unmodifiable Collections:**
+- `unmodifiableList(List<? extends T> list)`: Returns an unmodifiable view of the specified list.
+```java
+List<String> list = Arrays.asList("A", "B", "C");
+List<String> unmodifiableList = Collections.unmodifiableList(list);
+unmodifiableList.add("D");  // Throws UnsupportedOperationException
+
+```
+- `unmodifiableSet(Set<? extends T> set)`: Returns an unmodifiable view of the specified set.
+
+- `unmodifiableMap(Map<? extends K, ? extends V> m)`: Returns an unmodifiable view of the specified map.
+
+8. **Synchronized Collections:**
+- s`ynchronizedList(List<T> list)`: Returns a thread-safe version of the specified list.
+
+```java
+List<String> list = new ArrayList<>();
+List<String> synchronizedList = Collections.synchronizedList(list);
+
+```
+- `synchronizedSet(Set<T> s)`: Returns a thread-safe version of the specified set.
+
+- `synchronizedMap(Map<K, V> m)`: Returns a thread-safe version of the specified map.
+
+9. **Other Utility Methods:**
+- `reverseOrder()`: Returns a comparator that imposes the reverse of the natural ordering.
+
+```java
+List<Integer> list = Arrays.asList(1, 2, 3, 4, 5);
+Collections.sort(list, Collections.reverseOrder());
+System.out.println(list);  // Output: [5, 4, 3, 2, 1]
+
+```
+- `shuffle(List<?> list)`: Shuffles the elements randomly in a list.
+
+- `swap(List<?> list, int i, int j)`: Swaps the elements at the specified positions in the list.
+
+```java
+List<String> list = Arrays.asList("A", "B", "C");
+Collections.swap(list, 0, 2);
+System.out.println(list);  // Output: [C, B, A]
+
+```
+**Summary of Key Methods in `Collections` Class**
+1. **Sorting**:` sort()`, `reverseOrder()`
+2. **Shuffling**: `shuffle()`
+3. **Max/Min**: `max()`,` min()`
+4. **Frequency/Disjoint**: `frequency()`, `disjoint()`
+5. **Singleton/Empty Collections**: `singleton()`, `emptyList()`
+6. **Unmodifiable Collections**: `unmodifiableList()`, `unmodifiableSet()`, `unmodifiableMap()`
+7. **Synchronized Collections**: `synchronizedList()`, `synchronizedSet()`, `synchronizedMap()`
 
 
+### 58. What is the difference between Arrays and Collections classes?
+The **Arrays** and **Collections** classes in Java serve different purposes and are used for handling collections of data, but they operate on different types of data structures and have different features.
+
+**Arrays Class** (from `java.util.Arrays`):
+1. **Purpose**: The `Arrays` class provides utility methods for working with arrays, which are fixed-size, ordered collections of elements.
+2. **Data Structure**: It operates specifically on arrays, which are simple containers that store a fixed number of elements of the same type.
+3. **Methods**:
+   - **Sorting**: Arrays.sort()
+   - **Searching**: Arrays.binarySearch()
+   - **Copying**: Arrays.copyOf(), Arrays.copyOfRange()
+   - **Equality**: Arrays.equals()
+   - **Filling**: Arrays.fill()
+- **Converting to String**: `Arrays.toString()` or `Arrays.deepToString()` (for multidimensional arrays)
+4. **Fixed Size**: Once an array is created, its size cannot be changed.
+5. **Type**: Arrays in Java can be of any type, but they are homogeneous (all elements must be of the same type).
+6. **Performance**: Arrays generally have better performance because they are simple data structures.
+7. **Memory Allocation**: The size of an array is fixed at the time of creation, and memory is allocated contiguously.
+
+**Example:**
+```java
+int[] arr = {1, 2, 3, 4, 5};
+Arrays.sort(arr);  // Sorting the array
+System.out.println(Arrays.toString(arr));  // Output: [1, 2, 3, 4, 5]
+
+```
+**Collections Class (from `java.util.Collections`):**
+1. **Purpose**: The `Collections` class provides static utility methods for working with more complex data structures like lists, sets, and maps. These structures are part of the Java Collections Framework.
+2. **Data Structures**: It operates on objects that implement the `Collection` interface (such as `List`, `Set`, `Map`, etc.) and related interfaces.
+3. **Methods**:
+   - **Sorting**: `Collections.sort()`
+   - **Shuffling**: `Collections.shuffle()`
+   - **Reversing**: `Collections.reverse()`
+   - T**hread-Safety**: `Collections.synchronizedList()`, `synchronizedSet()`, etc.
+   - **Unmodifiable**: `Collections.unmodifiableList()`, `unmodifiableSet()`, etc.
+   - **Finding Max/Min**: `Collections.max()`, `Collections.min()`
+   - **Frequency**: `Collections.frequency()`
+4. **Flexible Size**: The size of collections (like `ArrayList` or `HashSet`) can dynamically grow or shrink, depending on the implementation.
+5. **Type**: Collections can be of any object type and can be homogeneous or heterogeneous (i.e., they can hold different types of objects).
+6. **Memory Allocation**: Collections are dynamically allocated, and their size can change at runtime.
+7. **Performance**: Collections are generally more flexible but may be less performant compared to arrays, especially for simple tasks.
+8. **Inheritance**: `List`, `Set`, and `Map` are all interfaces that collections implement, and their size, performance, and behavior can vary depending on the specific implementation (e.g., `ArrayList`, `LinkedList`, `HashSet`, etc.).
+
+**Example:**
+```java
+List<Integer> list = new ArrayList<>(Arrays.asList(5, 1, 3, 4, 2));
+Collections.sort(list);  // Sorting the list
+System.out.println(list);  // Output: [1, 2, 3, 4, 5]
+
+```
+![img_47.png](img_47.png)
+
+### 59. How do you sort a list in Java?
+
+In Java, you can sort a `List` using the `Collections.sort()` method or by using the `List.sort()` method introduced in Java 8. Here's how to do it:
+
+**1. Using** `Collections.sort()`\
+The `Collections.sort()` method sorts a list in ascending order (by natural order of the elements) or using a custom comparator.
+
+**Example: Sorting a List of Integers**
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(5, 1, 3, 4, 2);
+        Collections.sort(list);  // Sorts the list in ascending order
+        System.out.println(list);  // Output: [1, 2, 3, 4, 5]
+    }
+}
+
+```
+**Example: Sorting a List of Strings**
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> list = Arrays.asList("banana", "apple", "grape", "orange");
+        Collections.sort(list);  // Sorts the list in ascending alphabetical order
+        System.out.println(list);  // Output: [apple, banana, grape, orange]
+    }
+}
+
+```
+**2. Using `List.sort()` with a Comparator**\
+   If you want to sort a list in a custom order (e.g., descending order or by a custom property of objects), you can use the `List.sort()` method along with a `Comparator`.
+
+**Example: Sorting in Descending Order**
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(5, 1, 3, 4, 2);
+        list.sort(Comparator.reverseOrder());  // Sorts in descending order
+        System.out.println(list);  // Output: [5, 4, 3, 2, 1]
+    }
+}
+
+```
+**Example: Sorting a List of Objects by a Property (e.g., `Person` class by age)**
+```java
+import java.util.*;
+
+class Person {
+    String name;
+    int age;
+
+    Person(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + ": " + age;
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        List<Person> people = Arrays.asList(
+            new Person("John", 25),
+            new Person("Alice", 30),
+            new Person("Bob", 20)
+        );
+        
+        people.sort(Comparator.comparingInt(person -> person.age));  // Sorts by age
+        System.out.println(people);  // Output: [Bob: 20, John: 25, Alice: 30]
+    }
+}
+
+```
+**3. Using Java 8 Streams to Sort**
+   If you're using Java 8 or later, you can also sort a list using the `stream()` API.
+
+**Example: Sorting with Streams**
+```java
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(5, 1, 3, 4, 2);
+        List<Integer> sortedList = list.stream()
+                                       .sorted()
+                                       .collect(Collectors.toList());  // Sorts the list in ascending order
+        System.out.println(sortedList);  // Output: [1, 2, 3, 4, 5]
+    }
+}
+
+```
+**Example: Sorting in Descending Order using Streams**
+```java
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> list = Arrays.asList(5, 1, 3, 4, 2);
+        List<Integer> sortedList = list.stream()
+                                       .sorted(Comparator.reverseOrder())  // Sorts in descending order
+                                       .collect(Collectors.toList());
+        System.out.println(sortedList);  // Output: [5, 4, 3, 2, 1]
+    }
+}
+
+```
+### 60. Explain the forEach() method in Java.
+
+The `forEach()` method in Java is a default method in the `Iterable` interface, introduced in Java 8. It is used to iterate over a collection of elements (like `List`, `Set`, or `Map`) and perform a given action on each element. The method is a part of the **Stream API** and can also be used directly on collections (such as lists or sets).
+
+**Syntax:**
+```java
+void forEach(Consumer<? super T> action)
+
+```
+- **Parameter**: The method takes a `Consumer` functional interface as a parameter, which represents an action to be applied to each element. The `Consumer` interface has a method `accept(T t)` that performs the operation on the provided input.
+
+- **Return Type**: It does not return any value (`void`).
+
+**Basic Usage:**\
+You can use `forEach()` on any collection or stream to apply a given action (like printing, modifying, or processing each element) on each element in the collection.
+
+**Examples:**\
+**Example 1: Iterating over a List of Strings**
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<String> fruits = Arrays.asList("Apple", "Banana", "Cherry");
+
+        // Using forEach() to print each element
+        fruits.forEach(fruit -> System.out.println(fruit));
+    }
+}
+
+```
+**Output**
+```
+Apple
+Banana
+Cherry
+```
+In this example, we used a lambda expression (`fruit -> System.out.println(fruit)`) to specify the action to be performed on each element in the list (`System.out.println(fruit)`).
+
+**Example 2: Using forEach with Streams**\
+You can also use `forEach()` with Java Streams to perform actions on each element in a stream.
+```java
+import java.util.*;
+import java.util.stream.*;
+
+public class Main {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using Stream and forEach to print each element doubled
+        numbers.stream()
+               .forEach(number -> System.out.println(number * 2));
+    }
+}
+
+```
+**Output**
+```
+2
+4
+6
+8
+10
+
+```
+
+**Example 3: Using forEach on a Map**\
+When using `forEach()` on a `Map`, you have to deal with both keys and values.
+```java
+import java.util.*;
+
+public class Main {
+    public static void main(String[] args) {
+        Map<String, Integer> map = new HashMap<>();
+        map.put("Apple", 3);
+        map.put("Banana", 1);
+        map.put("Orange", 2);
+
+        // Using forEach to print key-value pairs
+        map.forEach((key, value) -> System.out.println(key + " = " + value));
+    }
+}
+
+```
+**Output**
+```
+Apple = 3
+Banana = 1
+Orange = 2
+```
+**Important Points to Note:**
+1. **Order of Iteration:** The order of iteration depends on the collection type. For example:
+
+    - For a `List`, the order is the same as the insertion order.
+    - For a `Set`, it may not be predictable because sets do not guarantee order.
+    - For a `Map`, the iteration is based on the `Map`'s entry set, which may not be in insertion order (unless using `LinkedHashMap`).
+2. **Parallel Streams:** If you use `forEach()` on a parallel stream, the order of the action may not be guaranteed. You should use `forEachOrdered()` if the order of elements is important.
+
+**Example:**
+```
+numbers.parallelStream().forEachOrdered(System.out::println);  // Maintains order
+```
+3. **Exception Handling**: `forEach()` does not throw any checked exceptions. If you need to handle exceptions inside the `forEach()` block, you will have to do it manually using a `try-catch` block.
+
+**Example:**
+```java
+fruits.forEach(fruit -> {
+    try {
+        // Perform some action that could throw an exception
+        System.out.println(fruit.toUpperCase());
+    } catch (Exception e) {
+        System.out.println("Error processing fruit: " + fruit);
+    }
+});
+
+```
