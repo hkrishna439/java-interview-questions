@@ -1,5 +1,71 @@
 # java-interview-questions
 
+**Java Basics**
+1. [What are the key features of Java?](https://github.com/hkrishna439/java-interview-questions#1-what-are-the-key-features-of-java)
+2. [What is the difference between JDK, JRE, and JVM?](https://github.com/hkrishna439/java-interview-questions#2-what-is-the-difference-between-jdk-jre-and-jvm)
+3. [Why is Java platform-independent?](https://github.com/hkrishna439/java-interview-questions#3-why-is-java-platform-independent)
+4. [What is the purpose of the main method?](https://github.com/hkrishna439/java-interview-questions#4-what-is-the-purpose-of-the-main-method)
+5. [What is the difference between static, final, and abstract?](https://github.com/hkrishna439/java-interview-questions#5-what-is-the-difference-between-static-final-and-abstract)
+6. [Explain the difference between this and super.](https://github.com/hkrishna439/java-interview-questions#6-explain-the-difference-between-this-and-super)
+7. [What are Java’s access modifiers?](https://github.com/hkrishna439/java-interview-questions#7-what-are-javas-access-modifiers)
+8. [What is the difference between instance and local variables?](https://github.com/hkrishna439/java-interview-questions#8-what-is-the-difference-between-instance-and-local-variables)
+9. [What is the purpose of the package keyword?](https://github.com/hkrishna439/java-interview-questions#9-what-is-the-purpose-of-the-package-keyword)
+10. [What are the rules for Java identifiers?](https://github.com/hkrishna439/java-interview-questions#10-what-are-the-rules-for-java-identifiers)
+11. [What is the use of the import statement?](https://github.com/hkrishna439/java-interview-questions#11-what-is-the-use-of-the-import-statement)
+12. [What is a constructor in Java?](https://github.com/hkrishna439/java-interview-questions#12-what-is-a-constructor-in-java)
+13. [Can a constructor be static or final?](https://github.com/hkrishna439/java-interview-questions#13can-a-constructor-be-static-or-final)
+14. [What is the String class in Java?](https://github.com/hkrishna439/java-interview-questions#14-what-is-the-string-class-in-java)
+15. [What is the difference between String, StringBuilder, and StringBuffer?](https://github.com/hkrishna439/java-interview-questions#15-what-is-the-difference-between-string-stringbuilder-and-stringbuffer)
+16. [What is the difference between == and .equals()?](https://github.com/hkrishna439/java-interview-questions#16-what-is-the-difference-between--and-equals)
+17. [How does Java handle null values?](https://github.com/hkrishna439/java-interview-questions#17-how-does-java-handle-null-values)
+18. [What is the use of the instanceof operator?](https://github.com/hkrishna439/java-interview-questions#18-what-is-the-use-of-the-instanceof-operator)
+19. [What is the difference between checked and unchecked exceptions?](https://github.com/hkrishna439/java-interview-questions#19-what-is-the-difference-between-checked-and-unchecked-exceptions)
+20. [What is the purpose of the try-catch block?](https://github.com/hkrishna439/java-interview-questions#20-what-is-the-purpose-of-the-try-catch-block)\
+
+**Object-Oriented Programming (OOP)**
+21. [Explain abstraction with an example.](https://github.com/hkrishna439/java-interview-questions#21-explain-abstraction-with-an-example)
+22. [Explain encapsulation with an example.](https://github.com/hkrishna439/java-interview-questions#22-explain-encapsulation-with-an-example)
+23. [Explain inheritance with an example.](https://github.com/hkrishna439/java-interview-questions#23-explain-inheritance-with-an-example)
+24. [Explain polymorphism with an example.](https://github.com/hkrishna439/java-interview-questions#24-explain-polymorphism-with-an-example)
+25. [What is the difference between an abstract class and an interface?](https://github.com/hkrishna439/java-interview-questions#25-what-is-the-difference-between-an-abstract-class-and-an-interface)
+26. [Can an abstract class have a constructor?](https://github.com/hkrishna439/java-interview-questions#26-can-an-abstract-class-have-a-constructor)
+27. [What are default methods in interfaces?](https://github.com/hkrishna439/java-interview-questions#27-what-are-default-methods-in-interfaces)
+28. [Can an interface extend another interface?](https://github.com/hkrishna439/java-interview-questions#28-can-an-interface-extend-another-interface)
+29. [What is multiple inheritance in Java?](https://github.com/hkrishna439/java-interview-questions#29-what-is-multiple-inheritance-in-java)
+30. [What is the purpose of the Object class?](https://github.com/hkrishna439/java-interview-questions#30-what-is-the-purpose-of-the-object-class)
+31. [What is the difference between hashCode() and equals()?](https://github.com/hkrishna439/java-interview-questions#31-what-is-the-difference-between-hashcode-and-equals)
+32. [Can we override static methods in Java?](https://github.com/hkrishna439/java-interview-questions#32-can-we-override-static-methods-in-java)
+33. [What is method hiding?](https://github.com/hkrishna439/java-interview-questions#33-what-is-method-hiding)
+34. [What is the difference between final, finally, and finalize()?](https://github.com/hkrishna439/java-interview-questions#34-what-is-the-difference-between-final-finally-and-finalize)
+35. [Can you override a private method in Java?](https://github.com/hkrishna439/java-interview-questions#35-can-you-override-a-private-method-in-java)
+36. [Explain the super keyword with an example.](https://github.com/hkrishna439/java-interview-questions#36-explain-the-super-keyword-with-an-example)
+37. [What is the difference between IS-A and HAS-A relationships?](https://github.com/hkrishna439/java-interview-questions#37-what-is-the-difference-between-is-a-and-has-a-relationships)
+38. [How do you implement a singleton class in Java?](https://github.com/hkrishna439/java-interview-questions#38-how-do-you-implement-a-singleton-class-in-java)\
+
+**Java Collections Framework**
+39. [What is the Java Collections Framework?](https://github.com/hkrishna439/java-interview-questions#39-what-is-the-java-collections-framework)
+40. [What is the difference between ArrayList and LinkedList?](https://github.com/hkrishna439/java-interview-questions#40-what-is-the-difference-between-arraylist-and-linkedlist)
+41. [What is the difference between HashSet and TreeSet?](https://github.com/hkrishna439/java-interview-questions#41-what-is-the-difference-between-hashset-and-treeset)
+42. [What is the difference between HashMap and Hashtable?](https://github.com/hkrishna439/java-interview-questions#42-what-is-the-difference-between-hashmap-and-hashtable)
+43. [How does a HashMap work internally?](https://github.com/hkrishna439/java-interview-questions#43how-does-a-hashmap-work-internally)
+44. [What are fail-fast and fail-safe iterators?](https://github.com/hkrishna439/java-interview-questions#44-what-are-fail-fast-and-fail-safe-iterators)
+45. [What is the difference between Iterator and ListIterator?](https://github.com/hkrishna439/java-interview-questions#45-what-is-the-difference-between-iterator-and-listiterator)
+46. [What is the purpose of Comparable and Comparator?](https://github.com/hkrishna439/java-interview-questions#46-what-is-the-purpose-of-comparable-and-comparator)
+47. [What is the difference between Vector and ArrayList?](https://github.com/hkrishna439/java-interview-questions#47-what-is-the-difference-between-vector-and-arraylist)
+48. [How is LinkedHashMap different from HashMap?](https://github.com/hkrishna439/java-interview-questions#48-how-is-linkedhashmap-different-from-hashmap)
+49. [What is ConcurrentHashMap?](https://github.com/hkrishna439/java-interview-questions#49-what-is-concurrenthashmap)
+50. [Explain TreeMap with an example.](https://github.com/hkrishna439/java-interview-questions#50-explain-treemap-with-an-example)
+51. [What is the difference between queue and deque?](https://github.com/hkrishna439/java-interview-questions#51-what-is-the-difference-between-queue-and-deque)
+52. [What is the PriorityQueue in Java?](https://github.com/hkrishna439/java-interview-questions#52-what-is-the-priorityqueue-in-java)
+53. [Explain the Stack class with an example.](https://github.com/hkrishna439/java-interview-questions#53-explain-the-stack-class-with-an-example)
+54. [How does HashSet handle duplicates?](https://github.com/hkrishna439/java-interview-questions#54-how-does-hashset-handle-duplicates)
+55. [What are immutable collections in Java?](https://github.com/hkrishna439/java-interview-questions#55-what-are-immutable-collections-in-java)
+56. [What are synchronized collections?](https://github.com/hkrishna439/java-interview-questions#56-what-are-synchronized-collections)
+57. [Explain the Collections utility class.](https://github.com/hkrishna439/java-interview-questions#57-explain-the-collections-utility-class)
+58. [What is the difference between Arrays and Collections classes?](https://github.com/hkrishna439/java-interview-questions#58-what-is-the-difference-between-arrays-and-collections-classes)
+59. [How do you sort a list in Java?](https://github.com/hkrishna439/java-interview-questions#59-how-do-you-sort-a-list-in-java)
+60. [Explain the forEach() method in Java.](https://github.com/hkrishna439/java-interview-questions#60-explain-the-foreach-method-in-java)
+
 ### 1. What are the key features of Java?
 
 Java is a widely-used, high-level programming language known for its versatility, performance, and platform independence. Below are the key features of Java:
