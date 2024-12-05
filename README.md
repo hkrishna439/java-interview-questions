@@ -6084,3 +6084,703 @@ fruits.forEach(fruit -> {
 });
 
 ```
+### 61. What is the purpose of EnumSet?
+
+`EnumSet` is a specialized `Set` implementation in Java, part of the `java.util` package, designed specifically to work with enums. It is highly optimized for performance and memory usage when dealing with enums.
+
+**Key Features of EnumSet**
+1. **Specialized for Enums**: Only works with `enum` types.
+2. **Efficient Memory Usage**: Uses bitwise operations internally, making it highly memory-efficient.
+3. **Fast Operations**: Provides faster operations compared to other `Set` implementations like `HashSet`.
+4. **Ordered**: Maintains the natural order of enum constants as defined in the enum type.
+5. **Null Unsupported**: Does not allow `null` values.
+
+**How EnumSet Works**\
+Internally, `EnumSet` represents the set using a bit vector. Each bit in the vector corresponds to a specific enum constant, making operations like addition, removal, and iteration very efficient.
+
+**How to Create an EnumSet**
+1. Using `EnumSet.allOf()` Creates a set containing all constants of the specified enum type.
+```java
+enum Day {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
+
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> allDays = EnumSet.allOf(Day.class);
+        System.out.println(allDays); // [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY]
+    }
+}
+
+```
+2. Using `EnumSet.noneOf()` Creates an empty set for a specified enum type.
+```java
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> noDays = EnumSet.noneOf(Day.class);
+        System.out.println(noDays); // []
+    }
+}
+
+```
+3. Using `EnumSet.of()` Creates a set containing specific constants.
+```java
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> weekend = EnumSet.of(Day.SATURDAY, Day.SUNDAY);
+        System.out.println(weekend); // [SATURDAY, SUNDAY]
+    }
+}
+
+```
+4. Using `EnumSet.range()` Creates a set containing a range of constants.
+```java
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> workdays = EnumSet.range(Day.MONDAY, Day.FRIDAY);
+        System.out.println(workdays); // [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY]
+    }
+}
+
+```
+5. Using `EnumSet.copyOf()` Creates a set from an existing collection.
+
+```java
+import java.util.Arrays;
+
+public class Main {
+    public static void main(String[] args) {
+        EnumSet<Day> selectedDays = EnumSet.copyOf(Arrays.asList(Day.MONDAY, Day.WEDNESDAY));
+        System.out.println(selectedDays); // [MONDAY, WEDNESDAY]
+    }
+}
+
+```
+**Common Use Cases for EnumSet**
+1. **Efficiently Representing Sets of Enums:**
+    - Storing flags or settings (e.g., weekdays, permissions).
+2. **Switching Between States:**
+   - Managing transitions between predefined states in applications.
+3. **Simplifying Conditional Logic:**
+   - Avoiding complex `if-else` chains for enums.
+4. **Working with Enum Ranges:**
+   - Handling subsets of enum constants efficiently.
+
+**Advantages of EnumSet**
+* **Performance:** Operations like add, remove, and contains are faster compared to general-purpose sets.
+* **Memory Efficiency**: Compact representation using bitfields.
+* **Ease of Use**: Provides methods tailored for enums, such as allOf, noneOf, and range.
+
+**Limitations of EnumSet**
+* Works only with `enum` types.
+* Does not allow `null` values.
+
+**Example: Using EnumSet in a Real-World Scenario**\
+Imagine you have an application to manage a work schedule:
+
+````java
+enum Day {
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY
+}
+
+public class ScheduleManager {
+    public static void main(String[] args) {
+        // Define workdays
+        EnumSet<Day> workdays = EnumSet.range(Day.MONDAY, Day.FRIDAY);
+        System.out.println("Workdays: " + workdays);
+
+        // Define weekend
+        EnumSet<Day> weekend = EnumSet.complementOf(workdays);
+        System.out.println("Weekend: " + weekend);
+
+        // Check if a day is a workday
+        boolean isWorkday = workdays.contains(Day.TUESDAY);
+        System.out.println("Is Tuesday a workday? " + isWorkday);
+    }
+}
+
+````
+**Output**
+```
+Workdays: [MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY]
+Weekend: [SATURDAY, SUNDAY]
+Is Tuesday a workday? true
+```
+`EnumSet` provides a powerful and efficient way to manage collections of enum constants in Java.
+
+### 62. What is the difference between shallow and deep copying in collections?
+When dealing with collections in Java, copying refers to creating a new collection that replicates the elements of an existing one. The difference between shallow and deep copying lies in how the elements (especially mutable objects) are duplicated.
+
+**1. Shallow Copy**\
+   A **shallow copy** creates a new collection but does not clone or copy the individual objects contained within the collection. Instead, it copies references to those objects. Changes to the objects in the original collection will also reflect in the copied collection because both refer to the same objects in memory.
+
+**Key Points:**
+* **Collection Copy**: Only the collection structure (e.g., the list or map) is duplicated.
+* **Object References:** Both collections share the same references to the objects.
+* **Mutable Elements:** Changes to objects in one collection affect the other.
+* **Performance:** Faster, as objects are not duplicated.
+
+**Example**:
+```java
+import java.util.ArrayList;
+
+public class ShallowCopyExample {
+    public static void main(String[] args) {
+        ArrayList<StringBuilder> originalList = new ArrayList<>();
+        originalList.add(new StringBuilder("Hello"));
+        originalList.add(new StringBuilder("World"));
+
+        // Shallow copy
+        ArrayList<StringBuilder> shallowCopy = new ArrayList<>(originalList);
+
+        // Modify the original element
+        originalList.get(0).append(" Everyone");
+
+        System.out.println("Original List: " + originalList); // [Hello Everyone, World]
+        System.out.println("Shallow Copy: " + shallowCopy);   // [Hello Everyone, World]
+    }
+}
+
+```
+**Output**
+```
+Original List: [Hello Everyone, World]
+Shallow Copy: [Hello Everyone, World]
+```
+**2. Deep Copy**\
+A **deep copy** creates a new collection and recursively clones each object contained within the original collection. Changes to objects in the original collection do not affect the objects in the copied collection because they are entirely separate instances.
+
+**Key Points:**
+* **Collection Copy**: The collection structure is duplicated.
+* **Object Duplication**: Each object in the original collection is cloned into a new instance.
+* **Independent Changes:** Modifying objects in one collection does not affect the other.
+* **Performance:** Slower, as each object needs to be duplicated.
+
+**Example**:
+```java
+import java.util.ArrayList;
+
+public class DeepCopyExample {
+    public static void main(String[] args) {
+        ArrayList<StringBuilder> originalList = new ArrayList<>();
+        originalList.add(new StringBuilder("Hello"));
+        originalList.add(new StringBuilder("World"));
+
+        // Deep copy
+        ArrayList<StringBuilder> deepCopy = new ArrayList<>();
+        for (StringBuilder sb : originalList) {
+            deepCopy.add(new StringBuilder(sb)); // Clone each element
+        }
+
+        // Modify the original element
+        originalList.get(0).append(" Everyone");
+
+        System.out.println("Original List: " + originalList); // [Hello Everyone, World]
+        System.out.println("Deep Copy: " + deepCopy);         // [Hello, World]
+    }
+}
+
+```
+**Output**
+```
+Original List: [Hello Everyone, World]
+Deep Copy: [Hello, World]
+```
+![img_48.png](img_48.png)
+
+**When to Use Which?**
+- Use **shallow copy** when:
+
+    - The objects in the collection are immutable.
+    - You want a quick duplicate of the collection for read-only operations.
+
+- Use **deep copy** when:
+
+    - The objects in the collection are mutable and must remain independent.
+    - Changes to the objects in one collection should not affect the other.
+
+Understanding this distinction ensures you choose the right copying method based on your application's requirements.
+
+### 63. What is a thread in Java?
+A **thread** in Java is a lightweight process and the smallest unit of execution within a program. It enables multitasking by allowing multiple operations to run concurrently within a single program. Threads are a fundamental part of Java's concurrency framework.
+
+Java's `java.lang.Thread` class and `java.lang.Runnable` interface are used to create and manage threads.
+
+**Key Features of Threads**
+1. **Independent Execution**: Each thread runs independently of others.
+2. **Shared Memory**: Threads within the same process share memory space and resources.
+3. **Lifecycle**: Threads go through a well-defined lifecycle (New, Runnable, Running, Blocked/Waiting, Terminated).
+4. **Concurrent Execution**: Supports simultaneous execution of multiple tasks.
+
+**Why Use Threads?**
+* To perform **time-consuming tasks** like I/O operations, computation, or database queries without freezing the application.
+* To leverage **multi-core processors** by running multiple tasks in parallel.
+* To enhance **application responsiveness** (e.g., in GUI applications).
+* To utilize **background processing** (e.g., running a scheduled task while serving user requests).
+
+**Creating a Thread in Java**
+Java provides two main ways to create a thread:
+
+**1. Extending the** Thread **Class**\
+   You can create a new thread by extending the `Thread` class and overriding its `run()` method.
+
+**Steps:**
+
+1. Create a class that extends the Thread class.
+2. Override the `run()` method with the task to execute.
+3. Create an instance of the class and call the `start()` method
+
+**Example**:
+```java
+class MyThread extends Thread {
+    @Override
+    public void run() {
+        System.out.println("Thread is running: " + Thread.currentThread().getName());
+    }
+}
+
+public class ThreadExample {
+    public static void main(String[] args) {
+        MyThread thread1 = new MyThread();
+        thread1.start(); // Starts the thread and invokes its run() method
+    }
+}
+
+```
+**2. Implementing the Runnable Interface**\
+   You can implement the `Runnable` interface and pass its instance to a `Thread` object.
+
+**Steps:**
+
+1. Create a class that implements the `Runnable` interface.
+2. Implement the `run()` method with the task to execute.
+3. Pass an instance of the class to the `Thread` constructor and call `start()`.
+
+**Example**:
+```java
+class MyRunnable implements Runnable {
+    @Override
+    public void run() {
+        System.out.println("Thread is running: " + Thread.currentThread().getName());
+    }
+}
+
+public class RunnableExample {
+    public static void main(String[] args) {
+        Thread thread = new Thread(new MyRunnable());
+        thread.start(); // Starts the thread and invokes the run() method
+    }
+}
+
+```
+![img_50.png](img_50.png)
+
+**Thread Lifecycle**
+1. **New**: A thread is created using the new keyword but has not started yet.(When a thread object is created but start() has not been called)
+2. **Runnable**: The thread is ready to run but waiting for CPU time(After start() is called, the thread is ready to run)
+3. **Running**: The thread is executing its task.(When the thread scheduler selects the thread for execution.)
+4. **Blocked/Waiting**: The thread is waiting for a resource or condition.
+5. **Terminated**: The thread has finished executing or is stopped.
+
+![img_49.png](img_49.png)
+
+**Example: Multithreading**
+```java
+class Task1 extends Thread {
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Task1 - Count: " + i);
+        }
+    }
+}
+
+class Task2 implements Runnable {
+    @Override
+    public void run() {
+        for (int i = 0; i < 5; i++) {
+            System.out.println("Task2 - Count: " + i);
+        }
+    }
+}
+
+public class MultiThreadExample {
+    public static void main(String[] args) {
+        Task1 t1 = new Task1();
+        Thread t2 = new Thread(new Task2());
+        
+        t1.start(); // Start Task1
+        t2.start(); // Start Task2
+    }
+}
+
+```
+**Output (Order may vary):**
+```
+Task1 - Count: 0
+Task2 - Count: 0
+Task1 - Count: 1
+Task2 - Count: 1
+...
+```
+**Key Considerations**
+* **Thread Safety**: Ensure shared resources are synchronized to prevent data inconsistency.
+* **Performance**: Too many threads can lead to overhead and inefficiency.
+* **Thread Pooling**: Use thread pools (via `ExecutorService`) for better resource management.
+
+**Best Practices**
+* Prefer **implementing** `Runnable` over extending `Thread` if your class needs to extend another class.
+* Always use the `start()` method to start threads instead of calling run() directly.
+* For better resource management, use thread pools (via `ExecutorService`) instead of manually creating threads for large-scale applications.
+
+Threads provide a powerful way to achieve concurrency in Java, enabling efficient multitasking and responsiveness in applications.
+
+### 64. Explain the life cycle of a thread.
+In Java, a thread goes through several stages during its life cycle. These stages define the states of a thread as it is created, started, executed, and terminated. Below is an explanation of the **thread life cycle** with its five main states.
+
+**Thread Life Cycle States**
+1. **New (Created)**
+
+* A thread is in this state when it is created but not yet started.
+* This is done using the `Thread` class constructor.
+* At this stage, the thread object exists but has not been scheduled for execution.
+
+**Code Example**:
+```java
+Thread thread = new Thread(() -> {
+    System.out.println("Thread is running...");
+});
+```
+2. **Runnable (Ready to Run)**
+
+* After calling the `start()` method, the thread moves to the **runnable** state.
+* The thread is now ready to run and is waiting for the CPU to schedule it.
+* The thread may not start executing immediately; it depends on the thread scheduler.
+
+**Code Example**:
+```java
+thread.start(); // Thread moves to the Runnable state
+```
+3. **Running (Executing)**
+* 
+* When the thread scheduler picks the thread, it moves to the **running** state.
+* In this state, the `run()` method is executed.
+* A thread remains in this state until:
+  - It completes its task.
+  - It is preempted by another thread.
+  - It is sent to a waiting, sleeping, or blocked state.
+  
+**Key Note**: Only one thread can be in the running state at any given time per CPU core.
+
+4. **Blocked/Waiting/Timed Waiting (Not Runnable)**
+
+* A thread enters one of these states when it is waiting for resources or signals to proceed:
+  * **Blocked**: Waiting for a resource, like I/O or a lock, to become available.
+  * **Waiting**: Waiting indefinitely for another thread's signal (e.g., using` wait()`).
+  * **Timed Waiting**: Waiting for a signal but with a time limit (e.g., `sleep()` or `join()`).
+
+**Examples**:
+```java
+// Timed Waiting: Sleeping for 2 seconds
+Thread.sleep(2000);
+
+// Waiting: Waiting indefinitely
+synchronized (lock) {
+    lock.wait();
+}
+
+```
+5. **Terminated (Dead)**
+
+* A thread enters the **terminated** state when its `run()` method completes or the thread is stopped explicitly.
+* Once terminated, the thread cannot be restarted.
+
+**Code Example**:
+```java
+public void run() {
+    System.out.println("Thread has completed execution.");
+}
+
+```
+**Diagram of Thread Life Cycle**
+```
+[New] --> [Runnable] --> [Running] --> [Terminated]
+            ↑               ↓
+         [Waiting/Blocked/Timed Waiting]
+```
+**Thread Life Cycle Example**
+```java
+public class ThreadLifeCycleDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Thread thread = new Thread(() -> {
+            try {
+                System.out.println("Thread is running...");
+                Thread.sleep(2000); // Timed Waiting
+                System.out.println("Thread has completed.");
+            } catch (InterruptedException e) {
+                System.out.println("Thread was interrupted.");
+            }
+        });
+
+        System.out.println("Thread State: " + thread.getState()); // NEW
+        thread.start();
+        System.out.println("Thread State after start(): " + thread.getState()); // RUNNABLE
+
+        Thread.sleep(500); // Allow the thread to enter RUNNING state
+        System.out.println("Thread State while running: " + thread.getState()); // TIMED_WAITING
+
+        thread.join(); // Wait for thread to finish
+        System.out.println("Thread State after completion: " + thread.getState()); // TERMINATED
+    }
+}
+
+```
+**Thread Scheduler**
+* The **thread scheduler** is part of the JVM and is responsible for managing thread states.
+* It uses an underlying scheduling algorithm (like round-robin or priority-based scheduling) to decide which thread to run.
+
+### 65. What is the purpose of the synchronized keyword?
+The `synchronized` keyword in Java is used to control access to a method or a block of code by multiple threads. It ensures that only one thread can execute a particular section of code at any given time, preventing race conditions and ensuring thread safety.
+
+Purpose of the synchronized keyword:
+1. **Thread Safety:**
+When multiple threads access shared resources concurrently, it may lead to inconsistent data or unexpected behavior due to race conditions. The `synchronized` keyword helps in synchronizing access to critical sections of the code to ensure only one thread can access the resource at a time.
+
+2. **Mutual Exclusion:**
+The `synchronized` keyword ensures **mutual exclusion** (mutex), meaning that if one thread is executing a synchronized method or block, other threads trying to access the same synchronized method/block are blocked until the first thread completes execution.
+
+3. **Atomicity:**
+It guarantees that a method or block of code executes completely without interruption by other threads. This is important for ensuring atomicity of operations on shared resources.
+
+4. **Consistency:**
+It helps in maintaining consistency of shared data when multiple threads perform operations on the data, as only one thread can execute the synchronized code at any point in time.
+
+**How It Works:**
+- **Synchronized Methods:**
+The `synchronized` keyword can be applied to an entire method. When a thread enters a synchronized method, it acquires a lock on the object (for instance methods) or class (for static methods) and prevents other threads from accessing any synchronized methods of the same object or class.
+
+**Example**:
+```java
+public synchronized void incrementCounter() {
+    counter++;
+}
+
+```
+- **Synchronized Blocks:**
+You can also use `synchronized` with a block of code instead of a whole method. This allows for more fine-grained control over synchronization by specifying the block of code that should be synchronized.
+
+**Example**:
+```java
+public void increment() {
+    synchronized(this) {
+        counter++;
+    }
+}
+
+```
+**Key Points to Note:**
+1. **Locking Mechanism:**
+
+* For instance methods, the lock is acquired on the object (`this`) that the method belongs to.
+* For static methods, the lock is acquired on the `Class` object of the class (`ClassName.class`).
+2. **Deadlock:**
+- Using `synchronized` improperly can lead to **deadlock** if two or more threads acquire locks in an inconsistent order. It is important to avoid circular dependencies between locks to prevent deadlocks.
+
+3. **Performance Considerations:**
+- Synchronization introduces some overhead due to the need to acquire and release locks, so excessive synchronization might affect performance. Proper synchronization is important for balancing thread safety and performance.
+
+**Example**
+```java
+class Counter {
+    private int count = 0;
+
+    // Synchronized method to ensure thread safety
+    public synchronized void increment() {
+        count++;
+    }
+
+    public synchronized void decrement() {
+        count--;
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+```
+In the example above, both `increment()` and `decrement()` are synchronized methods. This means that only one thread can modify the `count` variable at a time, preventing data inconsistency in multi-threaded environments.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
