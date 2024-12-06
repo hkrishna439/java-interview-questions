@@ -63,6 +63,41 @@
 58. [What is the difference between Arrays and Collections classes?](https://github.com/hkrishna439/java-interview-questions#58-what-is-the-difference-between-arrays-and-collections-classes)
 59. [How do you sort a list in Java?](https://github.com/hkrishna439/java-interview-questions#59-how-do-you-sort-a-list-in-java)
 60. [Explain the forEach() method in Java.](https://github.com/hkrishna439/java-interview-questions#60-explain-the-foreach-method-in-java)
+61. [What is the purpose of EnumSet?](https://github.com/hkrishna439/java-interview-questions#61-what-is-the-purpose-of-enumset)
+62. [What is the difference between shallow and deep copying in collections?](https://github.com/hkrishna439/java-interview-questions#62-what-is-the-difference-between-shallow-and-deep-copying-in-collections)
+63. [What is a thread in Java?](https://github.com/hkrishna439/java-interview-questions#63-what-is-a-thread-in-java)
+64. [Explain the life cycle of a thread.](https://github.com/hkrishna439/java-interview-questions#64-explain-the-life-cycle-of-a-thread)
+65. [What is the purpose of the synchronized keyword?](https://github.com/hkrishna439/java-interview-questions#65-what-is-the-purpose-of-the-synchronized-keyword)
+66. [What are wait(), notify(), and notifyAll()?](https://github.com/hkrishna439/java-interview-questions#66-what-are-wait-notify-and-notifyall)
+67. [What is a deadlock? How can you prevent deadlocks?](https://github.com/hkrishna439/java-interview-questions#67-what-is-a-deadlock-how-can-you-prevent-deadlocks)
+68. [What is a thread pool?](https://github.com/hkrishna439/java-interview-questions#68-what-is-a-thread-pool)
+69. [What is the difference between Callable and Runnable?](https://github.com/hkrishna439/java-interview-questions#69-what-is-the-difference-between-callable-and-runnable)
+70. [What is the ExecutorService?](https://github.com/hkrishna439/java-interview-questions#70-what-is-the-executorservice)
+71. [What is the difference between ReentrantLock and synchronized?](https://github.com/hkrishna439/java-interview-questions#71-what-is-the-difference-between-reentrantlock-and-synchronized)
+72. [What are volatile and atomic variables?](https://github.com/hkrishna439/java-interview-questions#72-what-are-volatile-and-atomic-variables)
+73. [What is the ForkJoinPool?](https://github.com/hkrishna439/java-interview-questions#73-what-is-the-forkjoinpool)
+74. [What is a semaphore in Java?](https://github.com/hkrishna439/java-interview-questions#74-what-is-a-semaphore-in-java)
+75. [What is the difference between ThreadLocal and a static variable?](https://github.com/hkrishna439/java-interview-questions#75-what-is-the-difference-between-threadlocal-and-a-static-variable)
+76. [Explain the CountDownLatch.](https://github.com/hkrishna439/java-interview-questions#76-explain-the-countdownlatch)
+77. [What is the CyclicBarrier?](https://github.com/hkrishna439/java-interview-questions#77-what-is-the-cyclicbarrier)
+78. [What is the Phaser class in Java?](https://github.com/hkrishna439/java-interview-questions#78-what-is-the-phaser-class-in-java)
+79. [What is the Future interface?](https://github.com/hkrishna439/java-interview-questions#79-what-is-the-future-interface)
+80. [Explain CompletableFuture in Java.](https://github.com/hkrishna439/java-interview-questions#80-explain-completablefuture-in-java)
+81. [What is the ConcurrentHashMap?](https://github.com/hkrishna439/java-interview-questions#81-what-is-the-concurrenthashmap)
+82. [Explain the concept of thread priority.](https://github.com/hkrishna439/java-interview-questions#82-explain-the-concept-of-thread-priority)
+83. [What is the difference between sleep() and wait()?](https://github.com/hkrishna439/java-interview-questions#83-what-is-the-difference-between-sleep-and-wait)
+84. [What is the difference between join() and yield()?](https://github.com/hkrishna439/java-interview-questions#83-what-is-the-difference-between-join-and-yield)
+85. [What is the difference between start() and run()?](https://github.com/hkrishna439/java-interview-questions#84-what-is-the-difference-between-start-and-run)
+86. [What is the purpose of the ScheduledExecutorService?](https://github.com/hkrishna439/java-interview-questions#85-what-is-the-purpose-of-the-scheduledexecutorservice)
+87. [What is the difference between parallelism and concurrency?](https://github.com/hkrishna439/java-interview-questions#86-what-is-the-difference-between-parallelism-and-concurrency)
+88. [Explain thread synchronization with an example.](https://github.com/hkrishna439/java-interview-questions#87-explain-thread-synchronization-with-an-example)
+89. [What is functional programming in Java?](https://github.com/hkrishna439/java-interview-questions#88-what-is-functional-programming-in-java)
+90. [What are lambda expressions in Java?](https://github.com/hkrishna439/java-interview-questions#89-what-are-lambda-expressions-in-java)
+91. [What are method references in Java?](https://github.com/hkrishna439/java-interview-questions#90-what-are-method-references-in-java)
+92. [What is the difference between map() and flatMap() in streams?](https://github.com/hkrishna439/java-interview-questions#91-what-is-the-difference-between-map-and-flatmap-in-streams)
+93. [How do you filter elements in a stream?](https://github.com/hkrishna439/java-interview-questions#92-how-do-you-filter-elements-in-a-stream)
+94. [What is the purpose of reduce() in streams?](https://github.com/hkrishna439/java-interview-questions#93-what-is-the-purpose-of-reduce-in-streams)
+
 
 ### 1. What are the key features of Java?
 
@@ -8461,7 +8496,7 @@ Thread resumed!
 1. Use `sleep()` for time-based delays or when no synchronization is required.
 2. Use w`ait()` for inter-thread communication and synchronization when threads need to wait for certain conditions.
 
-### 83. What is the difference between join() and yield()?
+### 84. What is the difference between join() and yield()?
 
 Both `join()` and `yield()` are related to thread management, but they serve entirely different purposes and are used in distinct scenarios. Here's a detailed comparison:
 
@@ -8552,7 +8587,7 @@ Thread 2 - 2
 * Use `join()` when you need to enforce an order of execution between threads (e.g., thread dependency scenarios).
 * Use `yield()` to improve CPU time-sharing and let other threads of the same priority execute, though its behavior is platform-dependent and not guaranteed.
 
-### 84. What is the difference between start() and run()?
+### 85. What is the difference between start() and run()?
 In Java, `start()` and `run()` are both methods of the `Thread` class, and while they seem similar, they serve very different purposes. Below is a detailed comparison:
 
 ![img_67.png](img_67.png)
@@ -8629,7 +8664,7 @@ main is running.
 * **Always use** `start()` to achieve multithreading.
 * **Do not directly call** `run()` unless you explicitly want the thread logic to run on the current thread (rare scenario).
 
-### 85. What is the purpose of the ScheduledExecutorService?
+### 86. What is the purpose of the ScheduledExecutorService?
 
 The `ScheduledExecutorService` is a specialized interface in the `java.util.concurrent` package used for scheduling tasks to execute after a delay or periodically. It extends the `ExecutorService` interface and provides methods specifically designed for delayed and periodic task execution.
 
@@ -8742,7 +8777,7 @@ public class FixedDelayExample {
 3. Use appropriate exception handling in tasks to avoid disrupting the thread pool.
 4. Set an adequate thread pool size based on your application's requirements.
 
-### 86. What is the difference between parallelism and concurrency?
+### 87. What is the difference between parallelism and concurrency?
 ![img_70.png](img_70.png)
 
 **Concurrency in Java**
@@ -8804,7 +8839,7 @@ In modern systems, concurrency and parallelism often coexist:
 
 For example, a web server may concurrently handle multiple client requests (I/O-bound) and parallelize some of their computational work on different CPU cores.
 
-### 87. Explain thread synchronization with an example.
+### 88. Explain thread synchronization with an example.
 
 Thread synchronization is the process of controlling access to shared resources in a multithreaded environment to prevent **race conditions** and ensure **data consistency**.
 
@@ -8943,7 +8978,7 @@ class Counter {
 
 By using thread synchronization effectively, you can ensure safe and consistent access to shared resources in a multithreaded application.
 
-### 88. What is functional programming in Java?
+### 89. What is functional programming in Java?
 Functional programming is a programming paradigm that focuses on **using functions** as the primary building blocks for program logic. It emphasizes **immutability**, **statelessness**, and **declarative** **programming** over traditional imperative programming.
 
 In Java, functional programming is supported through features introduced in **Java 8** and later, such as **lambda expressions**, streams, and **functional interfaces**.
@@ -9090,7 +9125,7 @@ Consumer<String> print = System.out::println;
 Supplier<Double> random = Math::random;
 
 ```
-### 89. What are lambda expressions in Java?
+### 90. What are lambda expressions in Java?
 A **lambda expression** is a short block of code that takes in parameters and returns a value. Lambda expressions allow you to treat functionality as a method argument, or to create a **function** that can be passed around.
 
 Lambda expressions in Java were introduced in **Java 8** as a way to provide clear and concise syntax for writing anonymous methods (implementing interfaces with a single method, also known as **functional interfaces**).
@@ -9188,7 +9223,7 @@ names.stream()
 ```
 In the above example, we use a lambda expression to filter the names that start with "J" and then print them.
 
-### 90. What are method references in Java?
+### 91. What are method references in Java?
 A **method reference** is a shorthand notation of a lambda expression to call a method. It allows you to refer to a method directly by its name, and it can be used to replace the lambda expression where the lambda expression is simply calling a method. Method references improve code readability and reduce verbosity.
 
 Method references are used primarily to call an existing method with a specific signature, and they can be applied in places where functional interfaces are expected (e.g., `Runnable`, `Consumer`, `Function`, etc.).
@@ -9326,7 +9361,7 @@ Here, `Person::new` is a reference to the constructor of the `Person` class. It 
 2. **Improved Maintainability:** By using method references, the code is easier to maintain, as the actual method can be reused wherever necessary.
 3. **Functional Programming:** Method references promote functional programming by making it easy to pass methods as arguments or return methods from other methods.
 
-### 91. What is the difference between map() and flatMap() in streams?
+### 92. What is the difference between map() and flatMap() in streams?
 In Java Streams, both` map()` and `flatMap()` are operations used to transform elements. However, they differ in the way they handle transformations, especially when the transformation results in nested structures.
 
 1. `map()`\
@@ -9431,7 +9466,7 @@ System.out.println(words);  // Output: [Java, Streams, FlatMap, Example]
 ```
 With `flatMap()`, the nested structure is flattened, and we get a single list of words.
 
-### 92. How do you filter elements in a stream?
+### 93. How do you filter elements in a stream?
 In Java, you can filter elements in a stream using the `filter(`) method. The `filter()` method is an intermediate operation that takes a **predicate** (a function that returns a boolean value) to test each element in the stream. It returns a new stream that contains only the elements that satisfy the predicate condition.
 
 Syntax of `filter()`
@@ -9523,7 +9558,7 @@ In this example, we chain multiple stream operations:
 `map()`: Converts the words to uppercase.
 `sorted()`: Sorts the words alphabetically.
 
-### 93. What is the purpose of reduce() in streams?
+### 94. What is the purpose of reduce() in streams?
 
 The `reduce()` method in Java Streams is used to **combine or aggregate** the elements of a stream into a single result. It is a **terminal operation** that processes elements of a stream in a sequential or parallel manner, performing a **reduction** of the stream's elements based on an associative accumulation function.
 
@@ -9673,7 +9708,7 @@ public class EmptyStreamExample {
 ```
 In this case, if the stream is empty, `reduce()` returns an empty `Optional`, and `orElse(0)` is used to provide a default value.
 
-### 94. What is the difference between forEach() and map()?
+### 95. What is the difference between forEach() and map()?
 
 
 
