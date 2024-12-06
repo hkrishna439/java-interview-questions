@@ -1,6 +1,8 @@
 # java-interview-questions
 
 **Java Basics**
+**Object-Oriented Programming (OOP)**
+**Java Collections Framework**
 1. [What are the key features of Java?](https://github.com/hkrishna439/java-interview-questions#1-what-are-the-key-features-of-java)
 2. [What is the difference between JDK, JRE, and JVM?](https://github.com/hkrishna439/java-interview-questions#2-what-is-the-difference-between-jdk-jre-and-jvm)
 3. [Why is Java platform-independent?](https://github.com/hkrishna439/java-interview-questions#3-why-is-java-platform-independent)
@@ -21,8 +23,6 @@
 18. [What is the use of the instanceof operator?](https://github.com/hkrishna439/java-interview-questions#18-what-is-the-use-of-the-instanceof-operator)
 19. [What is the difference between checked and unchecked exceptions?](https://github.com/hkrishna439/java-interview-questions#19-what-is-the-difference-between-checked-and-unchecked-exceptions)
 20. [What is the purpose of the try-catch block?](https://github.com/hkrishna439/java-interview-questions#20-what-is-the-purpose-of-the-try-catch-block)
-
-**Object-Oriented Programming (OOP)**
 21. [Explain abstraction with an example.](https://github.com/hkrishna439/java-interview-questions#21-explain-abstraction-with-an-example)
 22. [Explain encapsulation with an example.](https://github.com/hkrishna439/java-interview-questions#22-explain-encapsulation-with-an-example)
 23. [Explain inheritance with an example.](https://github.com/hkrishna439/java-interview-questions#23-explain-inheritance-with-an-example)
@@ -41,8 +41,6 @@
 36. [Explain the super keyword with an example.](https://github.com/hkrishna439/java-interview-questions#36-explain-the-super-keyword-with-an-example)
 37. [What is the difference between IS-A and HAS-A relationships?](https://github.com/hkrishna439/java-interview-questions#37-what-is-the-difference-between-is-a-and-has-a-relationships)
 38. [How do you implement a singleton class in Java?](https://github.com/hkrishna439/java-interview-questions#38-how-do-you-implement-a-singleton-class-in-java)
-
-**Java Collections Framework**
 39. [What is the Java Collections Framework?](https://github.com/hkrishna439/java-interview-questions#39-what-is-the-java-collections-framework)
 40. [What is the difference between ArrayList and LinkedList?](https://github.com/hkrishna439/java-interview-questions#40-what-is-the-difference-between-arraylist-and-linkedlist)
 41. [What is the difference between HashSet and TreeSet?](https://github.com/hkrishna439/java-interview-questions#41-what-is-the-difference-between-hashset-and-treeset)
@@ -6611,158 +6609,3071 @@ class Counter {
 ```
 In the example above, both `increment()` and `decrement()` are synchronized methods. This means that only one thread can modify the `count` variable at a time, preventing data inconsistency in multi-threaded environments.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+### 66. What are wait(), notify(), and notifyAll()?
+In Java, `wait()`, `notify()`, and `notifyAll()` are methods that are used for inter-thread communication. These methods are defined in the `Object` class, which means they can be used by any object in Java. They allow threads to coordinate and synchronize their execution, typically when multiple threads are working with shared resources.
+
+In Java, wait(), notify(), and notifyAll() are methods that are used for inter-thread communication. These methods are defined in the Object class, which means they can be used by any object in Java. They allow threads to coordinate and synchronize their execution, typically when multiple threads are working with shared resources.
+
+**1. `wait()` Method:**\
+   The `wait()` method is used to pause the current thread's execution until another thread sends a notification (using `notify()` or `notifyAll()`). It must be called from within a synchronized block or method, as it releases the lock on the object and allows other threads to access it while it is waiting.
+
+* **Usage**: A thread that calls `wait()` will stop execution and enter the "waiting" state. It will remain in this state until it is notified by another thread, either through `notify()` or `notifyAll()`.
+
+* **Syntax**:
+   The wait() method is used to pause the current thread's execution until another thread sends a notification (using notify() or notifyAll()). It must be called from within a synchronized block or method, as it releases the lock on the object and allows other threads to access it while it is waiting.
+```java
+object.wait();  // Waits indefinitely
+object.wait(long timeout);  // Waits for a specific time
+
+```
+
+- **Important Points:**
+
+    - `wait()` releases the lock and causes the thread to enter the waiting state.
+    - It can throw an `InterruptedException` if the thread is interrupted while waiting.
+
+**Example**:
+```java
+synchronized (obj) {
+    while (conditionNotMet) {
+        obj.wait();  // Thread waits until notified
+    }
+}
+
+```
+**2. `notify()` Method:**\
+   The `notify()` method is used to wake up a single thread that is waiting on the object's monitor (lock). It signals a waiting thread that it can now attempt to acquire the lock and resume its execution.
+
+* **Usage**: When a thread calls `notify()`, it selects one of the waiting threads (if any) to be awakened and allowed to proceed. The awakened thread will need to reacquire the lock before it can continue.
+
+* **Syntax**:
+```java
+object.notify();
+
+```
+- **Important Points:**
+
+    - `notify()` only wakes up a single waiting thread (if multiple threads are waiting, it’s unspecified which thread will be awakened).
+    - It can only be called from within a synchronized block/method.
+
+**Example**:
+```java
+synchronized (obj) {
+    obj.notify();  // Notify one waiting thread
+}
+
+```
+**3. `notifyAll()` Method:**\
+   The `notifyAll()` method is used to wake up all threads that are waiting on the object's monitor (lock). This method will cause all the waiting threads to compete for the lock and resume their execution.
+
+* **Usage**: When` notifyAll()` is called, all waiting threads are notified, and they all attempt to acquire the lock to continue their execution. If no thread is waiting, the method has no effect.
+
+* **Syntax**:
+```java
+object.notifyAll();
+
+```
+- **Important Points:**
+
+    - `notifyAll()` wakes up all threads waiting on the object’s monitor.
+    - It is usually used when there are multiple threads waiting for a shared resource and you want to ensure that all threads have a chance to proceed.
+
+**Example**:
+```java
+synchronized (obj) {
+    obj.notifyAll();  // Notify all waiting threads
+}
+
+```
+**How They Work Together:**
+- **Basic Flow:**
+    - A thread enters a synchronized block/method and calls `wait()` if it needs to wait for a condition to be met.
+    - Another thread, which is also inside a synchronized block/method, modifies the condition and calls `notify()` or `notifyAll()` to wake up the waiting thread(s).
+    - The waiting thread(s) then resume execution.
+
+**Example of `wait()`, `notify()`, and `notifyAll()` in Action:**
+
+```java
+class SharedResource {
+    private int count = 0;
+    
+    // Method to increment the counter
+    public synchronized void increment() throws InterruptedException {
+        while (count >= 5) {
+            wait();  // Wait if count is >= 5
+        }
+        count++;
+        System.out.println("Incremented count to " + count);
+        notify();  // Notify any waiting thread that count has changed
+    }
+
+    // Method to decrement the counter
+    public synchronized void decrement() throws InterruptedException {
+        while (count <= 0) {
+            wait();  // Wait if count is <= 0
+        }
+        count--;
+        System.out.println("Decremented count to " + count);
+        notify();  // Notify any waiting thread that count has changed
+    }
+}
+
+public class Main {
+    public static void main(String[] args) {
+        SharedResource resource = new SharedResource();
+
+        // Increment thread
+        Thread incrementThread = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    resource.increment();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        // Decrement thread
+        Thread decrementThread = new Thread(() -> {
+            try {
+                for (int i = 0; i < 10; i++) {
+                    resource.decrement();
+                }
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        incrementThread.start();
+        decrementThread.start();
+    }
+}
+
+```
+**Explanation of the Example:**
+* The `SharedResource` class has methods `increment()` and `decrement()` that modify the `count`.
+* If `count` exceeds 5, the `increment()` method will wait (`wait()`), and similarly, if `count` is less than or equal to 0, the `decrement()` method will wait.
+* Once a thread modifies the count, it calls `notify()` to wake up the other thread, allowing it to proceed.
+
+### 67. What is a deadlock? How can you prevent deadlocks?
+Deadlock is a situation in multi-threaded programming where two or more threads are blocked forever because they are each waiting for the other to release a resource. It typically happens when there is a circular dependency between threads and resources, and no thread can make progress.
+
+In a deadlock situation, the following four conditions must be met (these are known as the **Deadlock Conditions**):
+
+1. **Mutual Exclusion:** At least one resource is held in a non-shareable mode (i.e., only one thread can access the resource at a time).
+2. **Hold and Wait:** A thread is holding at least one resource and is waiting to acquire additional resources that are currently held by other threads.
+3. **No Preemption:** A resource cannot be forcibly taken from a thread holding it. The resource can only be released voluntarily.
+4. **Circular Wait:** A set of threads exists such that each thread is waiting for a resource that the next thread in the set holds.
+
+**Example of Deadlock:**
+```java
+class A {
+    synchronized void methodA(B b) {
+        System.out.println("Thread 1: Holding lock A...");
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        System.out.println("Thread 1: Waiting for lock B...");
+        b.last();  // Calling B's last() method
+    }
+
+    synchronized void last() {
+        System.out.println("Inside A's last method");
+    }
+}
+
+class B {
+    synchronized void methodB(A a) {
+        System.out.println("Thread 2: Holding lock B...");
+        try { Thread.sleep(100); } catch (InterruptedException e) {}
+        System.out.println("Thread 2: Waiting for lock A...");
+        a.last();  // Calling A's last() method
+    }
+
+    synchronized void last() {
+        System.out.println("Inside B's last method");
+    }
+}
+
+public class DeadlockExample {
+    public static void main(String[] args) {
+        A a = new A();
+        B b = new B();
+
+        // Thread 1 attempts to call methodA() and locks object a
+        Thread t1 = new Thread(() -> a.methodA(b));
+
+        // Thread 2 attempts to call methodB() and locks object b
+        Thread t2 = new Thread(() -> b.methodB(a));
+
+        t1.start();
+        t2.start();
+    }
+}
+
+```
+In this example:
+
+* **Thread 1** locks object `a` and waits for `b` to release a lock on object `b`.
+* **Thread 2** locks object `b` and waits for `a` to release a lock on object `a`.
+* This creates a **circular wait**, and both threads are blocked forever, resulting in a deadlock.
+
+
+**How to Prevent Deadlocks:**\
+Deadlocks can be prevented by breaking one or more of the four necessary conditions for a deadlock to occur. Here are some strategies to prevent deadlocks:
+
+1. **Avoid Circular Wait:**
+   - Ensure that threads acquire locks in a **global ordering** to avoid circular dependencies. For example, if you always acquire locks in the order `A -> B -> C`, you will prevent the circular wait condition.
+2. **Lock Timeout:**
+   - Implement a timeout for acquiring locks. If a thread cannot acquire all the necessary locks within a certain time, it can release any locks it has acquired and try again. This prevents threads from waiting indefinitely.
+```java
+if (lock.tryLock(timeout, TimeUnit.SECONDS)) {
+    try {
+        // Perform the task
+    } finally {
+        lock.unlock();
+    }
+}
+
+```
+3. **Avoid Nested Locks (Minimize Locking):**
+   - Avoid holding multiple locks at the same time. If you do need multiple locks, acquire them in a specific order and always try to acquire all required locks at once (atomic locking). If you need to acquire locks in different orders, consider breaking the task into smaller parts.
+4. **Use Deadlock Detection:**
+   - ome systems use **deadlock detection** algorithms to periodically check for deadlocks. If a deadlock is detected, the system can take corrective actions like aborting one of the threads, rolling back the transaction, or restarting part of the system.
+5. **Use Higher-Level Concurrency Utilities:**
+   - Java provides higher-level concurrency utilities like `java.util.concurrent `package, which includes thread-safe classes such as `ReentrantLock` with the ability to set timeouts, `Semaphore`, and `CountDownLatch`. These can help reduce the likelihood of deadlocks by managing resource locking more efficiently.
+
+For example, `ReentrantLock` has a `tryLock()` method that helps to avoid blocking indefinitely and allows for timeout-based handling of locks:
+
+```java
+ReentrantLock lockA = new ReentrantLock();
+ReentrantLock lockB = new ReentrantLock();
+
+if (lockA.tryLock() && lockB.tryLock()) {
+    try {
+        // Perform the task
+    } finally {
+        lockA.unlock();
+        lockB.unlock();
+    }
+}
+
+```
+6. **Use Lock Ordering:**
+   - Always acquire locks in a predefined global order. For example, if thread 1 needs to acquire `lockA` and `lockB`, ensure thread 2 always acquires `lockA` first and then `lockB`.
+7. **Deadlock Avoidance via Resource Allocation Graph:**
+   - The system can use algorithms like Banker's Algorithm to ensure that resource allocation avoids deadlock. This involves keeping track of resources and processes to ensure that a cycle in resource allocation never forms.
+
+### 68. What is a thread pool?
+A **thread pool** is a collection of pre-initialized threads that are managed and reused to execute multiple tasks concurrently. Instead of creating a new thread every time a task needs to be executed, tasks are assigned to a thread from the pool, which reduces the overhead of thread creation and destruction.
+
+Thread pools are typically used in applications that perform a large number of concurrent tasks to improve performance and resource management.
+
+**How Thread Pools Work**
+1. **Initialization:**
+
+    - When a thread pool is created, a certain number of threads are initialized and kept ready for execution.
+2. **Task Submission:**
+
+    - When a task is submitted, it is placed in a queue. The thread pool picks up the tasks and assigns them to available threads.
+3. **Task Execution:**
+
+    - A thread in the pool executes the task. Once completed, the thread becomes available for the next task.
+4. **Reusability:**
+
+    - Threads are reused for new tasks instead of being destroyed and recreated, saving resources and reducing latency
+
+**Advantages of Thread Pools**
+1. **Improved Performance:**
+
+    - Reusing threads reduces the overhead of creating and destroying threads.
+2. **Better Resource Utilization:**
+
+    - Limits the number of active threads, avoiding excessive resource consumption.
+3. **Avoids Thread Explosion:**
+
+    - Prevents the creation of too many threads, which can lead to **OutOfMemoryError** or **performance degradation**.
+4. **Efficient Task Management:**
+
+    - Tasks are queued and executed in an orderly manner.
+
+**Creating a Thread Pool in Java**\
+The `Java java.util.concurrent` package provides the `Executor` framework, which includes classes and methods to create and manage thread pools.
+
+**Common Thread Pool Executors**
+1. `newFixedThreadPool(int nThreads)`
+
+* Creates a thread pool with a fixed number of threads.
+* Example:
+```java
+ExecutorService executor = Executors.newFixedThreadPool(5);
+for (int i = 0; i < 10; i++) {
+    executor.submit(() -> {
+        System.out.println("Task executed by " + Thread.currentThread().getName());
+    });
+}
+executor.shutdown();
+
+```
+2. `newCachedThreadPool()`
+
+* Creates a thread pool with no fixed size. Threads are created as needed and reused if available.
+* Example:
+```java
+ExecutorService executor = Executors.newCachedThreadPool();
+executor.submit(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+executor.shutdown();
+
+```
+3. `newSingleThreadExecutor()`
+
+* Creates a thread pool with a single thread.
+* Example:
+```java
+ExecutorService executor = Executors.newSingleThreadExecutor();
+executor.submit(() -> System.out.println("Task executed by " + Thread.currentThread().getName()));
+executor.shutdown();
+
+```
+4. `newScheduledThreadPool(int corePoolSize)`
+
+* Creates a thread pool for scheduling tasks with a delay or at fixed intervals.
+* Example:
+```java
+ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(2);
+scheduler.schedule(() -> System.out.println("Delayed task"), 2, TimeUnit.SECONDS);
+scheduler.shutdown();
+
+```
+**Customizing a Thread Pool**\
+You can create a custom thread pool using the `ThreadPoolExecutor` class, which provides more control over thread pool behavior:
+
+**Example: Custom Thread Pool**
+```java
+import java.util.concurrent.*;
+
+public class CustomThreadPoolExample {
+    public static void main(String[] args) {
+        ThreadPoolExecutor executor = new ThreadPoolExecutor(
+            2,  // core pool size
+            4,  // maximum pool size
+            30, // keep-alive time for idle threads
+            TimeUnit.SECONDS,
+            new LinkedBlockingQueue<>(10) // task queue with a capacity of 10
+        );
+
+        for (int i = 0; i < 15; i++) {
+            final int taskId = i;
+            executor.submit(() -> {
+                System.out.println("Task " + taskId + " executed by " + Thread.currentThread().getName());
+            });
+        }
+
+        executor.shutdown();
+    }
+}
+
+```
+
+**Key Parameters of a Thread Pool**
+1. **Core Pool Size**: Number of threads kept alive in the pool.
+2. **Maximum Pool Size**: Maximum number of threads allowed in the pool.
+3. **Keep-Alive Time**: Time a thread stays idle before being terminated.
+4. **Task Queue**: A queue to hold tasks waiting to be executed.
+   - Common implementations: `LinkedBlockingQueue`, `ArrayBlockingQueue`.
+
+**Best Practices**
+1. **Choose the Right Pool Size:**
+
+* For CPU-intensive tasks: Use `number of cores + 1` threads.
+* For I/O-bound tasks: Use a larger pool size as threads spend time waiting for I/O operations.
+2. **Use `shutdown()` Properly:**
+
+* Always call `shutdown()` or `shutdownNow()` to release resources when the pool is no longer needed.
+3. **Avoid Blocking Operations:**
+
+* Ensure threads do not perform long-running or blocking operations.
+4. **Monitor the Thread Pool:**
+
+* Use methods like `getPoolSize()`, `getActiveCount()`, and `getTaskCount()` for monitoring.
+
+**When to Use Thread Pools**
+* Applications with repetitive tasks (e.g., web servers, message processing).
+* Concurrent execution of independent tasks.
+* Scenarios where thread creation overhead needs to be minimized.
+
+Thread pools are essential for modern Java applications to efficiently manage multi-threading and concurrency.
+
+### 69. What is the difference between Callable and Runnable?
+Both `Callable` and `Runnable` are interfaces used to define tasks that can be executed by a thread in Java. However, they have significant differences in their capabilities and use cases.
+
+![img_51.png](img_51.png)
+
+**Detailed Comparison**
+1. **Method Signature:**
+
+- `Runnable` defines the` run()` method, which does not return any value:
+```java
+void run();
+
+```
+- `Callable` defines the `call()` method, which can return a value and throw exceptions:
+```java
+V call() throws Exception;
+
+```
+2. **Return Value:**
+
+- `Runnable` tasks do not produce a result and are suitable for simple operations.
+- `Callable` tasks produce a result that can be retrieved using a `Future`.
+3. **Exception Handling:**
+
+- In `Runnable`, checked exceptions must be handled inside the `run()` method, as they cannot be thrown.
+- In `Callable`, checked exceptions can be propagated to the caller.
+
+**Examples**\
+**Using Runnable**
+```java
+public class RunnableExample {
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            System.out.println("Runnable task is running!");
+        };
+
+        Thread thread = new Thread(task);
+        thread.start();
+    }
+}
+
+```
+**Using Callable**
+```java
+import java.util.concurrent.*;
+
+public class CallableExample {
+    public static void main(String[] args) throws Exception {
+        Callable<Integer> task = () -> {
+            System.out.println("Callable task is running!");
+            return 42; // Return a result
+        };
+
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+        Future<Integer> future = executor.submit(task);
+
+        // Get the result
+        Integer result = future.get();
+        System.out.println("Result: " + result);
+
+        executor.shutdown();
+    }
+}
+
+```
+**Key Use Cases**
+- `Runnable`:
+
+    - Use when the task does not need to return a result.
+    - Example: Logging, updating a progress bar, or simple background tasks.
+2. `Callable`:
+
+    - Use when the task needs to return a result or throw exceptions.
+    - Example: Fetching data from a database or performing calculations.
+   
+![img_52.png](img_52.png)
+
+Choose `Runnable` for simpler tasks and `Callable` for tasks that require results or exception handling.
+
+### 70. What is the ExecutorService?
+The `ExecutorService` is an interface in the `java.util.concurrent` package that provides a framework for managing and controlling thread execution in a flexible and scalable way. It abstracts the creation and management of threads, allowing you to focus on defining tasks rather than managing threads manually.
+
+**Key Features of ExecutorService**
+1. **Thread Pool Management:**
+
+* Provides thread pooling to reuse threads, improving performance by reducing overhead associated with thread creation and destruction.
+2. **Task Submission:**
+
+* Accepts tasks for execution through the following methods:
+* `execute(Runnable command)`: Executes tasks without returning results.
+* `submit(Callable<T> task)`: Executes tasks that return results.
+3. **Task Scheduling:**
+
+* Offers methods to execute tasks immediately, after a delay, or periodically (via `ScheduledExecutorService`).
+4. **Graceful Shutdown:**
+
+* Provides mechanisms to shutdown the service gracefully:
+  * `shutdown()`: Initiates an orderly shutdown (no new tasks are accepted; existing tasks are completed).
+  * `shutdownNow()`: Attempts to stop all actively executing tasks and halts pending tasks.
+5. **Future Support:**
+
+* Supports asynchronous task execution using `Future` objects to retrieve results or check the status of a task.
+
+![img_53.png](img_53.png)
+
+**How to Use ExecutorService**
+1. **Simple Example with Runnable**
+```java
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+
+public class ExecutorServiceExample {
+    public static void main(String[] args) {
+        ExecutorService executor = Executors.newFixedThreadPool(3); // Creates a thread pool of 3 threads
+
+        Runnable task = () -> System.out.println("Task executed by: " + Thread.currentThread().getName());
+
+        // Submit multiple tasks
+        for (int i = 0; i < 5; i++) {
+            executor.execute(task);
+        }
+
+        executor.shutdown(); // Gracefully shuts down the executor
+    }
+}
+
+```
+2. **Using Callable and Future**
+```java
+import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.Future;
+
+public class CallableExample {
+    public static void main(String[] args) throws Exception {
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        Callable<Integer> task = () -> {
+            Thread.sleep(1000); // Simulate a delay
+            return 42; // Return a result
+        };
+
+        Future<Integer> future = executor.submit(task);
+
+        // Do some other work while the task is executing
+        System.out.println("Task is running...");
+
+        // Get the result of the task
+        Integer result = future.get();
+        System.out.println("Result: " + result);
+
+        executor.shutdown();
+    }
+}
+
+```
+**Types of Executors Provided by Executors Utility Class**
+1. `newFixedThreadPool(int nThreads):`
+
+* Creates a thread pool with a fixed number of threads.
+* Example use case: Controlling the maximum number of concurrent threads.
+2. `newCachedThreadPool():`
+
+* Creates a thread pool with an unbounded number of threads, reusing previously created threads if available.
+* Example use case: Handling a large number of short-lived tasks.
+3. `newSingleThreadExecutor():`
+
+* Creates a thread pool with a single thread.
+* Example use case: Sequential task execution.
+4. `newScheduledThreadPool(int nThreads):`
+
+* Creates a thread pool for scheduling tasks at fixed rates or delays.
+* Example use case: Periodic task execution.
+
+**Advantages of Using ExecutorService**
+1. **Thread Reusability:**
+
+* Reduces the overhead of creating and destroying threads.
+2. **Improved Resource Management:**
+
+* Provides a centralized way to manage threads efficiently.
+3. **Concurrency Control:**
+
+* Offers fine-grained control over task execution and scheduling.
+4. **Simplified Task Submission:**
+
+* Eliminates the need for manual thread creation and management.
+
+**Best Practices**
+1. Always call `shutdown()` or `shutdownNow()` after task completion to release resources.
+2. Use `awaitTermination()` to ensure all tasks finish before shutting down the application.
+3. Use appropriate thread pool types based on the use case to avoid overloading the system.
+4. Prefer `submit()` and `Callable` when task results are needed.
+
+The `ExecutorService` is a powerful tool in Java for managing threads, simplifying concurrent programming, and optimizing application performance.
+
+
+### 71. What is the difference between ReentrantLock and synchronized?
+`ReentrantLock` and `synchronized` are two mechanisms in Java to achieve thread synchronization. They serve similar purposes but differ in terms of features, flexibility, and performance. Below is a detailed comparison:
+
+![img_54.png](img_54.png)
+
+**Detailed Features**
+1. **ReentrantLock Features**
+   * **Explicit Locking:** You need to acquire and release the lock explicitly using `lock()` and `unlock()` methods.
+   * **Fair Lock:** Can create a fair lock using `new ReentrantLock(true)` to ensure first-come-first-serve.
+   * **Interruptible Locks:** Allows interruption of a thread waiting for a lock using `lockInterruptibly()`.
+   * **Condition Variables:** Provides advanced condition management via `Condition` objects for signaling threads.
+   * **Try Lock:** Use `tryLock()` to avoid waiting indefinitely for a lock.
+
+2. **synchronized Features**
+   * **Implicit Locking:** Automatically acquires and releases locks when entering or exiting synchronized blocks/methods.
+   * **Intrinsic Lock:** Uses the intrinsic lock associated with the object or class.
+   * **Wait/Notify:** Relies on `Object`’s` wait()`, `notify()`, and `notifyAll()` for thread communication.
+
+![img_55.png](img_55.png)
+
+**Example**\
+**Using** `synchronized`:
+```java
+public class SynchronizedExample {
+    public synchronized void sharedMethod() {
+        System.out.println(Thread.currentThread().getName() + " is in the synchronized method.");
+        try {
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+**Using** `ReentrantLock`:
+```java
+import java.util.concurrent.locks.ReentrantLock;
+
+public class ReentrantLockExample {
+    private final ReentrantLock lock = new ReentrantLock();
+
+    public void sharedMethod() {
+        lock.lock(); // Acquire the lock
+        try {
+            System.out.println(Thread.currentThread().getName() + " is in the ReentrantLock method.");
+            Thread.sleep(1000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        } finally {
+            lock.unlock(); // Release the lock
+        }
+    }
+}
+
+```
+### 72. What are volatile and atomic variables?
+Both `volatile` and atomic variables are mechanisms in Java to handle concurrency and ensure thread safety. They serve different purposes and operate at different levels of abstraction.
+
+**Volatile Variables**
+* **Definition**: The `volatile` keyword in Java is used to ensure that a variable's value is always read from and written to the main memory, not the CPU cache.
+* **Purpose**: It ensures visibility of changes to a variable across threads but does not provide atomicity for compound operations.
+* **Key Features**:
+  - Guarantees **visibility**: Updates made by one thread are immediately visible to other threads.
+  - Does **not guarantee atomicity**: Operations like `count++` are not thread-safe.
+  - Only applicable to variables (e.g., `int`, `boolean`, or references).
+  - Prevents instruction reordering optimizations by the compiler or processor.
+  
+**Example**:
+```java
+class VolatileExample {
+    private volatile boolean flag = true;
+
+    public void toggleFlag() {
+        flag = !flag; // Visibility ensured
+    }
+
+    public boolean isFlag() {
+        return flag; // Always reads from main memory
+    }
+}
+
+```
+**Atomic Variables**
+* **Definition**: Atomic variables are part of the java.util.concurrent.atomic package and provide a low-level, lock-free mechanism to perform thread-safe operations on single variables.
+* **Purpose**: They guarantee both atomicity and visibility for operations on variables.
+* **Key Features:**
+  - Ensures **atomicity** for operations like increment, decrement, compare-and-swap.
+  - No need for explicit synchronization or locks.
+  - Implemented using low-level machine instructions (e.g., compare-and-swap).
+  - Examples: `AtomicInteger`, `AtomicLong`, `AtomicReference`, etc.
+
+**Example**:
+```java
+import java.util.concurrent.atomic.AtomicInteger;
+
+class AtomicExample {
+    private AtomicInteger count = new AtomicInteger(0);
+
+    public void increment() {
+        count.incrementAndGet(); // Atomic operation
+    }
+
+    public int getCount() {
+        return count.get(); // Thread-safe retrieval
+    }
+}
+
+```
+![img_56.png](img_56.png)
+
+**When to Use**
+1. **Use** `volatile`:
+
+* When multiple threads are reading and writing a single variable.
+* If atomicity is not required (e.g., simple flags or status variables).
+2. **Use Atomic Variables:**
+
+* When performing compound actions (e.g., increment, decrement, compare-and-swap).
+* When atomicity and thread safety are crucial without locks.
+
+**Example Comparison**\
+Using `volatile` (**Not Thread-Safe for Increment**):
+```java
+class VolatileCounter {
+    private volatile int count = 0;
+
+    public void increment() {
+        count++; // Not atomic; can lead to race conditions
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+```
+**Using** `AtomicInteger` (**Thread-Safe for Increment**):
+
+```java
+import java.util.concurrent.atomic.AtomicInteger;
+
+class AtomicCounter {
+    private AtomicInteger count = new AtomicInteger(0);
+
+    public void increment() {
+        count.incrementAndGet(); // Atomic operation
+    }
+
+    public int getCount() {
+        return count.get();
+    }
+}
+
+```
+
+### 73. What is the ForkJoinPool?
+
+The `ForkJoinPool` is a special implementation of the `ExecutorService` in Java, designed to support a **divide-and-conquer** approach for parallel task execution. It is part of the j`ava.util.concurrent` package, introduced in Java 7.
+
+**Key Features of ForkJoinPool**
+1. **Divide-and-Conquer:**
+
+* Tasks are recursively divided into smaller subtasks until they are simple enough to be executed directly.
+* Once a subtask is completed, the results are combined to produce the overall result.
+2. **Work-Stealing Algorithm:**
+
+* Idle threads "steal" tasks from other threads' work queues to optimize CPU utilization.
+3. **Lightweight Tasks:**
+
+* ForkJoinPool is designed to handle a large number of lightweight tasks efficiently.
+4. *Parallelism:**
+
+* Utilizes multiple threads (usually one per CPU core) to execute tasks concurrently.
+5. **Efficient Resource Usage:**
+
+* Threads in the pool operate independently, reducing contention.
+
+
+**Key Components of ForkJoinPool**
+1. **ForkJoinTask:**
+
+- An abstract class representing a task that can be split into subtasks.
+- Subclasses:
+  - `RecursiveTask<V>`: Returns a result.
+  - `RecursiveAction`: Does not return a result.
+
+2. **Work-Stealing Queues:**
+
+* Each thread has its own queue for tasks.
+* Idle threads can "steal" tasks from other threads' queues.
+
+
+**How ForkJoinPool Works**
+1. A `ForkJoinTask` is submitted to the pool.
+2. The task is divided (forked) into smaller subtasks using the `fork()` method.
+3. Subtasks are executed concurrently.
+4. Results from subtasks are combined (joined) using the `join()` method.
+
+**Creating a ForkJoinPool**\
+The default `ForkJoinPool` is created automatically when a parallel stream or task is used. You can also create a custom pool:
+
+```java
+ForkJoinPool pool = new ForkJoinPool(4); // 4 threads
+
+```
+**Example: RecursiveTask**
+```java
+import java.util.concurrent.RecursiveTask;
+import java.util.concurrent.ForkJoinPool;
+
+class SumTask extends RecursiveTask<Integer> {
+    private static final int THRESHOLD = 10; // Threshold for splitting tasks
+    private int[] numbers;
+    private int start, end;
+
+    public SumTask(int[] numbers, int start, int end) {
+        this.numbers = numbers;
+        this.start = start;
+        this.end = end;
+    }
+
+    @Override
+    protected Integer compute() {
+        if (end - start <= THRESHOLD) {
+            // Direct computation
+            int sum = 0;
+            for (int i = start; i < end; i++) {
+                sum += numbers[i];
+            }
+            return sum;
+        } else {
+            // Split task
+            int mid = (start + end) / 2;
+            SumTask leftTask = new SumTask(numbers, start, mid);
+            SumTask rightTask = new SumTask(numbers, mid, end);
+
+            leftTask.fork(); // Fork left task
+            int rightResult = rightTask.compute(); // Compute right task directly
+            int leftResult = leftTask.join(); // Join left task
+
+            return leftResult + rightResult; // Combine results
+        }
+    }
+}
+
+public class ForkJoinPoolExample {
+    public static void main(String[] args) {
+        int[] numbers = new int[100];
+        for (int i = 0; i < numbers.length; i++) {
+            numbers[i] = i + 1; // Initialize array
+        }
+
+        ForkJoinPool pool = new ForkJoinPool();
+        SumTask task = new SumTask(numbers, 0, numbers.length);
+
+        int result = pool.invoke(task); // Start the task
+        System.out.println("Sum: " + result); // Output: Sum: 5050
+    }
+}
+
+```
+**Advantages of ForkJoinPool**
+1. **Efficient Resource Utilization:**
+    - Work-stealing ensures that all threads are utilized optimally.
+2. **Automatic Parallelism:**
+   - Designed to leverage all available processors.
+3. **Handles Recursive Tasks:**
+   - Ideal for problems that can be solved using divide-and-conquer.
+
+**When to Use ForkJoinPool**
+1. When tasks can be split into smaller, independent subtasks (e.g., parallel sorting, matrix multiplication).
+2. When lightweight tasks need to be executed concurrently.
+3. For computationally intensive tasks where maximum CPU utilization is desired.
+
+![img_57.png](img_57.png)
+
+### 74. What is a semaphore in Java?
+A **semaphore** in Java is a synchronization aid provided by the `java.util.concurrent` package that restricts the number of threads accessing a shared resource at the same time. It is particularly useful for controlling access to resources like databases, files, or network connections in concurrent applications.
+
+**Key Concepts**
+1. **Permits:**
+
+* A semaphore maintains a set of permits. Threads acquire permits before accessing a resource and release them afterward.
+* If no permits are available, a thread attempting to acquire one will block until a permit becomes available.
+2. **Counting Semaphore:**
+
+* A semaphore with a specified number of permits is called a counting semaphore. For example, a semaphore initialized with 5 permits allows up to 5 threads to access the resource simultaneously.
+3. **Binary Semaphore:**
+
+* A semaphore with one permit behaves like a lock (allowing only one thread at a time).
+
+
+**Semaphore Class in Java**\
+The `java.util.concurrent.Semaphore` class provides two types of semaphores:
+
+1. **Fair Semaphore:**
+    - Threads acquire permits in the order they requested (FIFO).
+2. **Non-Fair Semaphore (default):**
+   - Threads can acquire permits in any order, depending on thread scheduling.
+
+![img_58.png](img_58.png)
+
+**Example: Using Semaphore**\
+**Scenario: Controlling access to a shared resource**
+```java
+import java.util.concurrent.Semaphore;
+
+class SharedResource {
+    private final Semaphore semaphore;
+
+    public SharedResource(int permits) {
+        this.semaphore = new Semaphore(permits);
+    }
+
+    public void accessResource(String threadName) {
+        try {
+            System.out.println(threadName + " is waiting to access the resource.");
+            semaphore.acquire(); // Acquire a permit
+            System.out.println(threadName + " is accessing the resource.");
+            Thread.sleep(2000); // Simulate resource usage
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        } finally {
+            System.out.println(threadName + " has released the resource.");
+            semaphore.release(); // Release the permit
+        }
+    }
+}
+
+public class SemaphoreExample {
+    public static void main(String[] args) {
+        SharedResource resource = new SharedResource(2); // Allow 2 threads to access simultaneously
+
+        for (int i = 1; i <= 5; i++) {
+            String threadName = "Thread-" + i;
+            new Thread(() -> resource.accessResource(threadName)).start();
+        }
+    }
+}
+
+```
+**Output**
+```
+Thread-1 is waiting to access the resource.
+Thread-1 is accessing the resource.
+Thread-2 is waiting to access the resource.
+Thread-2 is accessing the resource.
+Thread-3 is waiting to access the resource.
+Thread-4 is waiting to access the resource.
+Thread-5 is waiting to access the resource.
+Thread-1 has released the resource.
+Thread-3 is accessing the resource.
+Thread-2 has released the resource.
+Thread-4 is accessing the resource.
+...
+```
+
+**Advantages of Semaphores**
+1. **Control Over Resource Access:**
+    - Limits the number of threads that can access a resource.
+2. **Flexible:**
+   - Can be used to manage a pool of resources.
+3. **Fairness:**
+   - Supports fair access to permits (optional).
+
+
+**Common Use Cases**
+1. **Limiting Concurrent Connections:**
+    - E.g., database connection pools or web server thread pools.
+2. **Managing Shared Resources:**
+   - E.g., controlling access to printers, files, or hardware.
+3. **Thread Coordination:**
+   - E.g., signaling between threads.
+
+![img_59.png](img_59.png)
+
+### 75. What is the difference between ThreadLocal and a static variable?
+The key difference between `ThreadLocal` and a `static` **variable** in Java lies in how they manage data and provide isolation across threads in a multithreaded environment. Here's a detailed comparison:
+
+**1. ThreadLocal**
+1. **Purpose**: Provides thread-local storage, meaning each thread accessing a `ThreadLocal` variable has its own, independent copy.
+2. **Scope**: The value is specific to the thread accessing it, and other threads cannot see or modify it.
+3. **Use Case**: Useful for storing thread-specific data, such as user sessions or database connections.
+4. **Isolation**: Ensures data isolation; changes made by one thread do not affect other threads.
+
+**Example**:
+```java
+public class ThreadLocalExample {
+    private static ThreadLocal<String> threadLocal = ThreadLocal.withInitial(() -> "Default");
+
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            String threadName = Thread.currentThread().getName();
+            threadLocal.set(threadName + "'s value");
+            System.out.println(threadName + ": " + threadLocal.get());
+        };
+
+        Thread thread1 = new Thread(task, "Thread-1");
+        Thread thread2 = new Thread(task, "Thread-2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+```
+**Output**
+```
+Thread-1: Thread-1's value
+Thread-2: Thread-2's value
+```
+**2. Static Variable**
+1. **Purpose**: Shared across all instances and threads; a single copy of the variable exists in memory.
+2. **Scope**: The value is shared globally, and all threads accessing the variable see the same value.
+3. **Use Case**: Used for shared constants, counters, or data shared across threads.
+4. **Isolation**: No thread isolation; changes made by one thread are visible to all threads.
+   
+**Example**:
+```java
+public class StaticExample {
+    private static String sharedValue = "Initial Value";
+
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            String threadName = Thread.currentThread().getName();
+            sharedValue = threadName + "'s value";
+            System.out.println(threadName + ": " + sharedValue);
+        };
+
+        Thread thread1 = new Thread(task, "Thread-1");
+        Thread thread2 = new Thread(task, "Thread-2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+```
+**Output (may vary due to thread scheduling):**
+```
+Thread-1: Thread-1's value
+Thread-2: Thread-2's value
+```
+![img_60.png](img_60.png)
+
+**When to Use**
+- **Use `ThreadLocal` when:**
+
+    - Each thread needs its own copy of a variable.
+    - You want to avoid shared state or synchronization overhead.
+    - Example: Managing thread-specific configurations or context.
+
+- Use `static` **variables** when:
+
+    - Data needs to be shared across threads and instances.
+    - You can ensure thread safety manually if needed.
+    - Example: Shared counters, constants, or configuration values.
+
+### 76. Explain the CountDownLatch.
+`CountDownLatch` in Java is a synchronization aid that allows one or more threads to wait until a set of operations being performed by other threads is completed. It is part of the `java.util.concurrent` package.
+
+**Key Features**
+1. **Countdown Mechanism**: The latch is initialized with a count, representing the number of tasks to complete.
+2. **Await**: Threads can wait until the count reaches zero.
+3. **Thread Safety**: It is thread-safe and can be used by multiple threads simultaneously.
+4. **Single-use**: A CountDownLatch cannot be reused after the count reaches zero.
+
+**How it Works**
+1. A `CountDownLatch` is initialized with a count.
+2. Threads performing tasks call `countDown()`, decrementing the count.
+3. One or more threads call `await()` to block until the count reaches zero.
+4. Once the count reaches zero, all waiting threads are released, and subsequent calls to `await()` return immediately.
+
+**Key Methods**
+1. `CountDownLatch(int count)`: Constructs a latch initialized with the given count.
+2. `void await()`: Causes the current thread to wait until the count reaches zero.
+3. `void countDown()`: Decrements the count of the latch.
+4. `long getCount()`: Returns the current count.
+
+**Example: Waiting for Tasks to Complete**
+```java
+import java.util.concurrent.CountDownLatch;
+
+public class CountDownLatchExample {
+
+    public static void main(String[] args) {
+        final int taskCount = 3;
+        CountDownLatch latch = new CountDownLatch(taskCount);
+
+        // Create worker threads
+        for (int i = 1; i <= taskCount; i++) {
+            new Thread(new Worker(latch, "Task-" + i)).start();
+        }
+
+        System.out.println("Waiting for tasks to complete...");
+
+        try {
+            latch.await(); // Main thread waits until all tasks are completed
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        System.out.println("All tasks completed. Proceeding with main thread.");
+    }
+}
+
+class Worker implements Runnable {
+    private CountDownLatch latch;
+    private String taskName;
+
+    Worker(CountDownLatch latch, String taskName) {
+        this.latch = latch;
+        this.taskName = taskName;
+    }
+
+    @Override
+    public void run() {
+        System.out.println(taskName + " is running.");
+        try {
+            Thread.sleep((long) (Math.random() * 2000)); // Simulate task
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        System.out.println(taskName + " is completed.");
+        latch.countDown(); // Decrease the latch count
+    }
+}
+
+```
+**Output**
+```
+Waiting for tasks to complete...
+Task-1 is running.
+Task-2 is running.
+Task-3 is running.
+Task-1 is completed.
+Task-2 is completed.
+Task-3 is completed.
+All tasks completed. Proceeding with main thread.
+
+```
+**When to Use**
+- **One-time events**: Ensure that a thread waits for other threads to complete before proceeding.
+    - Example: Waiting for multiple services to initialize before starting an application.
+- **Parallel Processing**: Divide a task among multiple threads and wait for them to finish.
+  - Example: Loading resources concurrently but continuing only after all resources are ready.
+
+**Important Notes**
+1. **Cannot Reset**: Once the count reaches zero, the latch cannot be reused. Use `CyclicBarrier` if you need reusable synchronization.
+2. **Thread Safety**: `CountDownLatch` methods are thread-safe, and multiple threads can decrement the count concurrently.
+3. **Fairness**: Waiting threads are released in the order they called `await()`.
+
+**Alternative: CyclicBarrier**
+If you need a synchronization aid that resets itself after threads complete, consider using `CyclicBarrier` instead.
+
+### 77. What is the CyclicBarrier?
+The `CyclicBarrier` is a synchronization aid in Java that allows a group of threads to wait for each other to reach a common barrier point. It is part of the `java.util.concurrent` package and is particularly useful in scenarios where multiple threads must coordinate before proceeding.
+
+**Key Features**
+1. **Reusable**: Unlike `CountDownLatch`, a `CyclicBarrier` can be reset and reused.
+2. **Barrier Action**: A runnable task can be executed once all threads reach the barrier.
+3. **Coordination**: Ensures all threads meet at the barrier point before proceeding.
+
+**How it Works**
+1. A `CyclicBarrier` is initialized with a fixed number of threads (`parties`).
+2. Each thread calls the `await()` method when it reaches the barrier.
+3. The barrier is released only when all threads have called `await()`.
+4. Optionally, a **barrier action** can be executed once all threads reach the barrier.
+
+**Key Methods**
+1. `CyclicBarrier(int parties)`: Constructs a barrier for the specified number of threads.
+2. `CyclicBarrier(int parties, Runnable barrierAction)`: Specifies a task (barrier action) to run when the barrier is released.
+3. `int await()`: Called by a thread to wait at the barrier.
+4. `int getParties()`: Returns the number of threads required to trip the barrier.
+5. `boolean isBroken()`: Checks if the barrier is broken.
+6. `void reset()`: Resets the barrier to its initial state.
+
+**Example: Synchronizing Threads**
+```java
+import java.util.concurrent.CyclicBarrier;
+
+public class CyclicBarrierExample {
+
+    public static void main(String[] args) {
+        int threadCount = 3;
+
+        // Barrier action to execute once all threads reach the barrier
+        Runnable barrierAction = () -> System.out.println("All threads have reached the barrier. Let's proceed!");
+
+        // Create a CyclicBarrier
+        CyclicBarrier barrier = new CyclicBarrier(threadCount, barrierAction);
+
+        for (int i = 1; i <= threadCount; i++) {
+            Thread t = new Thread(new Worker(barrier), "Thread-" + i);
+            t.start();
+        }
+    }
+}
+
+class Worker implements Runnable {
+    private CyclicBarrier barrier;
+
+    Worker(CyclicBarrier barrier) {
+        this.barrier = barrier;
+    }
+
+    @Override
+    public void run() {
+        try {
+            System.out.println(Thread.currentThread().getName() + " is working.");
+            Thread.sleep((long) (Math.random() * 2000)); // Simulate work
+            System.out.println(Thread.currentThread().getName() + " has reached the barrier.");
+
+            barrier.await(); // Wait for other threads
+
+            System.out.println(Thread.currentThread().getName() + " continues after the barrier.");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+}
+```
+**Output**
+```
+Thread-1 is working.
+Thread-2 is working.
+Thread-3 is working.
+Thread-2 has reached the barrier.
+Thread-1 has reached the barrier.
+Thread-3 has reached the barrier.
+All threads have reached the barrier. Let's proceed!
+Thread-2 continues after the barrier.
+Thread-1 continues after the barrier.
+Thread-3 continues after the barrier.
+```
+**When to Use**
+- **Synchronization**: When multiple threads must meet at a common point before proceeding.
+    - Example: Dividing a problem into subtasks and waiting for all subtasks to complete before combining results.
+- **Reusability**: If the barrier needs to be reused multiple times in a program.
+
+![img_61.png](img_61.png)
+
+**Points to Note**
+1. **Broken Barrier**: If a thread fails or is interrupted, the barrier is considered broken, and all waiting threads will receive a `BrokenBarrierException`.
+2. **Deadlock**: Ensure the correct number of threads call `await()` to avoid a deadlock.
+3. **Barrier Action**: Use the barrier action for tasks like logging or merging results.
+
+**Real-World Example**
+* **Parallel Matrix Computation**: Divide rows among threads to process, but combine results only after all threads have completed their share.
+* **Gaming**: Ensure all players are ready before starting a multiplayer game.
+
+### 78. What is the Phaser class in Java?
+The `Phaser` class in Java is a flexible synchronization tool introduced in **Java 7** as part of the `java.util.concurrent` package. It is designed to handle a variable number of threads (or parties) and supports **phased computation**. A phase is a step or stage in a multi-step operation.
+
+**Key Features of `Phaser`**
+1. **Phased Synchronization**: Helps in dividing tasks into multiple phases and synchronizing threads at the end of each phase.
+2. **Dynamic Registration**: Threads can be registered or deregistered dynamically.
+3. **Reusable**: Like `CyclicBarrier`, it can be reused for multiple phases.
+4. **Flexible**: Can be used for parent-child relationships for hierarchical phasers.
+
+**Core Methods**
+1. `Phaser(int parties)`: Creates a phaser with a specified number of threads (parties).
+2. `int register()`: Adds a new party to the phaser.
+3. `int arrive()`: Marks a party's arrival at the current phase without waiting for others.
+4. `int arriveAndAwaitAdvance()`: Marks a party's arrival and waits for other parties.
+5. `int arriveAndDeregister()`: Marks a party's arrival and deregisters it.
+6. `int getPhase()`: Returns the current phase number.
+7. `boolean isTerminated()`: Checks if the phaser is terminated.
+8. `void forceTermination()`: Forces the termination of the phaser.
+
+**How it Works**
+* Threads call `arriveAndAwaitAdvance()` to signal that they have completed the current phase and to wait for others.
+* When all threads arrive, the phase advances, and threads continue to the next phase.
+
+**Example: Synchronizing Phased Computation**
+```java
+import java.util.concurrent.Phaser;
+
+public class PhaserExample {
+
+    public static void main(String[] args) {
+        // Create a Phaser with 3 parties
+        Phaser phaser = new Phaser(3);
+
+        for (int i = 1; i <= 3; i++) {
+            Thread t = new Thread(new Worker(phaser), "Thread-" + i);
+            t.start();
+        }
+    }
+}
+
+class Worker implements Runnable {
+    private Phaser phaser;
+
+    Worker(Phaser phaser) {
+        this.phaser = phaser;
+    }
+
+    @Override
+    public void run() {
+        try {
+            for (int phase = 0; phase < 3; phase++) {
+                System.out.println(Thread.currentThread().getName() + " working in phase " + phase);
+                Thread.sleep((long) (Math.random() * 2000)); // Simulate work
+                System.out.println(Thread.currentThread().getName() + " completed phase " + phase);
+                
+                // Wait for others to complete the phase
+                phaser.arriveAndAwaitAdvance();
+            }
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+}
+
+```
+**Output**
+```
+Thread-1 working in phase 0
+Thread-2 working in phase 0
+Thread-3 working in phase 0
+Thread-2 completed phase 0
+Thread-1 completed phase 0
+Thread-3 completed phase 0
+Thread-1 working in phase 1
+Thread-2 working in phase 1
+Thread-3 working in phase 1
+...
+
+```
+**Advantages Over Other Synchronizers**
+1. **Dynamic Party Registration**: Unlike `CyclicBarrier` or `CountDownLatch`, new threads can join during runtime.
+2. **Multiple Phases**: Supports multi-phase synchronization, while `CyclicBarrier` and `CountDownLatch` are limited to a single use per instantiation.
+
+**When to Use**
+* **Multi-phase Tasks**: Tasks that require synchronization at multiple stages.
+  * Example: A simulation with several steps, where all participants must complete each step before moving to the next.
+* **Dynamic Thread Participation**: If the number of threads may change dynamically during execution.
+  * Example: A program where threads are added or removed based on conditions.
+
+![img_62.png](img_62.png)
+
+**Real-World Use Case**
+* **Multistage Game Levels:** Synchronize players at checkpoints in different stages of a game.
+* **Pipeline Processing:** Tasks proceed in phases like loading, processing, and saving data.
+
+### 79. What is the Future interface?
+The `Future` interface in Java is part of the `java.util.concurrent` package. It represents the result of an asynchronous computation. A `Future` provides methods to check if the computation is complete, wait for its completion, and retrieve the result of the computation.
+
+**Key Characteristics**
+1. **Asynchronous Result Handling**: Used with tasks executed in a separate thread to manage the result or status.
+2. **Non-blocking and Blocking Operations**: Can check the task's completion status or block the calling thread until the task finishes.
+
+**How to Obtain a `Future` Object**\
+A `Future` object is typically returned when you submit a task to an **ExecutorService** using the `submit()` method.
+
+**Core Methods**
+1. `boolean cancel(boolean mayInterruptIfRunning)`\
+Attempts to cancel the execution of the task.
+
+    - Returns true if successful, false otherwise.
+    - If the task has already completed, it cannot be canceled.
+1. `boolean isCancelled()`\
+Checks if the task was canceled before it completed.
+
+3. `boolean isDone()`\
+Checks if the task has completed (either successfully, through cancellation, or due to an exception).
+
+4. `V get()`\
+Waits if necessary for the task to complete and then retrieves the result.
+
+   - Blocking: This method blocks until the computation finishes.
+5. `V get(long timeout, TimeUnit unit)`\
+Waits for a specified time for the task to complete.
+
+    - Throws a `TimeoutException` if the specified time elapses before completion.
+
+**Example Usage**
+```java
+import java.util.concurrent.*;
+
+public class FutureExample {
+
+    public static void main(String[] args) {
+        // Create an ExecutorService
+        ExecutorService executor = Executors.newSingleThreadExecutor();
+
+        // Submit a Callable task
+        Future<Integer> future = executor.submit(() -> {
+            System.out.println("Task is being executed...");
+            Thread.sleep(2000); // Simulate some work
+            return 42; // Return a result
+        });
+
+        try {
+            System.out.println("Doing some other work while the task runs...");
+            // Check if the task is done
+            if (!future.isDone()) {
+                System.out.println("Task is not done yet...");
+            }
+            // Get the result
+            Integer result = future.get(); // Blocks until the result is available
+            System.out.println("Task completed! Result: " + result);
+
+        } catch (InterruptedException | ExecutionException e) {
+            e.printStackTrace();
+        } finally {
+            executor.shutdown(); // Shut down the executor
+        }
+    }
+}
+
+```
+**Output**
+```
+Doing some other work while the task runs...
+Task is being executed...
+Task is not done yet...
+Task completed! Result: 42
+
+```
+**Limitations** **of** `Future`
+1. **No Callback Support:** You can't automatically execute a piece of code upon task completion.
+2. **Polling for Status:** You need to actively check if the task is done.
+3. **Enhanced Alternatives:** Java introduced `CompletableFuture` in Java 8, which addresses many of these limitations.
+
+**When to Use** `Future`
+* When you need to submit a task to an **ExecutorService** and later retrieve the result.
+* When you need basic control over asynchronous computation but don’t require advanced features like chaining or callbacks.
+
+**Alternatives to `Future`**
+* **CompletableFuture**: More powerful and flexible, supporting chaining, callbacks, and functional programming constructs.
+* **ForkJoinPool**: Useful for recursive, parallel processing tasks.
+
+### 80. Explain CompletableFuture in Java.
+`CompletableFuture` is a class in the `java.util.concurrent` package introduced in **Java 8**. It provides a powerful way to handle asynchronous programming and is part of the Java **Concurrency API**. Unlike the Future interface, `CompletableFuture` allows you to chain tasks, handle exceptions gracefully, and run tasks asynchronously with ease.
+
+**Key Features**
+1. **Non-blocking Operations:** Asynchronous programming without explicitly managing threads.
+2. **Task Chaining:** Allows you to chain multiple tasks together.
+3. **Callback Mechanism:** Provides methods to execute actions when a task is complete.
+4. **Exception Handling:** Built-in support for handling exceptions during task execution.
+5. **Combining Multiple Futures:** Combine results from multiple asynchronous tasks.
+6. **Functional Programming:** Works seamlessly with lambdas and method references.
+
+**How to Create a CompletableFuture**
+1. Manually Create a `CompletableFuture`
+```
+CompletableFuture<String> future = new CompletableFuture<>();
+
+```
+2. **Using Factory Methods:**
+
+* `supplyAsync()`: Executes a task asynchronously and returns a result.
+* `runAsync()`: Executes a task asynchronously but does not return a result.
+
+**Core Methods**
+1. **Creating Futures**
+
+* `supplyAsync(Supplier<T>)`: Runs a task asynchronously and returns the result.
+* `runAsync(Runnable)`: Runs a task asynchronously without returning a result.
+2. **Chaining Tasks**
+
+* `thenApply(Function<T, R>)`: Transforms the result of a task.
+* `thenAccept(Consumer<T>)`: Consumes the result without returning anything.
+* `thenRun(Runnable)`: Runs an additional task after the first one completes.
+3. **Combining Futures**
+
+* `thenCombine()`: Combines results of two independent `CompletableFutures`.
+* `allOf()`: Runs multiple tasks in parallel and waits for all to complete.
+* `anyOf()`: Runs multiple tasks and completes as soon as one finishes.
+4. **Exception Handling**
+
+* `exceptionally(Function<Throwable, T>)`: Provides a default value in case of an error.
+* `handle(BiFunction<T, Throwable, U>)`: Handles both success and failure cases.
+5. **Completing Futures**
+
+* `complete(T value)`: Manually completes a future with a result.
+* `completeExceptionally(Throwable ex)`: Manually completes a future with an exception.
+
+**Example 1: Basic Asynchronous Execution**
+
+```java
+import java.util.concurrent.CompletableFuture;
+
+public class CompletableFutureExample {
+    public static void main(String[] args) {
+        CompletableFuture<String> future = CompletableFuture.supplyAsync(() -> {
+            // Simulate a long-running task
+            try { Thread.sleep(2000); } catch (InterruptedException e) { }
+            return "Hello, World!";
+        });
+
+        future.thenAccept(result -> System.out.println("Result: " + result));
+
+        System.out.println("Doing something else while the task runs...");
+    }
+}
+
+```
+**Output**
+```
+Doing something else while the task runs...
+Result: Hello, World!
+```
+**Example 2: Chaining Tasks**
+```java
+public class CompletableFutureChaining {
+    public static void main(String[] args) {
+        CompletableFuture.supplyAsync(() -> {
+            return "Hello";
+        }).thenApply(result -> {
+            return result + ", World!";
+        }).thenAccept(System.out::println);
+    }
+}
+
+```
+**Output**
+```
+Hello, World!
+```
+**Example 3: Handling Exceptions**
+
+```java
+public class CompletableFutureExceptionHandling {
+    public static void main(String[] args) {
+        CompletableFuture.supplyAsync(() -> {
+            if (true) {
+                throw new RuntimeException("Something went wrong!");
+            }
+            return "Success!";
+        }).exceptionally(ex -> {
+            System.out.println("Exception: " + ex.getMessage());
+            return "Fallback Result";
+        }).thenAccept(System.out::println);
+    }
+}
+
+```
+**Output**
+```
+Exception: Something went wrong!
+Fallback Result
+```
+**Example 4: Combining Futures**
+```
+public class CompletableFutureCombining {
+    public static void main(String[] args) {
+        CompletableFuture<String> future1 = CompletableFuture.supplyAsync(() -> "Hello");
+        CompletableFuture<String> future2 = CompletableFuture.supplyAsync(() -> "World");
+
+        future1.thenCombine(future2, (result1, result2) -> result1 + " " + result2)
+               .thenAccept(System.out::println);
+    }
+}
+```
+**Output**
+```
+Hello World
+```
+
+**Advantages of CompletableFuture**
+* **Non-blocking**: Encourages asynchronous, non-blocking programming.
+* **Functional Style**: Works seamlessly with lambdas and streams.
+* **Exception Handling**: Provides robust mechanisms to handle errors.
+* **Flexibility**: Supports complex workflows involving multiple asynchronous tasks.
+
+**When to Use CompletableFuture**
+* When tasks can be performed asynchronously to improve performance.
+* When tasks depend on the results of other asynchronous tasks.
+* For handling workflows with complex dependencies between tasks.
+
+### 81. What is the ConcurrentHashMap?
+`ConcurrentHashMap` is part of the `java.util.concurrent` package and is designed for highly concurrent environments. It provides a thread-safe implementation of the **Map interface**, allowing multiple threads to read and write simultaneously without requiring external synchronization.
+
+**Key Features**
+1. **Thread-Safe:**
+
+* Enables safe access to the map by multiple threads.
+* Uses internal segmentation to reduce contention.
+2. **No Explicit Synchronization Required:**
+
+* Eliminates the need for manual synchronization blocks.
+* Achieves better performance compared to `Hashtable`.
+3. **Efficient Locking Mechanism:**
+
+* Uses a fine-grained locking mechanism called **bucket locking**.
+* Only locks the portion of the map being modified, allowing other operations to proceed concurrently.
+4. **Iterators Are Fail-Safe:**
+
+* Weakly consistent iterators do not throw `ConcurrentModificationException` if the map is modified during iteration.
+5. **Performance:**
+
+* High performance in multithreaded environments due to minimal blocking.
+
+![img_64.png](img_64.png)
+
+**How ConcurrentHashMap Works**
+* **Bucket Locking (Segmented Locking):**
+
+  * The map is divided into multiple segments (buckets).
+  * Each segment is independently locked during updates, reducing contention.
+  * Multiple threads can operate on different segments concurrently.
+* **Read Operations:**
+
+  * Do not require locking and can be performed concurrently by multiple threads.
+* **Write Operations**:
+
+  * Only lock the specific bucket being updated.
+
+**Important Methods**
+1. **Basic Operations:**
+
+* `put(K key, V value)`: Adds a key-value pair.
+* `get(Object key)`: Retrieves the value associated with the key.
+* `remove(Object key)`: Removes the mapping for a key.
+2. **Atomic Operations:**
+
+* `putIfAbsent(K key, V value)`: Inserts a key-value pair if the key is not already present.
+* `compute(K key, BiFunction)`: Updates a value for a key using a provided function.
+* `merge(K key, V value, BiFunction)`: Merges a new value with the existing value.
+3. **Bulk Operations:**
+
+* `forEach()`: Performs an action for each entry in the map.
+* `reduce()`: Combines entries using a reduction function.
+* `search()`: Searches for an entry matching a given condition.
+
+**Example Usage**\
+**Basic Operations**
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentHashMapExample {
+    public static void main(String[] args) {
+        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+        // Add key-value pairs
+        map.put("One", 1);
+        map.put("Two", 2);
+        map.put("Three", 3);
+
+        // Access value
+        System.out.println("Value for 'Two': " + map.get("Two"));
+
+        // Remove a key-value pair
+        map.remove("One");
+
+        System.out.println("Map after removal: " + map);
+    }
+}
+
+```
+**Output**
+```
+Value for 'Two': 2
+Map after removal: {Two=2, Three=3}
+```
+**Concurrent Updates**
+```java
+import java.util.concurrent.ConcurrentHashMap;
+
+public class ConcurrentUpdateExample {
+    public static void main(String[] args) {
+        ConcurrentHashMap<String, Integer> map = new ConcurrentHashMap<>();
+
+        // Using putIfAbsent
+        map.putIfAbsent("Key1", 10);
+        map.putIfAbsent("Key1", 20); // Will not overwrite
+        System.out.println(map.get("Key1")); // Output: 10
+
+        // Using compute
+        map.compute("Key1", (key, val) -> (val == null) ? 0 : val + 10);
+        System.out.println(map.get("Key1")); // Output: 20
+    }
+}
+
+```
+**Advantages of ConcurrentHashMap**
+1. **High Performance:** Ideal for high-concurrency environments due to segmented locking.
+2. **Thread Safety:** Eliminates the need for external synchronization.
+3. **Atomic Operations:** Built-in support for atomic updates.
+
+**Limitations**
+1. **Null Values Not Allowed**: Unlike HashMap, does not permit null keys or values.
+2. **Overhead**: Slight overhead due to internal synchronization mechanisms.
+
+**When to Use ConcurrentHashMap**
+* In applications requiring a thread-safe map with high performance.
+* For read-heavy and moderate write operations in concurrent environments.
+* When atomic operations are needed on a map.
+
+### 82. Explain the concept of thread priority.
+Thread priority is a concept in Java that determines the relative importance of a thread compared to other threads. The priority helps the thread scheduler decide the order in which threads should be executed when there is competition for CPU resources.
+
+**Key Points About Thread Priority**
+1. **Range of Priorities:**
+
+* The priority of a thread is represented by an integer value between `Thread.MIN_PRIORITY` (1) and `Thread.MAX_PRIORITY` (10).
+* The default priority of a thread is Thread.NORM_PRIORITY (5).
+2. **Thread Class Constants:**
+
+* `Thread.MIN_PRIORITY`: Minimum priority, value = 1.
+* `Thread.NORM_PRIORITY`: Normal priority, value = 5 (default).
+* `Thread.MAX_PRIORITY`: Maximum priority, value = 10.
+3. **How It Works:**
+
+* Threads with higher priority are more likely to be executed by the thread scheduler.
+* Thread scheduling in Java is handled by the underlying operating system, so the behavior of thread priority can vary.
+4. **Setting and Getting Priority:**
+
+* Use `setPriority(int priority)` to set the priority of a thread.
+* Use `getPriority()` to retrieve the priority of a thread.
+
+**Code Example**\
+**Setting Thread Priority**
+```java
+public class ThreadPriorityExample {
+    public static void main(String[] args) {
+        // Thread with default priority
+        Thread defaultPriorityThread = new Thread(() -> {
+            System.out.println("Default Priority Thread");
+        });
+
+        // Thread with high priority
+        Thread highPriorityThread = new Thread(() -> {
+            System.out.println("High Priority Thread");
+        });
+
+        // Thread with low priority
+        Thread lowPriorityThread = new Thread(() -> {
+            System.out.println("Low Priority Thread");
+        });
+
+        // Set priorities
+        defaultPriorityThread.setPriority(Thread.NORM_PRIORITY);
+        highPriorityThread.setPriority(Thread.MAX_PRIORITY);
+        lowPriorityThread.setPriority(Thread.MIN_PRIORITY);
+
+        // Start threads
+        lowPriorityThread.start();
+        defaultPriorityThread.start();
+        highPriorityThread.start();
+    }
+}
+
+```
+**Output**\
+The actual output order depends on the thread scheduler of the operating system. On some systems, higher-priority threads might execute first, but priority does not guarantee execution order.
+
+**Points to Note**
+1. **Priority Is a Hint:**
+
+* Thread priority serves as a suggestion to the thread scheduler.
+* It does not guarantee that a higher-priority thread will always execute before lower-priority threads.
+2. **Platform Dependency:**
+
+* The implementation of thread scheduling and priority handling is platform-dependent.
+* Some systems may ignore thread priorities entirely.
+3. **Avoid Overusing Priorities:**
+
+* Relying heavily on thread priorities for program correctness is discouraged because of platform-specific behavior.
+* It is better to design applications with proper synchronization and task management mechanisms.
+
+**When to Use Thread Priority**
+1. In real-time or time-sensitive applications where certain tasks are more critical than others.
+2. When working with tasks that have varying importance levels, and prioritization can optimize performance.
+
+### 83. What is the difference between sleep() and wait()?
+Both `sleep()` and `wait()` are used to pause the execution of a thread, but they serve different purposes and operate in distinct contexts. Here's a detailed comparison:
+
+![img_65.png](img_65.png)
+
+**Key Differences**
+1. **Synchronization**:
+
+* `sleep()` does not require synchronization; it is independent of any lock or monitor.
+* `wait()` must be called within a synchronized block or method because it interacts with the object's intrinsic lock.
+2. **Lock Behavior:**
+
+* `sleep()` does not release any locks while the thread is sleeping.
+* `wait()` releases the lock on the object it is called on, allowing other threads to access the synchronized block or method.
+3. **Purpose:**
+
+* `sleep()` is mainly used for delays or pauses in execution for a fixed duration.
+* `wait()` is used in inter-thread communication, often in producer-consumer problems.
+
+**Code Examples**\
+**Using** `sleep()`
+
+```java
+public class SleepExample {
+    public static void main(String[] args) {
+        Thread thread = new Thread(() -> {
+            System.out.println("Thread is going to sleep...");
+            try {
+                Thread.sleep(2000); // Sleep for 2 seconds
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            System.out.println("Thread woke up!");
+        });
+        thread.start();
+    }
+}
+
+```
+**Using `wait()`**
+```java
+public class WaitExample {
+    public static void main(String[] args) {
+        Object lock = new Object();
+
+        Thread waitingThread = new Thread(() -> {
+            synchronized (lock) {
+                try {
+                    System.out.println("Thread is waiting...");
+                    lock.wait(); // Waits until notified
+                    System.out.println("Thread resumed!");
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+        });
+
+        Thread notifyingThread = new Thread(() -> {
+            synchronized (lock) {
+                try {
+                    Thread.sleep(1000); // Delay to ensure waitingThread starts first
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                System.out.println("Notifying waiting thread...");
+                lock.notify(); // Notify the waiting thread
+            }
+        });
+
+        waitingThread.start();
+        notifyingThread.start();
+    }
+}
+
+```
+**Output**\
+`sleep()` **Example**
+```
+Thread is going to sleep...
+Thread woke up!
+
+```
+`wait()` **Example**
+```
+Thread is waiting...
+Notifying waiting thread...
+Thread resumed!
+```
+**When to Use**
+1. Use `sleep()` for time-based delays or when no synchronization is required.
+2. Use w`ait()` for inter-thread communication and synchronization when threads need to wait for certain conditions.
+
+### 83. What is the difference between join() and yield()?
+
+Both `join()` and `yield()` are related to thread management, but they serve entirely different purposes and are used in distinct scenarios. Here's a detailed comparison:
+
+![img_66.png](img_66.png)
+
+**Key Differences**
+1. **Purpose:**
+
+* `join()` is used for thread synchronization, ensuring one thread completes before another continues.
+* `yield()` is used for cooperative multitasking, signaling to the thread scheduler that the current thread can be paused to allow others to execute.
+2. **Thread Behavior:**
+
+* `join()` puts the current thread into a **WAITING** state until the specified thread completes.
+* `yield()` keeps the thread in a RUNNABLE state, and the scheduler decides if it should pause or continue.
+3. **Impact:**
+
+* `join()` guarantees that a thread will wait for another to complete.
+* `yield()` does not guarantee any specific behavior as it depends on the thread scheduler.
+
+**Code Examples**\
+**Using** `join()`
+```java
+public class JoinExample {
+    public static void main(String[] args) {
+        Thread thread1 = new Thread(() -> {
+            try {
+                Thread.sleep(2000); // Simulating work
+                System.out.println("Thread 1 completed.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        Thread thread2 = new Thread(() -> {
+            try {
+                thread1.join(); // Wait for thread1 to complete
+                System.out.println("Thread 2 completed after Thread 1.");
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        });
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+```
+**Using** `yield()`
+```java
+public class YieldExample {
+    public static void main(String[] args) {
+        Runnable task = () -> {
+            for (int i = 0; i < 5; i++) {
+                System.out.println(Thread.currentThread().getName() + " - " + i);
+                Thread.yield(); // Hint to the scheduler
+            }
+        };
+
+        Thread thread1 = new Thread(task, "Thread 1");
+        Thread thread2 = new Thread(task, "Thread 2");
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+```
+**Output**\
+`join()` **Example**
+```
+Thread 1 completed.
+Thread 2 completed after Thread 1.
+```
+`yield()` **Example**
+```
+Thread 1 - 0
+Thread 2 - 0
+Thread 1 - 1
+Thread 2 - 1
+Thread 1 - 2
+Thread 2 - 2
+...
+```
+(Note: The exact output for `yield()` depends on the thread scheduler and may vary.)
+
+**When to Use**
+* Use `join()` when you need to enforce an order of execution between threads (e.g., thread dependency scenarios).
+* Use `yield()` to improve CPU time-sharing and let other threads of the same priority execute, though its behavior is platform-dependent and not guaranteed.
+
+### 84. What is the difference between start() and run()?
+In Java, `start()` and `run()` are both methods of the `Thread` class, and while they seem similar, they serve very different purposes. Below is a detailed comparison:
+
+![img_67.png](img_67.png)
+
+**Key Differences**
+1. **Thread Lifecycle:**
+
+* `start()` triggers the thread lifecycle, causing the thread to move through states like **READY**, **RUNNING**, and eventually **TERMINATED**.
+* `run()` does not trigger any thread lifecycle management. It simply executes the run() method in the context of the current thread.
+2. **Concurrency:**
+
+* With `start()`, multiple threads can run concurrently.
+* With `run()`, the method runs synchronously, blocking the current thread until the execution is complete.
+3. **Behavior:**
+
+* Calling `start()` ensures the JVM creates a new thread and delegates execution of the run() method to that thread.
+* Calling `run()` directly bypasses the creation of a new thread, treating it as a standard method call.
+
+**Code Examples**\
+**Using** `start()`
+```java
+public class StartExample extends Thread {
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running.");
+    }
+
+    public static void main(String[] args) {
+        StartExample thread1 = new StartExample();
+        StartExample thread2 = new StartExample();
+
+        thread1.start(); // Creates a new thread
+        thread2.start(); // Creates another new thread
+    }
+}
+
+```
+**Output**
+```
+Thread-0 is running.
+Thread-1 is running.
+
+```
+**Using** `run()`
+```java
+public class RunExample extends Thread {
+    @Override
+    public void run() {
+        System.out.println(Thread.currentThread().getName() + " is running.");
+    }
+
+    public static void main(String[] args) {
+        RunExample thread1 = new RunExample();
+        RunExample thread2 = new RunExample();
+
+        thread1.run(); // No new thread; runs in the main thread
+        thread2.run(); // Executes after thread1.run()
+    }
+}
+
+```
+**Output**
+
+```
+main is running.
+main is running.
+```
+
+**Key Observations**
+1. When you call `start()`, the `run()` method is executed by a separate thread.
+2. When you call `run()` directly, the method is executed as a normal function in the **main thread** (or whichever thread invoked it).
+
+**Best Practices**
+* **Always use** `start()` to achieve multithreading.
+* **Do not directly call** `run()` unless you explicitly want the thread logic to run on the current thread (rare scenario).
+
+### 85. What is the purpose of the ScheduledExecutorService?
+
+The `ScheduledExecutorService` is a specialized interface in the `java.util.concurrent` package used for scheduling tasks to execute after a delay or periodically. It extends the `ExecutorService` interface and provides methods specifically designed for delayed and periodic task execution.
+
+**Purpose of ScheduledExecutorService**
+1. **Delayed Task Execution:**
+
+   * Schedule a task to execute once after a specified delay.
+2. **Periodic Task Execution:**
+
+   * Schedule tasks to run repeatedly with a fixed delay between executions or at a fixed rate.
+3. **Efficient Resource Management:**
+
+   * Provides thread pooling for scheduled tasks, improving resource usage and performance.
+4. **Concurrency Support:**
+
+   * Handles task execution in a multithreaded environment while managing delays and periodic intervals.
+
+
+![img_68.png](img_68.png)
+
+**Examples**
+1. **Scheduling a Task with a Delay**
+
+```java
+import java.util.concurrent.*;
+
+public class ScheduledTaskExample {
+    public static void main(String[] args) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () -> System.out.println("Task executed after 3 seconds delay");
+        
+        scheduler.schedule(task, 3, TimeUnit.SECONDS);
+
+        scheduler.shutdown();
+    }
+}
+
+```
+**Output**
+```
+Task executed after 3 seconds delay
+```
+2. **Scheduling a Task at a Fixed Rate**
+```java
+import java.util.concurrent.*;
+
+public class FixedRateExample {
+    public static void main(String[] args) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () -> System.out.println("Executing task at fixed rate: " + System.currentTimeMillis());
+
+        scheduler.scheduleAtFixedRate(task, 2, 5, TimeUnit.SECONDS);
+    }
+}
+
+```
+**Explanation:**
+
+* The task starts after an initial delay of 2 seconds.
+* Subsequent executions happen every 5 seconds, irrespective of the task's execution time.
+
+3. **Scheduling a Task with a Fixed Delay**
+```java
+import java.util.concurrent.*;
+
+public class FixedDelayExample {
+    public static void main(String[] args) {
+        ScheduledExecutorService scheduler = Executors.newScheduledThreadPool(1);
+
+        Runnable task = () -> {
+            System.out.println("Executing task with fixed delay: " + System.currentTimeMillis());
+            try {
+                Thread.sleep(2000); // Simulate task duration
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        };
+
+        scheduler.scheduleWithFixedDelay(task, 1, 3, TimeUnit.SECONDS);
+    }
+}
+
+```
+**Explanation:**
+
+* The task starts after an initial delay of 1 second.
+* The next execution begins 3 seconds after the previous execution completes.
+
+![img_69.png](img_69.png)
+
+**Advantages of ScheduledExecutorService**
+1. **Thread Pooling:**
+
+    - Unlike `Timer`, it uses a thread pool, reducing the risk of single-threaded bottlenecks.
+2. **Concurrent Execution:**
+
+    - Supports concurrent scheduling of multiple tasks.
+3. **Robustness:**
+
+    - Handles exceptions in scheduled tasks without crashing the entire service.
+4. **Flexibility:**
+
+    - Offers more granular control compared to alternatives like `Timer`.
+
+**Best Practices**
+1. Always shut down the `ScheduledExecutorService` using `shutdown()` or `shutdownNow()` to free resources.
+2. Use `scheduleAtFixedRate` for time-critical tasks and `scheduleWithFixedDelay` for tasks that depend on completion time.
+3. Use appropriate exception handling in tasks to avoid disrupting the thread pool.
+4. Set an adequate thread pool size based on your application's requirements.
+
+### 86. What is the difference between parallelism and concurrency?
+![img_70.png](img_70.png)
+
+**Concurrency in Java**
+Concurrency in Java is supported through multithreading. Tasks can be interleaved using constructs like:
+
+* Threads (`Thread` class and `Runnable` interface)
+* `ExecutorService` for thread management
+* Synchronization mechanisms like `synchronized`, `Lock`, and `Semaphore`.
+
+**Example of Concurrency:**
+```java
+public class ConcurrencyExample {
+    public static void main(String[] args) {
+        Runnable task1 = () -> System.out.println("Task 1 executed by " + Thread.currentThread().getName());
+        Runnable task2 = () -> System.out.println("Task 2 executed by " + Thread.currentThread().getName());
+
+        Thread thread1 = new Thread(task1);
+        Thread thread2 = new Thread(task2);
+
+        thread1.start();
+        thread2.start();
+    }
+}
+
+```
+Output:
+
+- Tasks might execute in an interleaved order depending on the scheduler.
+
+**Parallelism in Java**
+Parallelism involves dividing tasks into smaller subtasks and running them simultaneously, often with the help of frameworks like:
+
+* Fork/Join Framework
+* Parallel Streams in Java 8+
+* `CompletableFuture`
+
+**Example of Parallelism:**
+```java
+import java.util.stream.IntStream;
+
+public class ParallelismExample {
+    public static void main(String[] args) {
+        IntStream.range(1, 10)
+                 .parallel()
+                 .forEach(i -> System.out.println("Task " + i + " executed by " + Thread.currentThread().getName()));
+    }
+}
+
+```
+Output:
+
+- Tasks will be executed simultaneously by different threads.
+
+**Concurrency and Parallelism Together**
+In modern systems, concurrency and parallelism often coexist:
+
+1. Concurrency handles the ability to manage multiple tasks.
+2. Parallelism boosts performance by executing tasks simultaneously.
+
+For example, a web server may concurrently handle multiple client requests (I/O-bound) and parallelize some of their computational work on different CPU cores.
+
+### 87. Explain thread synchronization with an example.
+
+Thread synchronization is the process of controlling access to shared resources in a multithreaded environment to prevent **race conditions** and ensure **data consistency**.
+
+Java provides several mechanisms for synchronization, such as:
+
+1. **Synchronized keyword**
+2. **Locks (e.g., ReentrantLock)**
+3. **Atomic variables**
+4. **Other high-level constructs like Semaphore, CountDownLatch, etc.**
+
+**Why is Synchronization Needed?**
+When multiple threads access a shared resource (e.g., a variable, file, or database) simultaneously, it can lead to:
+
+* **Race conditions:** Two or more threads modify a resource simultaneously, leading to unexpected behavior.
+* **Data inconsistency:** Data may become corrupted if not handled properly.
+
+**Synchronized Keyword**
+**Types of Synchronization**
+* **Synchronized Method:** Entire method is synchronized, allowing only one thread to access it at a time.
+* **Synchronized Block:** A block of code is synchronized, allowing finer control.
+
+**Syntax**
+```java
+synchronized(object) {
+    // Critical section
+}
+
+```
+**Example of Thread Synchronization**
+**Without Synchronization (Problem Scenario)**
+```java
+class Counter {
+    private int count = 0;
+
+    public void increment() {
+        count++; // Critical section
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+public class SynchronizationDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Runnable task = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        };
+
+        Thread thread1 = new Thread(task);
+        Thread thread2 = new Thread(task);
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        System.out.println("Final Count: " + counter.getCount());
+    }
+}
+
+```
+**Output (Inconsistent Result):**\
+The final count may vary and be less than 2000 due to race conditions.
+
+**With Synchronization**
+```java
+class Counter {
+    private int count = 0;
+
+    public synchronized void increment() {
+        count++; // Critical section
+    }
+
+    public synchronized int getCount() {
+        return count;
+    }
+}
+
+public class SynchronizationDemo {
+    public static void main(String[] args) throws InterruptedException {
+        Counter counter = new Counter();
+
+        Runnable task = () -> {
+            for (int i = 0; i < 1000; i++) {
+                counter.increment();
+            }
+        };
+
+        Thread thread1 = new Thread(task);
+        Thread thread2 = new Thread(task);
+
+        thread1.start();
+        thread2.start();
+
+        thread1.join();
+        thread2.join();
+
+        System.out.println("Final Count: " + counter.getCount());
+    }
+}
+
+```
+**Output (Consistent Result):**\
+The final count will always be `2000`.
+
+**Synchronized Block (Finer Control)**\
+Instead of synchronizing the entire method, you can synchronize only the critical section.
+
+```java
+class Counter {
+    private int count = 0;
+
+    public void increment() {
+        synchronized (this) {
+            count++; // Only this section is synchronized
+        }
+    }
+
+    public int getCount() {
+        return count;
+    }
+}
+
+```
+**Key Points About Synchronization**
+1. **Object-Level Lock:** `synchronized` keyword locks the object, allowing only one thread to access the critical section.
+2. **Class-Level Lock:** Use `static synchronized` methods for locking at the class level.
+3. **Performance Impact:** Synchronization adds overhead, so it should be used only when necessary.
+4. **Deadlock Risk:** Improper use of synchronization can lead to deadlocks.
+
+By using thread synchronization effectively, you can ensure safe and consistent access to shared resources in a multithreaded application.
+
+### 88. What is functional programming in Java?
+Functional programming is a programming paradigm that focuses on **using functions** as the primary building blocks for program logic. It emphasizes **immutability**, **statelessness**, and **declarative** **programming** over traditional imperative programming.
+
+In Java, functional programming is supported through features introduced in **Java 8** and later, such as **lambda expressions**, streams, and **functional interfaces**.
+
+**Core Concepts of Functional Programming**
+1. **Pure Functions:**
+
+* A function is pure if it:
+  * Does not modify any external state (statelessness).
+  * Returns the same output for the same input every time.
+2. **Immutability:**
+
+* Data structures and variables should not be modified once created.
+3. **First-Class Functions:**
+
+* Functions can be assigned to variables, passed as arguments, or returned as results.
+4. **Higher-Order Functions:**
+
+* Functions that accept other functions as parameters or return them as results.
+5. **Declarative Programming:**
+
+* Focuses on "what to do" rather than "how to do it."
+
+**Functional Programming Features in Java**
+1. **Lambda Expressions**
+- Introduced in Java 8, they enable you to create anonymous functions.
+- Syntax:
+```
+(parameters) -> expression
+```
+**Example**
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+numbers.forEach(n -> System.out.println(n));
+
+```
+2. **Functional Interfaces**
+- Interfaces with a single abstract method (SAM), such as `Runnable`, `Comparator`, and `Function`.
+- Annotated with `@FunctionalInterface`.
+
+**Example**
+```java
+@FunctionalInterface
+interface Greeting {
+    void sayHello();
+}
+
+public class FunctionalDemo {
+    public static void main(String[] args) {
+        Greeting greeting = () -> System.out.println("Hello, Functional Programming!");
+        greeting.sayHello();
+    }
+}
+
+```
+3. **Stream API**
+- Provides a declarative way to process collections of data.
+- Operations: map, filter, reduce, collect, etc.
+
+**Example**
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+List<Integer> evenNumbers = numbers.stream()
+                                    .filter(n -> n % 2 == 0)
+                                    .collect(Collectors.toList());
+
+System.out.println(evenNumbers); // Output: [2, 4]
+```
+4. **Method References**
+- A shorthand for lambda expressions calling existing methods.
+- Syntax:
+```java
+ClassName::methodName
+```
+**Example**
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+names.forEach(System.out::println);
+
+```
+5. **Optional Class**
+- Handles null values more gracefully and avoids NullPointerException.
+**Example**:
+```java
+Optional<String> optionalName = Optional.of("Alice");
+
+optionalName.ifPresent(name -> System.out.println("Name: " + name));
+
+```
+**Benefits of Functional Programming**
+* **Improved Readability**: Code is more concise and easier to understand.
+* **Better Parallelism**: Statelessness makes it easier to write concurrent programs.
+* **Less Error-Prone**: Focus on immutability reduces side effects.
+* **Reusability**: Functions are self-contained and reusable.
+
+**Example: Imperative vs. Functional Programming**
+**Imperative Approach (Traditional Java)**
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+List<Integer> evenNumbers = new ArrayList<>();
+
+for (Integer number : numbers) {
+    if (number % 2 == 0) {
+        evenNumbers.add(number);
+    }
+}
+
+System.out.println(evenNumbers); // Output: [2, 4]
+
+```
+**Functional Approach**
+```java
+List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+List<Integer> evenNumbers = numbers.stream()
+                                   .filter(n -> n % 2 == 0)
+                                   .collect(Collectors.toList());
+
+System.out.println(evenNumbers); // Output: [2, 4]
+
+```
+**Key Functional Interfaces in Java**
+- **Predicate**: Represents a condition that returns a boolean value.
+```java
+Predicate<Integer> isEven = n -> n % 2 == 0;
+
+```
+- **Function**: Represents a function that takes an input and returns an output.
+```java
+Function<Integer, String> intToString = n -> "Number: " + n;
+
+```
+- **Consumer**: Represents an operation that takes an input but returns nothing.
+```java
+Consumer<String> print = System.out::println;
+
+```
+- **Supplier**: Represents a function that provides a value without taking any input.
+
+```java
+Supplier<Double> random = Math::random;
+
+```
+### 89. What are lambda expressions in Java?
+A **lambda expression** is a short block of code that takes in parameters and returns a value. Lambda expressions allow you to treat functionality as a method argument, or to create a **function** that can be passed around.
+
+Lambda expressions in Java were introduced in **Java 8** as a way to provide clear and concise syntax for writing anonymous methods (implementing interfaces with a single method, also known as **functional interfaces**).
+
+**Syntax of Lambda Expression**
+The general syntax of a lambda expression is as follows
+```java
+(parameters) -> expression
+```
+Or, if the body has multiple statements:
+```java
+(parameters) -> { statements }
+
+```
+**Components of a Lambda Expression**
+1. **Parameters**: The input parameters for the lambda expression, similar to the parameters in a method.
+2. **Arrow Token** (`->`): It separates the parameters from the body of the lambda expression.
+3. **Body**: The logic that is executed when the lambda is invoked. It can either be a single expression or a block of code.
+
+**Example of a Simple Lambda Expression**
+```java
+// Lambda expression that prints a message
+Runnable greet = () -> System.out.println("Hello, World!");
+greet.run(); // Output: Hello, World!
+
+```
+In the above example:
+
+* The **parameter list** is empty because `Runnable` does not require any parameters.
+* The **body** consists of a single expression that prints a message.
+
+**Lambda Expression Examples**
+1. **Using Lambda with Runnable**
+```java
+Runnable r = () -> System.out.println("This is a simple runnable.");
+r.run();  // Output: This is a simple runnable.
+
+```
+2. **Using Lambda with Comparator**
+```java
+List<Integer> numbers = Arrays.asList(3, 1, 4, 1, 5, 9, 2, 6, 5, 3, 5);
+
+Collections.sort(numbers, (a, b) -> a.compareTo(b));
+
+System.out.println(numbers);  // Output: [1, 1, 2, 3, 3, 4, 5, 5, 5, 6, 9]
+
+```
+3. **Using Lambda with forEach Method**
+```java
+List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+names.forEach(name -> System.out.println(name));  // Output: Alice, Bob, Charlie
+
+```
+4. **Lambda Expression with Parameters**
+```java
+BiFunction<Integer, Integer, Integer> add = (a, b) -> a + b;
+System.out.println(add.apply(5, 10));  // Output: 15
+
+```
+5. **Lambda with Multiple Statements**
+```java
+BinaryOperator<Integer> multiply = (a, b) -> {
+    int result = a * b;
+    return result;
+};
+System.out.println(multiply.apply(5, 4));  // Output: 20
+
+```
+Functional Interfaces
+Lambda expressions work best when used with **functional interfaces**, which are interfaces with a **single abstract method** (SAM). Some commonly used functional interfaces in Java are:
+
+* `Runnable`: Represents a task that can be executed.
+* `Callable`: Similar to Runnable, but can return a result or throw an exception.
+* `Comparator`: Used to compare two objects.
+* `Predicate`: Represents a condition that returns a boolean value.
+* `Function`: Takes an input and produces a result.
+* `Consumer`: Accepts an argument and performs some operation without returning a result.
+* `Supplier`: Supplies a result, but takes no input.
+
+**Why Use Lambda Expressions?**
+1. **Concise and Readable Code:** Lambda expressions can significantly reduce boilerplate code, making it easier to understand.
+2. **Functional Programming:** Supports functional programming paradigms like passing functions as parameters, returning functions, etc.
+3. **Facilitates Parallel Processing:** Lambda expressions work well with the **Streams API**, enabling efficient and easy parallel processing of data.
+4. **Improves Maintainability:** Code with lambda expressions is usually more modular and easier to maintain.
+
+**Example: Lambda in Stream API**
+```java
+List<String> names = Arrays.asList("John", "Jane", "Jack", "Jill");
+
+names.stream()
+     .filter(name -> name.startsWith("J"))
+     .forEach(System.out::println);  // Output: John, Jane, Jack, Jill
+
+```
+In the above example, we use a lambda expression to filter the names that start with "J" and then print them.
+
+### 90. What are method references in Java?
+A **method reference** is a shorthand notation of a lambda expression to call a method. It allows you to refer to a method directly by its name, and it can be used to replace the lambda expression where the lambda expression is simply calling a method. Method references improve code readability and reduce verbosity.
+
+Method references are used primarily to call an existing method with a specific signature, and they can be applied in places where functional interfaces are expected (e.g., `Runnable`, `Consumer`, `Function`, etc.).
+
+**Syntax of Method References**\
+The syntax of method references is:
+```java
+ClassName::methodName
+
+```
+The method reference is made up of the class name and the method name, separated by a double colon (::).
+
+**Types of Method References**\
+There are four types of method references in Java:
+
+1. **Reference to a Static Method**
+2. **Reference to an Instance Method of a Particular Object**
+3. **Reference to an Instance Method of an Arbitrary Object of a Particular Type**
+4. **Reference to a Constructor**
+
+1. **Reference to a Static Method**\
+   A method reference can point to a static method in a class. In this case, the method reference syntax is:
+```
+ClassName::staticMethodName
+```
+**Example**
+````java
+class MathOperations {
+    public static int add(int a, int b) {
+        return a + b;
+    }
+}
+
+public class MethodReferenceExample {
+    public static void main(String[] args) {
+        // Using method reference
+        BinaryOperator<Integer> add = MathOperations::add;
+        System.out.println(add.apply(10, 20));  // Output: 30
+    }
+}
+
+````
+In this example, `MathOperations::add` is a reference to the static method add of the `MathOperations` class.
+
+2. **Reference to an Instance Method of a Particular Object**\
+   A method reference can refer to an instance method of a particular object. The syntax for this type is:
+```
+instance::instanceMethod
+```
+**Example**
+```java
+class Printer {
+    public void printMessage(String message) {
+        System.out.println(message);
+    }
+}
+
+public class MethodReferenceExample {
+    public static void main(String[] args) {
+        Printer printer = new Printer();
+        
+        // Using method reference to an instance method of a particular object
+        Consumer<String> printConsumer = printer::printMessage;
+        printConsumer.accept("Hello, Method References!");  // Output: Hello, Method References!
+    }
+}
+
+```
+Here, `printer::printMessage` is a reference to the `printMessage` instance method of the `printer` object.
+
+3. **Reference to an Instance Method of an Arbitrary Object of a Particular Type**\
+   A method reference can refer to an instance method of any object of a particular type. This is typically used when working with collections, where a method reference is applied to objects in the collection.
+
+The syntax is:
+```
+ClassName::instanceMethod
+```
+**Example**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class MethodReferenceExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        // Using method reference to an instance method of arbitrary object
+        names.forEach(System.out::println);  // Output: Alice Bob Charlie
+    }
+}
+
+```
+In this example, `System.out::println` is a reference to the `println` method of the `System.out` object (which is an instance of `PrintStream`).
+4. **Reference to a Constructor**\
+   Method references can also refer to a constructor. This is particularly useful when you need to create new instances of a class using functional interfaces that require a constructor reference.
+
+The syntax for constructor reference is:
+```
+ClassName::new
+
+```
+**Example**
+```java
+import java.util.function.Supplier;
+
+class Person {
+    private String name;
+
+    public Person(String name) {
+        this.name = name;
+    }
+
+    public void introduce() {
+        System.out.println("Hello, my name is " + name);
+    }
+}
+
+public class MethodReferenceExample {
+    public static void main(String[] args) {
+        // Using constructor reference to create a new instance of Person
+        Supplier<Person> personSupplier = () -> new Person("John");
+        personSupplier.get().introduce();  // Output: Hello, my name is John
+        
+        // Using method reference for the same
+        Supplier<Person> personSupplierRef = Person::new;
+        personSupplierRef.get().introduce();  // Output: Hello, my name is null
+    }
+}
+
+```
+Here, `Person::new` is a reference to the constructor of the `Person` class. It is used to instantiate new Person objects.
+
+**Advantages of Method References**
+1. **Concise Code**: Method references make code more concise and readable compared to lambda expressions.
+2. **Improved Maintainability:** By using method references, the code is easier to maintain, as the actual method can be reused wherever necessary.
+3. **Functional Programming:** Method references promote functional programming by making it easy to pass methods as arguments or return methods from other methods.
+
+### 91. What is the difference between map() and flatMap() in streams?
+In Java Streams, both` map()` and `flatMap()` are operations used to transform elements. However, they differ in the way they handle transformations, especially when the transformation results in nested structures.
+
+1. `map()`\
+   The `map()` function is used to transform each element of the stream into another element. It applies a function to each element and returns a new stream of transformed elements. The key here is that the transformation does not flatten any nested structures. If the function applied to each element results in a collection or a stream, the result will still be a stream of collections, i.e., the structure remains nested.
+
+Syntax of `map()`:
+```java
+Stream<T> map(Function<? super T, ? extends R> mapper)
+
+```
+- The `map()` function takes a `Function` and applies it to each element of the stream, producing a new element for each.
+
+**Example**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MapExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("Java", "Stream", "Map");
+
+        // Using map to convert each string to its uppercase form
+        List<String> uppercaseWords = words.stream()
+                                           .map(String::toUpperCase)
+                                           .collect(Collectors.toList());
+
+        System.out.println(uppercaseWords);  // Output: [JAVA, STREAM, MAP]
+    }
+}
+
+```
+In this case, `map()` applies the `toUpperCase` transformation to each element, resulting in a new stream with uppercase strings.
+
+2. `flatMap()`\
+   The `flatMap()` function is used to transform each element into **zero or more** elements. It is primarily used when the transformation produces a **nested structure**, such as a stream or a collection, and the result needs to be flattened into a single stream.
+
+In other words, while map() wraps the result into another stream or collection, flatMap() flattens that structure, so you get a single, unified stream.
+
+Syntax of `flatMap()`:
+```java
+Stream<T> flatMap(Function<? super T, ? extends Stream<? extends R>> mapper)
+
+```
+- The `flatMap()` function applies the mapping function to each element and then **flattens** the resulting streams into a single stream.
+
+**Example**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FlatMapExample {
+    public static void main(String[] args) {
+        List<List<String>> nestedList = Arrays.asList(
+            Arrays.asList("Java", "Stream"),
+            Arrays.asList("Map", "FlatMap")
+        );
+
+        // Using flatMap to flatten the nested lists into a single list
+        List<String> flatList = nestedList.stream()
+                                          .flatMap(List::stream)
+                                          .collect(Collectors.toList());
+
+        System.out.println(flatList);  // Output: [Java, Stream, Map, FlatMap]
+    }
+}
+```
+In this case, `flatMap()` takes each list in the nested list and "flattens" it into a single stream of strings. The result is a single, unified stream of elements.
+![img_71.png](img_71.png)
+
+**When to Use Each?**
+* Use `map()` when you are applying a transformation to each element, and you do not need to flatten the result (e.g., converting strings to uppercase, applying simple transformations).
+* Use `flatMap()` when the transformation produces a nested structure (such as a list or a stream), and you want to flatten those structures into a single unified stream (e.g., splitting strings into words, merging multiple streams).
+
+**Example Comparison:**\
+Consider a situation where we want to split a sentence into words.
+
+Using `map()`:
+```java
+List<String> sentences = Arrays.asList("Java Streams", "FlatMap Example");
+
+List<List<String>> words = sentences.stream()
+                                    .map(sentence -> Arrays.asList(sentence.split(" ")))
+                                    .collect(Collectors.toList());
+
+System.out.println(words);  // Output: [[Java, Streams], [FlatMap, Example]]
+
+```
+Here, `map()` creates a list of lists, keeping the nested structure.
+
+**Using** `flatMap()`:
+```java
+List<String> sentences = Arrays.asList("Java Streams", "FlatMap Example");
+
+List<String> words = sentences.stream()
+                               .flatMap(sentence -> Arrays.stream(sentence.split(" ")))
+                               .collect(Collectors.toList());
+
+System.out.println(words);  // Output: [Java, Streams, FlatMap, Example]
+
+```
+With `flatMap()`, the nested structure is flattened, and we get a single list of words.
+
+### 92. How do you filter elements in a stream?
+In Java, you can filter elements in a stream using the `filter(`) method. The `filter()` method is an intermediate operation that takes a **predicate** (a function that returns a boolean value) to test each element in the stream. It returns a new stream that contains only the elements that satisfy the predicate condition.
+
+Syntax of `filter()`
+```java
+Stream<T> filter(Predicate<? super T> predicate)
+
+```
+- **Predicate**: A functional interface that represents a condition (a boolean test) to apply to each element.
+
+**Steps to Filter Elements in a Stream:**
+1. **Create a Stream**: Begin by creating a stream of elements.
+2. **Apply the** `filter()` **Method**: Pass a Predicate that defines the condition to test each element.
+3. **Process the Filtered Stream**: The `filter()` method returns a new stream containing only the elements that satisfy the condition.
+
+**Example 1: Filter Elements in a List**\
+Let's say we have a list of numbers, and we want to filter out only the even numbers.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class FilterExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        // Using filter to get even numbers
+        List<Integer> evenNumbers = numbers.stream()
+                                           .filter(n -> n % 2 == 0)  // Predicate to check if the number is even
+                                           .collect(Collectors.toList());
+
+        System.out.println(evenNumbers);  // Output: [2, 4, 6, 8, 10]
+    }
+}
+
+```
+In this example, the `filter()` method checks each element using the condition `n -> n % 2 == 0` (which tests if the number is even). Only the even numbers are included in the resulting list.
+
+**Example 2: Filter Strings Based on Length**\
+Suppose you have a list of strings, and you want to filter out the strings that are longer than 3 characters.
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StringFilterExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("Java", "Stream", "Map", "API", "Lambda");
+
+        // Using filter to get words with length greater than 3
+        List<String> longWords = words.stream()
+                                      .filter(word -> word.length() > 3)
+                                      .collect(Collectors.toList());
+
+        System.out.println(longWords);  // Output: [Java, Stream, Lambda]
+    }
+}
+
+```
+n this case, the `filter()` method is used to check if the length of each string is greater than 3. The resulting stream contains only the strings that satisfy this condition.
+
+**Chaining** `filter()` **with Other Operations**
+You can chain `filter()` with other stream operations such as `map()`, `sorted()`, and `forEach()` to further process the filtered elements.
+
+Example: Chaining with `map()` and `sorted()`
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class ChainingExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("Java", "Stream", "Map", "API", "Lambda");
+
+        // Using filter, map, and sorted
+        List<String> result = words.stream()
+                                   .filter(word -> word.length() > 3)      // Filter words longer than 3 characters
+                                   .map(String::toUpperCase)               // Convert them to uppercase
+                                   .sorted()                               // Sort alphabetically
+                                   .collect(Collectors.toList());
+
+        System.out.println(result);  // Output: [JAVA, LAMBDA, STREAM]
+    }
+}
+```
+In this example, we chain multiple stream operations:
+
+`filter()`: Filters words with more than 3 characters.
+`map()`: Converts the words to uppercase.
+`sorted()`: Sorts the words alphabetically.
+
+### 93. What is the purpose of reduce() in streams?
+
+The `reduce()` method in Java Streams is used to **combine or aggregate** the elements of a stream into a single result. It is a **terminal operation** that processes elements of a stream in a sequential or parallel manner, performing a **reduction** of the stream's elements based on an associative accumulation function.
+
+The result of `reduce()` is typically a **single value** (like a sum, product, or concatenated string), which is computed by repeatedly applying the provided accumulation function to the elements of the stream.
+
+**Syntax of `reduce()`**
+```java
+Optional<T> reduce(BinaryOperator<T> accumulator)
+
+```
+* **BinaryOperator**: A functional interface representing a function that takes two arguments of the same type and returns a result of the same type.
+* **Optional<T>**: The result is returned as an `Optional<T>`, since there may not be any elements in the stream (for example, an empty stream), and in such cases, no value is produced.
+
+**Syntax with Identity Value**\
+You can also provide an identity value as the first argument, which serves as the initial value in the reduction.
+```java
+T reduce(T identity, BinaryOperator<T> accumulator)
+
+```
+* **identity**: The initial value that serves as the starting point for the reduction. It must be of the same type as the stream's elements.
+* **accumulator**: The function that combines two elements of the stream.
+
+**Example 1: Sum of Elements**\
+Suppose you have a stream of integers, and you want to calculate their sum. You can use `reduce()` to achieve this.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using reduce to calculate the sum
+        int sum = numbers.stream()
+                         .reduce(0, (a, b) -> a + b);
+
+        System.out.println("Sum: " + sum);  // Output: Sum: 15
+    }
+}
+```
+In this example:
+
+* **identity** is `0` (the starting value).
+* **accumulator** is `(a, b) -> a + b` (adds two numbers).
+
+The result is `15` (the sum of the numbers in the list).
+
+**Example 2: Find Maximum Element**\
+You can also use `reduce()` to find the maximum element in a stream of integers.
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class MaxReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using reduce to find the maximum value
+        int max = numbers.stream()
+                         .reduce(Integer.MIN_VALUE, (a, b) -> a > b ? a : b);
+
+        System.out.println("Max: " + max);  // Output: Max: 5
+    }
+}
+
+```
+Here:
+
+* identity is `Integer.MIN_VALUE` (the starting point for comparison).
+* accumulator is `(a, b) -> a > b ? a : b` (returns the larger of the two values).
+
+**Example 3: Concatenate Strings**\
+You can use `reduce()` to concatenate a stream of strings.
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class StringConcatenationExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("Java", "Streams", "are", "fun");
+
+        // Using reduce to concatenate strings
+        String result = words.stream()
+                             .reduce("", (a, b) -> a + " " + b).trim();
+
+        System.out.println(result);  // Output: Java Streams are fun
+    }
+}
+
+```
+Here:
+
+* identity is an empty string ``.
+* accumulator is `(a, b) -> a + " " + b`, which concatenates strings with a space.
+
+**Example 4: Product of Elements**\
+To calculate the product of all elements in a list:
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ProductExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using reduce to calculate the product
+        int product = numbers.stream()
+                             .reduce(1, (a, b) -> a * b);
+
+        System.out.println("Product: " + product);  // Output: Product: 120
+    }
+}
+
+```
+Here:
+
+* identity is `1` (the initial value).
+* accumulator is `(a, b) -> a * b`, which multiplies the elements.
+
+**Why Use** `reduce()`?\
+* **Aggregation**: It is useful for reducing a stream to a single value like sum, product, or concatenation.
+* **Associative Operations**: The accumulator function must be **associative**, meaning the order of operations doesn't matter.
+* **Handling Optional**: When there is no element in the stream, `reduce()` returns an `Optional` (for the case where an empty stream is encountered).
+
+**Handling Empty Streams**\
+Since reduce() returns an `Optional`, it is essential to handle the case where the stream might be empty. Here's an example of handling an empty stream:
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Optional;
+
+public class EmptyStreamExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList();
+
+        // Using reduce with Optional
+        Optional<Integer> sum = numbers.stream()
+                                      .reduce((a, b) -> a + b);
+
+        // If the stream is empty, the result will be an empty Optional
+        System.out.println(sum.orElse(0));  // Output: 0
+    }
+}
+
+```
+In this case, if the stream is empty, `reduce()` returns an empty `Optional`, and `orElse(0)` is used to provide a default value.
+
+### 94. What is the difference between forEach() and map()?
 
 
 
