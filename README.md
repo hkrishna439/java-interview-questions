@@ -9709,6 +9709,2134 @@ public class EmptyStreamExample {
 In this case, if the stream is empty, `reduce()` returns an empty `Optional`, and `orElse(0)` is used to provide a default value.
 
 ### 95. What is the difference between forEach() and map()?
+The `forEach()` and `map()` methods in Java Streams serve different purposes and are used in different contexts. Here's a breakdown of their differences:
+
+**1. Purpose**
+   - `forEach()`:
+       - `forEach()` is a terminal operation in streams that is used to **perform an action** on each element of the stream. It is generally used for **side effects** like printing, logging, or modifying external state.
+       - It does not transform the stream itself, meaning it does not produce a new stream.
+   - `map()`:
+     - map() is an intermediate operation in streams that is used to transform the elements of the stream. It produces a new stream by applying a given function to each element of the original stream.
+     - It returns a new stream and does not modify the original stream.
+   
+**2. Return Type**
+   - `forEach()`:
+     - forEach() returns void. It is used only to perform an action on the stream elements.
+   - `map()`:
+     - `map()` returns a new stream where each element is transformed by the function provided.
+
+**3. Usage**
+   - `forEach()`:
+        - It is used for **side-effects** and doesn't affect the original stream.
+        - Commonly used in scenarios like printing values, updating variables, or performing logging.
+   - `map()`:
+        - It is used for **transforming data**. It applies a function to each element of the stream and creates a new stream containing the transformed elements.
+        - It is often used when you need to convert elements, extract certain properties, or perform any kind of transformation on stream data.
+
+**4. Example:**\
+`forEach()` Example:
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ForEachExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using forEach to print each element
+        numbers.stream()
+               .forEach(number -> System.out.println(number)); 
+    }
+}
+
+```
+Output
+```
+1
+2
+3
+4
+5
+```
+Here, `forEach()` is simply iterating over the stream and printing each number. It does not modify the stream or return anything.
+
+`map()` **Example**:
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class MapExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Using map to square each element and create a new stream
+        List<Integer> squaredNumbers = numbers.stream()
+                                              .map(number -> number * number)
+                                              .collect(Collectors.toList());
+
+        System.out.println(squaredNumbers);  // Output: [1, 4, 9, 16, 25]
+    }
+}
+
+```
+Output
+```
+[1, 4, 9, 16, 25]
+
+```
+Here, `map()` is transforming each element by squaring it and returning a new list with the transformed values. It creates a new stream with the squared numbers.
+
+**5. Effect on Stream**
+- `forEach()`:
+    - `forEach()` is a terminal operation, meaning it consumes the stream and no further operations can be performed on the stream once it has been used.
+- `map()`:
+   - `map()` is an intermediate operation, meaning it returns a new stream and can be followed by other stream operations (like `filter()`, `reduce()`, `collect()`, etc.).
+
+**6. Parallelism**
+- `forEach()`:
+
+    - When working with parallel streams, the order in which elements are processed is not guaranteed. You should be cautious of using `forEach()` in parallel streams for operations with side effects.
+- `map()`:
+
+    - The `map()` operation can work in parallel as well, and the stream will handle it properly while ensuring the transformation is applied to each element in parallel.
+**7. Side-Effect Free Operations**
+- `forEach()`:
+  - Should ideally not be used for transformations or anything that changes the stream's state since it's designed for side-effects.
+- `map()`:
+  - It should be **side-effect free**. That means you should avoid using `map()` to modify external state. It should be used for stateless transformations.
+
+### 96. What are terminal and intermediate operations in streams?
+In Java Streams, operations are categorized into **intermediate** and **terminal** operations based on their behavior and purpose.
+
+**1. Intermediate Operations**\
+   Intermediate operations transform a stream into another stream. They are **lazy** and **do not execute immediately**; instead, they build up a pipeline of operations that will be executed only when a terminal operation is invoked.
+
+**Characteristics of Intermediate Operations**
+* Always return a new stream.
+* Do not process the elements immediately.
+* Allow chaining of multiple operations.
+* Are lazy and execute only when a terminal operation is applied.
+
+**Common Intermediate Operations**
+![img_72.png](img_72.png)
+
+**Example of Intermediate Operations**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class IntermediateExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+
+        // Intermediate operations: filter() and map()
+        numbers.stream()
+               .filter(n -> n % 2 == 0)          // Keep only even numbers
+               .map(n -> n * n)                 // Square each number
+               .forEach(System.out::println);   // Terminal operation: Prints the results
+    }
+}
+
+```
+Output
+```
+4
+16
+36
+```
+Here, the `filter()` and `map()` operations are intermediate. They build a pipeline but do not execute until the `forEach()` terminal operation is applied.
+
+**2. Terminal Operations**\
+   Terminal operations are the **final operations** in the stream pipeline. They trigger the execution of the intermediate operations and produce a result.
+
+**Characteristics of Terminal Operations**
+* Consume the stream, making it unusable after the terminal operation.
+* Produce a non-stream result, such as a collection, a value, or a side effect.
+
+**Common Terminal Operations**
+![img_73.png](img_73.png)
+
+**Example of Terminal Operations**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class TerminalExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+
+        // Terminal operation: collect()
+        List<Integer> evenNumbers = numbers.stream()
+                                           .filter(n -> n % 2 == 0)
+                                           .collect(Collectors.toList());
+
+        System.out.println(evenNumbers); // Output: [2, 4, 6]
+    }
+}
+
+```
+In this example, `collect()` is a terminal operation that triggers the execution of the `filter()` intermediate operation and gathers the results into a `List`.
+
+![img_74.png](img_74.png)
+
+**Full Example Combining Both**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class StreamExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9, 10);
+
+        // Intermediate operations: filter() and map()
+        // Terminal operation: collect()
+        List<Integer> result = numbers.stream()
+                                      .filter(n -> n % 2 == 0)        // Keep even numbers
+                                      .map(n -> n * 2)               // Double each number
+                                      .collect(Collectors.toList()); // Collect the results
+
+        System.out.println(result); // Output: [4, 8, 12, 16, 20]
+    }
+}
+
+```
+In this example:
+
+1. `filter()` and `map()` are intermediate operations.
+2. `collect()` is the terminal operation that triggers the execution of the pipeline.
+
+### 97. How do you sort a list using streams?
+Sorting a list using Java Streams is straightforward and can be achieved using the sorted() method. The `sorted()` method is an **intermediate operation** that returns a new stream with elements sorted in natural or custom order.
+
+**1. Sorting in Natural Order**\
+   To sort elements in their **natural order** (ascending for numbers or lexicographical for strings), use `sorted()` without any arguments.
+
+**Example**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class NaturalSort {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(5, 2, 9, 1, 7);
+
+        // Sorting in natural order
+        List<Integer> sortedNumbers = numbers.stream()
+                                             .sorted() // Natural order
+                                             .toList(); // Collect to List (Java 16+)
+
+        System.out.println(sortedNumbers); // Output: [1, 2, 5, 7, 9]
+    }
+}
+
+```
+**2. Sorting in Custom Order**\
+   To sort elements in a custom order, provide a comparator to the `sorted()` method.
+
+**Example: Sorting in Descending Order**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class CustomSort {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(5, 2, 9, 1, 7);
+
+        // Sorting in descending order
+        List<Integer> sortedNumbers = numbers.stream()
+                                             .sorted((a, b) -> b - a) // Comparator for descending order
+                                             .toList();
+
+        System.out.println(sortedNumbers); // Output: [9, 7, 5, 2, 1]
+    }
+}
+
+```
+**Example: Sorting Strings by Length**
+
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class SortByLength {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("apple", "kiwi", "banana", "cherry");
+
+        // Sorting strings by length
+        List<String> sortedWords = words.stream()
+                                        .sorted((a, b) -> a.length() - b.length())
+                                        .toList();
+
+        System.out.println(sortedWords); // Output: [kiwi, apple, banana, cherry]
+    }
+}
+
+```
+**3. Sorting Objects by a Field**\
+For sorting a list of custom objects, use a comparator referencing the field of the object.
+
+**Example: Sorting by Object Field**
+```java
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+class Employee {
+    String name;
+    int age;
+
+    Employee(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}
+
+public class SortByField {
+    public static void main(String[] args) {
+        List<Employee> employees = Arrays.asList(
+            new Employee("Alice", 30),
+            new Employee("Bob", 25),
+            new Employee("Charlie", 35)
+        );
+
+        // Sorting employees by age
+        List<Employee> sortedEmployees = employees.stream()
+                                                  .sorted(Comparator.comparingInt(e -> e.age))
+                                                  .toList();
+
+        System.out.println(sortedEmployees);
+        // Output: [Bob (25), Alice (30), Charlie (35)]
+    }
+}
+
+```
+**4. Sorting in Reverse Order**\
+   Use `Comparator.reverseOrder()` or `Comparator.reversed()` for reverse sorting.
+
+**Example**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ReverseSort {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(5, 2, 9, 1, 7);
+
+        // Sorting in reverse order
+        List<Integer> sortedNumbers = numbers.stream()
+                                             .sorted(Comparator.reverseOrder())
+                                             .toList();
+
+        System.out.println(sortedNumbers); // Output: [9, 7, 5, 2, 1]
+    }
+}
+
+```
+**5. Sorting with Multiple Conditions**\
+   You can chain comparators to sort by multiple conditions.
+
+**Example: Sorting Employees by Age, Then by Name**
+```java
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+
+class Employee {
+    String name;
+    int age;
+
+    Employee(String name, int age) {
+        this.name = name;
+        this.age = age;
+    }
+
+    @Override
+    public String toString() {
+        return name + " (" + age + ")";
+    }
+}
+
+public class MultiConditionSort {
+    public static void main(String[] args) {
+        List<Employee> employees = Arrays.asList(
+            new Employee("Alice", 30),
+            new Employee("Bob", 30),
+            new Employee("Charlie", 25)
+        );
+
+        // Sorting by age, then by name
+        List<Employee> sortedEmployees = employees.stream()
+                                                  .sorted(Comparator.comparingInt(Employee::age)
+                                                                    .thenComparing(Employee::name))
+                                                  .toList();
+
+        System.out.println(sortedEmployees);
+        // Output: [Charlie (25), Alice (30), Bob (30)]
+    }
+}
+
+```
+**Key Points to Remember**
+1. **Sorting is Lazy:** The `sorted()` operation does not execute until a terminal operation (like `toList()`) is invoked.
+2. **Immutability**: Streams do not modify the original list but produce a sorted version.
+3. **Comparator**: Use `Comparator` for custom sorting or chaining conditions.
+
+These methods provide powerful and flexible ways to sort elements using Java Streams.
+
+
+### 98. What is a parallel stream?
+A **parallel stream** in Java is a feature of the Java Stream API that allows operations to be executed concurrently by leveraging multiple threads. It is designed to speed up processing by dividing tasks into smaller sub-tasks that run in parallel across multiple CPU cores.
+
+**Key Features of Parallel Streams**
+1. **Concurrency**: Parallel streams automatically split the data and process the chunks in parallel using the common ForkJoinPool.
+2. **Data Splitting**: The stream's data source is divided into multiple parts, and each part is processed independently.
+3. **Thread Management**: Parallel streams handle thread management internally, making them easy to use for parallel computation.
+
+**Creating a Parallel Stream**\
+You can create a parallel stream using the following methods:
+
+**1. Using the `parallelStream()` Method**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ParallelStreamExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Creating a parallel stream
+        numbers.parallelStream()
+               .forEach(System.out::println); // Output may not be ordered
+    }
+}
+
+```
+**2. Using the `stream()` Method and Switching to Parallel**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class StreamToParallelExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        // Switching to parallel stream
+        numbers.stream()
+               .parallel()
+               .forEach(System.out::println); // Output may not be ordered
+    }
+}
+
+```
+**Example: Processing in Parallel**\
+**Sequential Stream**
+
+```java
+import java.util.stream.IntStream;
+
+public class SequentialStream {
+    public static void main(String[] args) {
+        IntStream.range(1, 10)
+                 .forEach(i -> System.out.println(Thread.currentThread().getName() + " : " + i));
+    }
+}
+
+```
+**Output (Single Thread):**
+```yaml
+main : 1
+main : 2
+main : 3
+...
+main : 9
+```
+
+**Parallel Stream**
+```java
+import java.util.stream.IntStream;
+
+public class ParallelStream {
+    public static void main(String[] args) {
+        IntStream.range(1, 10)
+                 .parallel()
+                 .forEach(i -> System.out.println(Thread.currentThread().getName() + " : " + i));
+    }
+}
+
+```
+**Output (Multiple Threads):**
+```yaml
+ForkJoinPool.commonPool-worker-1 : 1
+ForkJoinPool.commonPool-worker-2 : 2
+main : 3
+...
+```
+**Performance Considerations**
+Parallel streams are most effective when:
+
+1. The data set is large enough to justify the overhead of parallelization.
+2. The tasks are CPU-intensive.
+3. Operations on the data are independent and don't involve shared resources.
+
+Parallel streams might not improve performance or could even degrade it in the following cases:
+
+* Small data sets, where the overhead of thread management outweighs the benefits.
+* IO-bound tasks, such as reading files or accessing databases.
+* Tasks with dependencies or synchronization requirements.
+
+**Key Points**
+1. **Order**: Parallel streams do not guarantee the order of execution unless you use operations like `forEachOrdered`.
+2. **Thread Safety**: Ensure thread-safe operations since parallel streams might access shared resources.
+3. **Splitting**: Parallel streams rely on the `Spliterator` of the data source to divide tasks efficiently.
+4. ForkJoinPool: The common ForkJoinPool is used for managing threads in parallel streams. You can configure its size using the `java.util.concurrent.ForkJoinPool` class.
+
+**Example: Using** `forEachOrdered`\
+If order is essential, use `forEachOrdered`:
+
+```java
+import java.util.stream.IntStream;
+
+public class ForEachOrderedExample {
+    public static void main(String[] args) {
+        IntStream.range(1, 10)
+                 .parallel()
+                 .forEachOrdered(System.out::println); // Maintains order
+    }
+}
+
+```
+**Output**
+```
+1
+2
+3
+...
+9
+```
+
+### 99. What is the difference between collect() and reduce()?
+The `collect()` and `reduce()` methods are part of the **Java Stream API**, but they serve different purposes and are used in different contexts. Below is a detailed comparison of the two:
+
+1. `collect()`\
+   The `collect()` method is used to **convert the elements of a stream into a different form** such as a collection (e.g., `List`, `Set`, or `Map`), a single result, or even perform mutable reduction.
+
+**Key Features**
+* Primarily used for **mutable reduction** (changing a collection or object during reduction).
+* Works with a `Collector`, a utility that defines how to accumulate elements.
+* Flexible and customizable through predefined collectors in Collectors (e.g., `toList`, `toSet`, `joining`, `groupingBy`).
+
+**Example 1: Collecting to a List**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class CollectExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie");
+
+        List<String> collected = names.stream()
+                                      .filter(name -> name.startsWith("A"))
+                                      .collect(Collectors.toList());
+
+        System.out.println(collected); // Output: [Alice]
+    }
+}
+
+```
+**Example 2: Grouping**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class CollectGroupingExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna");
+
+        Map<Character, List<String>> grouped = names.stream()
+                                                    .collect(Collectors.groupingBy(name -> name.charAt(0)));
+
+        System.out.println(grouped); // Output: {A=[Alice, Anna], B=[Bob], C=[Charlie]}
+    }
+}
+
+```
+2.` reduce()`\
+   The `reduce()` method is used to **perform reduction operations** such as summing, concatenation, or finding the maximum/minimum by repeatedly combining elements of a stream.
+
+**Key Features**
+* Used for **immutable reduction** (results are produced without mutating state).
+* Works with a **binary operator** or an identity element.
+* Produces a single value as a result.
+
+**Example 1: Summing Numbers**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ReduceExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5);
+
+        int sum = numbers.stream()
+                         .reduce(0, (a, b) -> a + b);
+
+        System.out.println(sum); // Output: 15
+    }
+}
+
+```
+**Example 2: Concatenating Strings**
+```java
+import java.util.Arrays;
+import java.util.List;
+
+public class ReduceConcatExample {
+    public static void main(String[] args) {
+        List<String> words = Arrays.asList("Java", "is", "fun");
+
+        String sentence = words.stream()
+                               .reduce("", (a, b) -> a + " " + b);
+
+        System.out.println(sentence.trim()); // Output: Java is fun
+    }
+}
+
+```
+![img_75.png](img_75.png)
+
+**When to Use Which?**
+* Use `collect()` when the goal is to transform the stream into a collection or other complex structure.
+* Use `reduce()` when you need a single result (e.g., sum, product, maximum, etc.) and the operation is associative and stateless.
+
+By understanding their use cases, you can choose the right tool for efficient stream processing in Java!
+
+### 100. How do you group elements in a stream?
+
+In Java, you can group elements in a stream using the `Collectors.groupingBy()` method, which is part of the `java.util.stream.Collectors` class. This allows you to group elements based on a classification function and return the results as a `Map`.
+
+**Basic Syntax**
+```java
+stream.collect(Collectors.groupingBy(classificationFunction));
+
+```
+- **classificationFunction**: A function that determines the key under which each element is grouped
+
+**Examples**\
+**1. Grouping Strings by Their Length**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class GroupingExample {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna");
+
+        Map<Integer, List<String>> groupedByLength = names.stream()
+                                                          .collect(Collectors.groupingBy(String::length));
+
+        System.out.println(groupedByLength);
+        // Output: {3=[Bob], 5=[Alice, Anna], 7=[Charlie]}
+    }
+}
+
+```
+**2. Grouping Numbers by Even or Odd**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class GroupingByEvenOdd {
+    public static void main(String[] args) {
+        List<Integer> numbers = Arrays.asList(1, 2, 3, 4, 5, 6);
+
+        Map<String, List<Integer>> groupedByParity = numbers.stream()
+                                                            .collect(Collectors.groupingBy(num -> num % 2 == 0 ? "Even" : "Odd"));
+
+        System.out.println(groupedByParity);
+        // Output: {Odd=[1, 3, 5], Even=[2, 4, 6]}
+    }
+}
+
+```
+**3. Grouping with a Custom Downstream Collector**\
+   You can also apply further operations on grouped data using **downstream collectors**.
+
+**Example: Grouping and Counting Elements**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class GroupingAndCounting {
+    public static void main(String[] args) {
+        List<String> items = Arrays.asList("apple", "banana", "apple", "orange", "banana", "apple");
+
+        Map<String, Long> itemCount = items.stream()
+                                           .collect(Collectors.groupingBy(item -> item, Collectors.counting()));
+
+        System.out.println(itemCount);
+        // Output: {orange=1, banana=2, apple=3}
+    }
+}
+
+```
+
+**4. Grouping with Multiple Levels**\
+   You can perform hierarchical grouping by using a second `groupingBy` as the downstream collector.
+
+**Example: Grouping by Length and First Character**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class MultiLevelGrouping {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna", "Brian");
+
+        Map<Integer, Map<Character, List<String>>> grouped = names.stream()
+                                                                  .collect(Collectors.groupingBy(
+                                                                      String::length,
+                                                                      Collectors.groupingBy(name -> name.charAt(0))
+                                                                  ));
+
+        System.out.println(grouped);
+        // Output: {3={B=[Bob]}, 5={A=[Alice, Anna], B=[Brian]}, 7={C=[Charlie]}}
+    }
+}
+
+```
+**5. Modifying the Output Map**\
+   By default, `groupingBy` returns a `HashMap`. You can change the map type by providing a custom map supplier.
+
+**Example: Using a TreeMap**
+```java
+import java.util.Arrays;
+import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.stream.Collectors;
+
+public class CustomMapGrouping {
+    public static void main(String[] args) {
+        List<String> names = Arrays.asList("Alice", "Bob", "Charlie", "Anna");
+
+        Map<Integer, List<String>> grouped = names.stream()
+                                                  .collect(Collectors.groupingBy(
+                                                      String::length,
+                                                      TreeMap::new,
+                                                      Collectors.toList()
+                                                  ));
+
+        System.out.println(grouped);
+        // Output: {3=[Bob], 5=[Alice, Anna], 7=[Charlie]}
+    }
+}
+
+```
+**Key Points**
+1. **Basic Grouping:** Use `Collectors.groupingBy()` with a classification function.
+2. **Custom Collectors:** Combine `groupingBy()` with downstream collectors like `Collectors.counting()`, `Collectors.mapping()`, or Collectors.summingInt().
+3. **Hierarchical Grouping:** Nest multiple `groupingBy()` calls for multi-level grouping.
+4. **Custom Map Type:** Supply a custom map implementation (e.g., `TreeMap`) if needed.
+
+This flexibility makes grouping in streams a powerful feature for data organization!
+
+### 101. What is the Collectors utility class?
+The `Collectors` utility class in Java, part of the `java.util.stream` package, provides a collection of predefined **reduction operations** that are useful for processing and collecting data from streams. These operations are typically used in the `collect()` terminal operation in streams to transform the processed data into various collection types or perform summarization tasks.
+
+**Common Uses of the `Collectors` Class**
+1. Collecting Elements into Collections
+2. Grouping and Partitioning
+3. Summarizing Data
+4. Reducing and Joining
+5. Custom Collectors
+
+**Key Collectors Methods and Examples**
+**1. Collecting Elements into Collections**
+* `toList()`: Collects elements into a `List`.
+* `toSet()`: Collects elements into a `Set`.
+* `toMap()`: Collects elements into a `Map`.
+
+**Example: Collecting to a List**
+```java
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class CollectorsExample {
+    public static void main(String[] args) {
+        List<String> names = Stream.of("Alice", "Bob", "Charlie").collect(Collectors.toList());
+        System.out.println(names);
+        // Output: [Alice, Bob, Charlie]
+    }
+}
+
+```
+**Example: Collecting to a Map**
+```java
+import java.util.Map;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class ToMapExample {
+    public static void main(String[] args) {
+        Map<String, Integer> nameLengths = Stream.of("Alice", "Bob", "Charlie")
+                                                 .collect(Collectors.toMap(name -> name, String::length));
+        System.out.println(nameLengths);
+        // Output: {Alice=5, Bob=3, Charlie=7}
+    }
+}
+
+```
+**2. Grouping and Partitioning**
+* `groupingBy()`: Groups elements by a classifier function.
+* `partitioningBy()`: Partitions elements into two groups (boolean predicate).
+
+**Example: Grouping**
+```java
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class GroupingExample {
+    public static void main(String[] args) {
+        List<String> names = List.of("Alice", "Bob", "Charlie", "Anna");
+        Map<Integer, List<String>> groupedByLength = names.stream()
+                                                          .collect(Collectors.groupingBy(String::length));
+        System.out.println(groupedByLength);
+        // Output: {3=[Bob], 5=[Alice, Anna], 7=[Charlie]}
+    }
+}
+
+```
+**Example: Partitioning**
+```java
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class PartitioningExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = List.of(1, 2, 3, 4, 5);
+        Map<Boolean, List<Integer>> partitioned = numbers.stream()
+                                                         .collect(Collectors.partitioningBy(n -> n % 2 == 0));
+        System.out.println(partitioned);
+        // Output: {false=[1, 3, 5], true=[2, 4]}
+    }
+}
+
+```
+**3. Summarizing Data**
+* `counting()`: Counts the number of elements.
+* `summingInt()` / `summingDouble()` / `summingLong()`: Sums elements.
+* `averagingInt()` / `averagingDouble()` / `averagingLong()`: Averages elements.
+* `summarizingInt()` / `summarizingDouble()` / `summarizingLong()`: Returns summary statistics.
+
+**Example: Summarizing**
+```java
+import java.util.IntSummaryStatistics;
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class SummarizingExample {
+    public static void main(String[] args) {
+        List<Integer> numbers = List.of(1, 2, 3, 4, 5);
+        IntSummaryStatistics stats = numbers.stream().collect(Collectors.summarizingInt(Integer::intValue));
+        System.out.println(stats);
+        // Output: IntSummaryStatistics{count=5, sum=15, min=1, average=3.000000, max=5}
+    }
+}
+
+```
+**4. Reducing and Joining**
+* `reducing()`: Reduces elements into a single result using an accumulator function.
+* `joining()`: Joins strings with an optional delimiter, prefix, and suffix.
+
+**Example: Joining**
+```
+import java.util.List;
+import java.util.stream.Collectors;
+
+public class JoiningExample {
+    public static void main(String[] args) {
+        List<String> names = List.of("Alice", "Bob", "Charlie");
+        String joined = names.stream().collect(Collectors.joining(", ", "[", "]"));
+        System.out.println(joined);
+        // Output: [Alice, Bob, Charlie]
+    }
+}
+```
+
+**5. Custom Collectors**\
+   You can create your own custom collectors using the `Collector` interface.
+
+**Example: Custom Collector (Concatenating Strings)**
+```java
+import java.util.stream.Collector;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
+
+public class CustomCollectorExample {
+    public static void main(String[] args) {
+        Collector<String, StringBuilder, String> customCollector = Collector.of(
+            StringBuilder::new,
+            StringBuilder::append,
+            StringBuilder::append,
+            StringBuilder::toString
+        );
+
+        String result = Stream.of("Alice", "Bob", "Charlie").collect(customCollector);
+        System.out.println(result);
+        // Output: AliceBobCharlie
+    }
+}
+
+```
+**Advantages of Using Collectors**
+1. Simplifies complex data transformations and reductions.
+2. Provides a wide variety of ready-made utilities for grouping, partitioning, and summarizing.
+3. Allows creation of custom collectors for specific use cases.
+4. Works seamlessly with the Java Stream API to handle large datasets efficiently.
+
+The `Collectors` utility class is indispensable when working with Java Streams, enabling concise and expressive handling of data!
+
+### 102. How do you count elements in a stream?
+
+In Java, you can count elements in a stream using the `count()` method, which is a terminal operation in the Stream API. It returns a `long` value representing the number of elements in the stream.
+**Syntax**
+```java
+long count = stream.count();
+
+```
+**Example: Counting Elements in a Stream**
+```java
+import java.util.stream.Stream;
+
+public class StreamCountExample {
+    public static void main(String[] args) {
+        Stream<String> names = Stream.of("Alice", "Bob", "Charlie");
+        long count = names.count();
+        System.out.println("Number of elements: " + count);
+        // Output: Number of elements: 3
+    }
+}
+```
+**Other Ways to Count Elements**
+1. **Using `Collectors.counting()`**
+
+    - This method is useful when working with the collect() operation, often in conjunction with grouping or partitioning.
+
+**Example**:
+```java
+import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
+
+public class CountingExample {
+    public static void main(String[] args) {
+        List<String> names = List.of("Alice", "Bob", "Alice", "Charlie");
+
+        // Counting occurrences of each name
+        Map<String, Long> nameCounts = names.stream()
+                .collect(Collectors.groupingBy(name -> name, Collectors.counting()));
+
+        System.out.println(nameCounts);
+        // Output: {Alice=2, Bob=1, Charlie=1}
+    }
+}
+
+```
+2. **Using Filters for Conditional Counting**
+
+    - You can filter the elements first and then count.
+
+**Example**:
+```java
+import java.util.stream.Stream;
+
+public class FilterAndCountExample {
+    public static void main(String[] args) {
+        Stream<String> names = Stream.of("Alice", "Bob", "Charlie", "Anna");
+        long count = names.filter(name -> name.startsWith("A")).count();
+        System.out.println("Number of names starting with 'A': " + count);
+        // Output: Number of names starting with 'A': 2
+    }
+}
+
+```
+**Considerations**
+1. **Stream Consumption:** The `count()` method is a terminal operation and consumes the stream. You cannot reuse the stream after calling `count()`.
+```java
+Stream<String> names = Stream.of("Alice", "Bob", "Charlie");
+long count = names.count();
+// names.forEach(System.out::println); // Throws IllegalStateException
+
+```
+2. **Infinite Streams:** Be cautious when counting elements in an infinite stream. It will cause your program to hang or throw an exception. For infinite streams, consider limiting them before counting.
+```java
+import java.util.stream.Stream;
+
+public class InfiniteStreamExample {
+    public static void main(String[] args) {
+        long count = Stream.iterate(1, n -> n + 1)
+                           .limit(10)
+                           .count();
+        System.out.println("Count: " + count);
+        // Output: Count: 10
+    }
+}
+
+```
+By leveraging the `count()` method or related utility functions like `Collectors.counting()`, you can efficiently count elements in a stream with or without specific conditions.
+
+### 103. What is the difference between findFirst() and findAny()?
+In Java's Stream API, `findFirst()` and `findAny()` are terminal operations used to retrieve an element from a stream. While they may seem similar, they differ in terms of behavior and intended use.
+
+![img_76.png](img_76.png)
+
+**When to Use**
+- `findFirst():`
+    - Use when you need the first element in a stream and the order matters (e.g., processing a sorted stream or a List where order is important).
+    - Guarantees predictable results in sequential and parallel streams.
+  
+- ` findAny():`
+  - Use when the order of elements does not matter, especially for parallel streams where it can potentially be more efficient.
+  - Useful when you just need an element and don't care about which one.
+
+**Examples**
+1. **Using** `findFirst()`
+```java
+import java.util.stream.Stream;
+
+public class FindFirstExample {
+    public static void main(String[] args) {
+        Stream<String> names = Stream.of("Alice", "Bob", "Charlie");
+        names.findFirst().ifPresent(name -> System.out.println("First: " + name));
+        // Output: First: Alice
+    }
+}
+
+```
+2. **Using** `findAny()`
+```java
+import java.util.stream.Stream;
+
+public class FindAnyExample {
+    public static void main(String[] args) {
+        Stream<String> names = Stream.of("Alice", "Bob", "Charlie");
+        names.findAny().ifPresent(name -> System.out.println("Any: " + name));
+        // Output: Any: Alice (or Bob, or Charlie; no guarantee of order)
+    }
+}
+
+```
+3. **Using** `findAny()` **in Parallel Streams**
+```java
+import java.util.stream.Stream;
+
+public class FindAnyParallelExample {
+    public static void main(String[] args) {
+        Stream<String> names = Stream.of("Alice", "Bob", "Charlie").parallel();
+        names.findAny().ifPresent(name -> System.out.println("Any (parallel): " + name));
+        // Output could be: Bob, Alice, or Charlie (order not guaranteed)
+    }
+}
+
+```
+**Similarities**
+* Both return an `Optional<T>` that may or may not contain an element.
+* Both are terminal operations, meaning they consume the stream and cannot be used again on the same stream.
+
+**Performance Considerations**
+* ` findAny()` is typically faster in parallel streams because it doesn't enforce an encounter order.
+* `findFirst() `may be slower in parallel streams due to the need to maintain order.
+
+### 104. Explain Optional and its use in Java.
+`Optional` is a container class introduced in Java 8 in the `java.util` package. It is used to represent a value that may or may not be present, effectively reducing the need for null checks and avoiding the infamous `NullPointerException` (NPE).
+
+The primary goal of `Optional` is to provide a safer and more expressive way to handle nullable values.
+
+**Key Features of** `Optional`
+1. **Encapsulation of Nullability**: `Optional` explicitly conveys the possibility of absence.
+2. **Elimination of Null Checks**: Provides methods to handle absent values without using explicit null checks.
+3. **Functional Programming Support**: Works seamlessly with Java's Stream API and other functional paradigms.
+
+**How to Create an `Optional`**
+1. **Empty Optional**
+```java
+Optional<String> empty = Optional.empty();
+```
+2. **Optional with Non-null Value**
+```java
+Optional<String> nonEmpty = Optional.of("Hello");
+
+```
+Throws `NullPointerException` if the value is `null`.
+3. **Optional with Nullable Value**
+
+```java
+Optional<String> nullable = Optional.ofNullable(null); // Returns an empty Optional
+Optional<String> nullableValue = Optional.ofNullable("Hello"); // Returns Optional with value
+
+```
+**Common Methods of `Optional`**
+
+![img_77.png](img_77.png)
+
+**Examples of Using `Optional`**
+1. **Avoiding Null Checks**\
+   Before `Optional`:
+```java
+public String getName(Person person) {
+    if (person != null && person.getName() != null) {
+        return person.getName();
+    }
+    return "Default Name";
+}
+
+```
+With `Optional`:
+```java
+public String getName(Optional<Person> person) {
+    return person.map(Person::getName).orElse("Default Name");
+}
+
+```
+2. **Using** `ifPresent()`
+```java
+Optional<String> name = Optional.of("John");
+name.ifPresent(System.out::println); // Prints "John"
+
+```
+3. **Handling Absent Values**
+```java
+Optional<String> emptyName = Optional.empty();
+System.out.println(emptyName.orElse("Default Name")); // Prints "Default Name"
+
+```
+4. **Chaining with `map()` and `flatMap()`**
+```java
+Optional<String> name = Optional.of("John");
+Optional<Integer> nameLength = name.map(String::length); // Maps to Optional<4>
+
+```
+5. **Throwing Exceptions with `orElseThrow()`**
+
+```java
+Optional<String> name = Optional.empty();
+name.orElseThrow(() -> new IllegalArgumentException("Name is missing!"));
+
+```
+**Advantages of Optional**
+1. **Avoids NullPointerException:**
+    - By handling `null` values explicitly.
+2. **Improves Code Readability:**
+   - Code becomes more descriptive about handling nullability.
+3. **Encourages Functional Programming:**
+   - Leverages methods like `map()`, `flatMap()`, and `filter()`.
+
+**When Not to Use** `Optional`
+* Avoid using `Optional` for fields in **POJOs** or as **method parameters**.
+* Use it primarily for **method return types** to indicate the possibility of an absent value.
+
+**Example: Using** `Optional` **in a Real-world Scenario**\
+Imagine fetching a user from a database:
+```java
+public Optional<User> findUserById(int id) {
+    return Optional.ofNullable(database.findUser(id));
+}
+
+public String getUserEmail(int id) {
+    return findUserById(id)
+            .map(User::getEmail)
+            .orElse("No email available");
+}
+
+```
+### 105. What are Stream.of() and Arrays.stream()?
+
+Both `Stream.of()` and `Arrays.stream()` are used to create streams in Java, but they differ in their purpose, usage, and input types.
+
+**1. Stream.of()**
+* **Purpose**: Creates a stream from **a variable number of arguments** or a single array.
+* **Input Types**:
+  - Individual elements.
+  - Arrays of objects or primitives.
+
+**Examples**\
+**Creating a Stream from Individual Elements**
+```java
+Stream<String> stream = Stream.of("A", "B", "C");
+stream.forEach(System.out::println); // Output: A B C
+
+```
+**Creating a Stream from an Array**
+```java
+String[] array = {"X", "Y", "Z"};
+Stream<String> streamFromArray = Stream.of(array);
+streamFromArray.forEach(System.out::println); // Output: X Y Z
+
+```
+**2. Arrays.stream()**
+* **Purpose**: Creates a stream **only from arrays**.
+* **Input Types:**
+  * Arrays of objects.
+  * Arrays of primitives (e.g., `int[]`, `double[]`, etc.).
+
+**Examples**\
+**Creating a Stream from an Array of Objects**
+```java
+String[] array = {"X", "Y", "Z"};
+Stream<String> stream = Arrays.stream(array);
+stream.forEach(System.out::println); // Output: X Y Z
+
+```
+**Creating a Stream from a Primitive Array**
+```java
+int[] numbers = {1, 2, 3, 4};
+IntStream intStream = Arrays.stream(numbers);
+intStream.forEach(System.out::println); // Output: 1 2 3 4
+
+```
+![img_78.png](img_78.png)
+
+**When to Use What?**
+1. **Use** `Stream.of()`:
+
+    - When you want to create a stream from discrete elements.
+    - When working with object arrays or combining multiple arguments.
+
+2. **Use** `Arrays.stream()`:
+
+    - When you have an array, especially a **primitive array**, as it directly provides a specialized stream like `IntStream`.
+
+**Example: Difference with Primitive Arrays**
+```java
+int[] numbers = {1, 2, 3};
+
+// Using Stream.of()
+Stream<int[]> streamOf = Stream.of(numbers); 
+streamOf.forEach(arr -> System.out.println(Arrays.toString(arr))); // Output: [1, 2, 3]
+
+// Using Arrays.stream()
+IntStream intStream = Arrays.stream(numbers);
+intStream.forEach(System.out::println); // Output: 1 2 3
+
+```
+**Note**: `Stream.of()` treats `int[]` as a single object, whereas `Arrays.stream()` processes the array elements.
+
+### 106. Can streams be reused in Java?
+No, **streams cannot be reused in Java**. Once a stream's terminal operation (e.g., `forEach()`, `collect()`, `reduce()`) is invoked, the stream is consumed and cannot be reused or traversed again. Any attempt to reuse the stream will result in an `IllegalStateException`.
+
+**Explanation**
+1. **Streams are designed for one-time use:**
+
+   * Streams are part of the Java Stream API and are designed to process a data sequence in a **single pipeline** of operations (e.g., filtering, mapping, reducing).
+   * After performing a terminal operation, the stream pipeline is considered closed.
+2. **Reusing a consumed stream:**
+
+   * Once a terminal operation is called, the stream's source cannot be revisited.
+
+**Example: Stream Reuse**
+```java
+import java.util.stream.Stream;
+
+public class StreamReuseExample {
+    public static void main(String[] args) {
+        Stream<String> stream = Stream.of("A", "B", "C");
+
+        // First use of the stream
+        stream.forEach(System.out::println);
+
+        // Attempting to reuse the stream
+        stream.forEach(System.out::println); // Throws IllegalStateException
+    }
+}
+
+```
+**Output**
+```
+A
+B
+C
+Exception in thread "main" java.lang.IllegalStateException: stream has already been operated upon or closed
+```
+**Workaround to Reuse Streams**\
+If you need to use the same data sequence multiple times, you can:
+
+1. **Create a new stream from the original source:**
+
+    - Streams are lazy and do not store data, so you can recreate a new stream from the same source.
+```java
+public static void main(String[] args) {
+    // Recreate the stream
+    Stream<String> stream1 = Stream.of("A", "B", "C");
+    stream1.forEach(System.out::println);
+
+    Stream<String> stream2 = Stream.of("A", "B", "C");
+    stream2.forEach(System.out::println);
+}
+```
+2. **Collect the data into a collection:**
+
+    - Use `collect()` to gather the stream elements into a list or set for reuse.
+```java
+public static void main(String[] args) {
+    List<String> list = Stream.of("A", "B", "C").collect(Collectors.toList());
+
+    // Reuse the list as needed
+    list.forEach(System.out::println);
+    list.forEach(System.out::println);
+}
+
+```
+3. **Use a Supplier to generate a fresh stream:**
+
+- A `Supplier` can provide a new stream on demand.
+```java
+import java.util.function.Supplier;
+
+public class StreamReuseExample {
+    public static void main(String[] args) {
+        Supplier<Stream<String>> streamSupplier = () -> Stream.of("A", "B", "C");
+
+        // Use the supplier to get a fresh stream
+        streamSupplier.get().forEach(System.out::println);
+        streamSupplier.get().forEach(System.out::println);
+    }
+}
+
+```
+### 107. How do you create infinite streams?
+In Java, infinite streams can be created using the **Stream API**. The two primary methods to create infinite streams are:
+
+**1. Using** `Stream.iterate()`\
+   This method generates a stream by repeatedly applying a function to a seed value.
+
+**Syntax**:
+```java
+Stream.iterate(T seed, UnaryOperator<T> f)
+
+```
+**Example**
+```java
+import java.util.stream.Stream;
+
+public class InfiniteStreamExample {
+    public static void main(String[] args) {
+        // Create an infinite stream of numbers starting from 1
+        Stream<Integer> infiniteStream = Stream.iterate(1, n -> n + 1);
+
+        // Limit and print the first 10 numbers
+        infiniteStream.limit(10).forEach(System.out::println);
+    }
+}
+
+```
+**Output**
+```
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+```
+**2. Using `Stream.generate()`**\
+   This method generates an infinite stream using a **supplier function**.
+
+**Syntax**:
+```java
+Stream.generate(Supplier<T> s)
+
+```
+**Example**
+```java
+import java.util.stream.Stream;
+
+public class InfiniteStreamExample {
+    public static void main(String[] args) {
+        // Create an infinite stream of random numbers
+        Stream<Double> infiniteRandomStream = Stream.generate(Math::random);
+
+        // Limit and print 5 random numbers
+        infiniteRandomStream.limit(5).forEach(System.out::println);
+    }
+}
+
+```
+**Output** (example values):
+```
+0.123456789
+0.987654321
+0.456789012
+0.567890123
+0.678901234
+```
+
+![img_79.png](img_79.png)
+
+**Creating Infinite Streams with Both Methods**\
+**Example:**
+1. **Fibonacci Sequence using** `Stream.iterate()`:
+```java
+import java.util.stream.Stream;
+
+public class FibonacciStream {
+    public static void main(String[] args) {
+        Stream.iterate(new int[]{0, 1}, pair -> new int[]{pair[1], pair[0] + pair[1]})
+              .limit(10) // Limit to 10 Fibonacci numbers
+              .map(pair -> pair[0]) // Extract the first number in the pair
+              .forEach(System.out::println);
+    }
+}
+
+```
+**Output**
+```
+0
+1
+1
+2
+3
+5
+8
+13
+21
+34
+```
+2. **Constant Stream using** `Stream.generate()`:
+```java
+import java.util.stream.Stream;
+
+public class ConstantStream {
+    public static void main(String[] args) {
+        Stream.generate(() -> "Hello")
+              .limit(5) // Limit to 5 elements
+              .forEach(System.out::println);
+    }
+}
+```
+**Output**
+```
+Hello
+Hello
+Hello
+Hello
+Hello
+```
+
+### 108. What are the benefits of using functional programming over imperative programming?
+Functional programming (FP) and imperative programming are two paradigms of programming, each with its strengths. However, functional programming offers several advantages over imperative programming, especially in specific contexts like data transformation, concurrency, and mathematical problem-solving. Below are the key benefits:
+
+**1. Enhanced Readability and Maintainability**
+* **Declarative Style**: FP focuses on what to do rather than how to do it, leading to cleaner, more concise, and easier-to-read code.
+* **Reduced Boilerplate**: FP often leverages higher-order functions (e.g., `map`, `filter`, `reduce`) to express transformations succinctly.
+
+**Example**:\
+   **Imperative Style:**
+```java
+List<Integer> result = new ArrayList<>();
+for (int i : numbers) {
+    if (i % 2 == 0) {
+        result.add(i * 2);
+    }
+}
+
+```
+**Functional Style:**
+```java
+List<Integer> result = numbers.stream()
+                              .filter(i -> i % 2 == 0)
+                              .map(i -> i * 2)
+                              .collect(Collectors.toList());
+
+```
+**2. Immutability and Thread-Safety**
+* **Immutable Data Structures:** FP relies on immutable variables, ensuring data cannot be modified once created. This eliminates side effects and makes the code thread-safe by default.
+* **Concurrency:** Since data isn't mutated, multiple threads can work on the same data structure without conflict, simplifying parallel processing.
+
+**3. Modularity and Reusability**
+* **Pure Functions:** FP emphasizes pure functions, which depend only on input arguments and produce consistent output without side effects. Pure functions are easier to test and reuse.
+* **Composability**: Functions can be combined to create complex operations from simpler ones, fostering modular design.
+
+**4. Easier Debugging and Testing**
+* **No Side Effects:** Pure functions ensure that the function's behavior is predictable and depends solely on its input. This simplifies debugging.
+* **Referential Transparency:** A function call can be replaced with its output without altering the program's behavior, making it easier to understand and reason about the code.
+
+**5. Encourages a Declarative Approach**
+* **Focus on Logic:** FP shifts the focus from the how (implementation details) to the what (problem logic), making code more intuitive.
+
+**6. Better Handling of Complex Transformations**
+* **Streams and Pipelines:** FP excels at expressing data transformations and workflows with operations like `map`, `filter`, and `reduce`.
+
+**Example**:\
+   Finding the sum of squares of even numbers:
+```java
+int sum = numbers.stream()
+                 .filter(i -> i % 2 == 0)
+                 .mapToInt(i -> i * i)
+                 .sum();
+```
+
+**7. Built-in Lazy Evaluation**
+* **Efficiency**: FP often employs lazy evaluation, calculating values only when needed, improving performance by avoiding unnecessary computations.
+
+**Example**:\
+Java Streams:
+```java
+List<Integer> result = numbers.stream()
+                              .filter(i -> i % 2 == 0)
+                              .limit(5) // Stops processing after finding 5 matches
+                              .collect(Collectors.toList());
+```
+
+**8. Facilitates Parallelism**
+* FP languages and libraries (e.g., Java Streams) often provide built-in support for parallel processing without additional synchronization concerns, thanks to immutability and pure functions.
+
+**Example**:
+```java
+int sum = numbers.parallelStream()
+                 .filter(i -> i % 2 == 0)
+                 .mapToInt(i -> i * 2)
+                 .sum();
+```
+**9. Encourages Declarative Error Handling**
+* **Monads and Optionals**: FP often uses constructs like Optional in Java to handle null values and errors declaratively, reducing the risk of runtime exceptions.
+
+**Example**:
+```java
+Optional<String> value = Optional.ofNullable(possibleNullValue)
+                                 .map(String::toUpperCase)
+                                 .orElse("Default Value");
+```
+**10. Aligns with Modern Programming Practices**
+* Many modern libraries and frameworks (e.g., Java Streams, ReactiveX) are designed around functional principles, making it easier to adopt FP concepts in everyday development.
+
+![img_80.png](img_80.png)
+
+### 109. What is the role of the JVM?
+
+The **Java Virtual Machine (JVM)** is a core component of Java's platform-independent design. It acts as a runtime environment that executes Java bytecode, enabling Java programs to run on any device or operating system that has a JVM implementation. Below are its key roles and responsibilities:
+
+**1. Platform Independence**
+* JVM enables Java's "_Write Once, Run Anywhere_" principle by executing **bytecode**, which is a platform-independent intermediate representation of a Java program.
+* Each platform (Windows, Linux, macOS) has its own JVM implementation tailored to the underlying operating system and hardware.
+
+**2. Loading and Execution of Bytecode**
+* **Class Loader:** The JVM dynamically loads `.class` files into memory at runtime. It finds, loads, and links classes required by the application.
+* **Bytecode Interpreter:** Converts bytecode into machine code line by line, enabling the program to run.
+
+**3. Just-In-Time (JIT) Compilation**
+* The JVM includes a JIT compiler that improves performance by compiling bytecode into native machine code at runtime, allowing subsequent execution to bypass interpretation.
+* Optimizations such as inlining, loop unrolling, and escape analysis are performed by the JIT compiler.
+
+**4. Memory Management**
+* The JVM manages memory for Java applications, including allocation and garbage collection.
+* **Heap**: Stores objects and class instances.
+* **Stack**: Stores method call information, including local variables and method parameters.
+* **Method Area**: Stores class-level data such as metadata, static variables, and bytecode.
+* **PC Register & Native Method Stack**: Support execution and interaction with native methods.
+
+**5. Automatic Garbage Collection**
+* JVM automatically reclaims memory no longer used by the program, preventing memory leaks.
+* Various garbage collection algorithms (e.g., G1, Parallel GC) manage unused objects in the heap.
+
+**6. Thread Management**
+* JVM provides a multi-threaded environment for Java programs.
+* It manages threads at the OS level and offers mechanisms for synchronization and inter-thread communication (e.g., `wait()`, `notify()`).
+
+**7. Security**
+* JVM ensures that Java programs run in a secure environment.
+* **Bytecode Verifier**: Validates the structure and integrity of bytecode to prevent malicious code execution.
+* **Security Manager**: Enforces restrictions on what code can do (e.g., file access, network access).
+
+**8. Exception Handling**
+* JVM manages runtime exceptions and errors, ensuring programs do not crash unexpectedly.
+* It unwinds the stack when exceptions occur and searches for matching catch blocks to handle the exceptions.
+
+**9. Support for Native Code**
+* JVM provides a native method interface (JNI - Java Native Interface) to interact with code written in other languages like C or C++.
+
+**10. Performance Optimization**
+* The JVM dynamically optimizes code execution based on runtime behavior, ensuring efficient resource utilization.
+* Techniques like hotspot optimization, inline caching, and adaptive optimization are applied.
+
+**JVM Architecture**\
+Below is a high-level overview of JVM's components:
+
+1. **Class Loader Subsystem**
+
+    - Loads, verifies, and prepares classes for execution.
+2. **Execution Engine**
+
+    - **Interpreter**: Executes bytecode line by line.
+    - **JIT Compiler**: Compiles frequently executed code into native machine code.
+    - **Garbage Collector**: Reclaims unused memory.
+3. **Runtime Data Areas**
+
+    - **Heap**: For objects.
+    - **Stack**: For method calls.
+    - **Method Area**: For class data.
+    - **Program Counter Register**: Tracks the next instruction.
+4. **Native Method Interface**
+
+    - Allows Java to interact with platform-specific libraries.
+5. **Native Method Libraries**
+
+    - Libraries required for native code execution.
+
+**Key Benefits of the JVM**
+* **Portability**: Enables Java applications to run on any device with a JVM.
+* **Security**: Protects against malicious code.
+* **Memory Safety**: Prevents memory corruption via garbage collection.
+* **Performance**: JIT compilation and runtime optimizations enhance speed.
+* **Concurrency**: Simplifies thread management.
+
+### 110. Explain the Java memory model.
+The **Java Memory Model (JMM)** is part of the Java specification that defines how threads interact through memory and what behaviors are guaranteed during concurrent execution. It provides rules for reading and writing to variables (especially shared variables) to ensure consistency and predictability in multi-threaded applications.
+
+**Key Concepts of the Java Memory Model**
+**1. Main Memory and Thread Stacks**
+* Main Memory (Heap):
+  * Shared among all threads.
+  * Stores objects, class metadata, and static variables.
+* Thread Stacks:
+  * Each thread has its own stack containing local variables, method call information, and references to objects in the heap.
+  * The stack is not shared between threads.
+
+**2. Volatile Variables**
+* A `volatile` variable ensures that changes made by one thread are immediately visible to other threads.
+* Guarantees happens-before relationship for reads and writes but does not ensure atomicity for compound actions (e.g., `count++`).
+
+**3. Happens-Before Relationship**\
+   The JMM defines _several happens-before_ relationships to ensure predictable execution order:
+
+1. **Program Order Rule:**
+    - Within a single thread, actions appear to occur in program order.
+2. **Monitor Lock Rule:**
+   - Unlocking a monitor happens-before any subsequent locking of the same monitor.
+3. **Volatile Variable Rule:**
+   - A write to a `volatile` field happens-before every subsequent read of that field.
+4. **Thread Start Rule:**
+   - The start of a thread happens-before any actions taken by that thread.
+5. **Thread Join Rule:**
+   - All actions in a thread happen-before another thread successfully joins with it.
+6. **Transitivity Rule:**
+   - If `A` happens-before `B`, and `B` happens-before C, then `A` happens-before `C`.
+
+**4. Atomicity, Visibility, and Ordering**
+* **Atomicity:**
+  * Certain operations, like reading or writing a `long` or `double`, are not guaranteed to be atomic without the volatile keyword.
+  * Operations on `Atomic` classes (e.g., `AtomicInteger`) are guaranteed to be atomic.
+* **Visibility:**
+  * Changes made by one thread must become visible to other threads. Without proper synchronization, threads may work with stale data.
+  * Use `volatile`, `synchronized`, or atomic classes to ensure visibility.
+* **Ordering:**
+  * The compiler, runtime, or hardware can reorder instructions for optimization. Synchronization ensures proper execution order.
+
+**Memory Barriers**
+The JMM uses memory barriers to enforce specific ordering:
+
+* **Load Barrier:** Prevents reads from being reordered after the barrier.
+* **Store Barrier:** Prevents writes from being reordered after the barrier.
+
+**How Threads Interact with Memory**
+1. Threads work with a copy of variables stored in their local thread stack.
+2. When a thread updates a variable:
+   - It writes the value back to main memory (visible to other threads) or keeps it in its stack (not visible).
+3. Other threads may read outdated values unless `synchronized`, `volatile`, or atomic variables are used.
+
+**Synchronization in JMM**
+* **Synchronized Blocks/Methods:**
+  * Ensure mutual exclusion and visibility.
+  * Acquiring a lock clears the thread's local stack, forcing it to read fresh values from memory.
+  * Releasing a lock flushes changes to main memory.
+* **Volatile Variables:**
+  * Ensure visibility without mutual exclusion.
+* **Atomic Classes:**
+  * Provide thread-safe operations for variables like counters.
+
+**Common Problems in JMM**
+1. **Race Conditions:**
+    - Two threads modifying shared data without proper synchronization.
+2. **Stale Data:**
+   - One thread reads data that another thread has updated but hasn't yet flushed to main memory.
+3. **Instruction Reordering:**
+   - Compiler or hardware optimizations lead to out-of-order execution, causing unexpected results.
+
+**Example: Without Synchronization**
+```java
+class Example {
+    private int counter = 0;
+
+    public void increment() {
+        counter++;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+}
+
+```
+- In this case, multiple threads may read/write to `counter` simultaneously, leading to race conditions.
+
+**Example: Using Volatile**
+```java
+class Example {
+    private volatile int counter = 0;
+
+    public void increment() {
+        counter++;
+    }
+
+    public int getCounter() {
+        return counter;
+    }
+}
+
+```
+- Using `volatile` ensures visibility but not atomicity.
+
+**Example: Using Synchronization**
+```java
+class Example {
+    private int counter = 0;
+
+    public synchronized void increment() {
+        counter++;
+    }
+
+    public synchronized int getCounter() {
+        return counter;
+    }
+}
+
+```
+- Synchronization ensures both atomicity and visibility.
+
+### 111. What are the key components of JVM architecture?
+The **Java Virtual Machine (JVM)** is a critical component of the Java Runtime Environment (JRE), enabling Java's platform independence by executing bytecode. It converts Java bytecode into machine code specific to the underlying system.
+
+Here are the **key components of the JVM architecture:**
+
+**1. ClassLoader Subsystem**\
+   The ClassLoader is responsible for loading Java classes into memory when required. It handles the dynamic loading of classes and follows a delegation model.
+
+* **Components of ClassLoade**r:
+  * **Bootstrap ClassLoader**: Loads core Java classes from the `rt.jar` file.
+  * **Extension ClassLoader**: Loads classes from the `ext` directory (`java.ext.dirs`).
+  * **Application ClassLoader**: Loads classes from the application's classpath.
+* **Responsibilities:**
+  * **Loading**: Locates and loads classes.
+  * **Linking**: Verifies bytecode, prepares memory, and resolves references.
+  * **Initialization**: Executes static initializers and assignments.
+
+**2. Runtime Data Area**\
+   The JVM's memory is divided into several regions to manage the execution of Java programs.
+
+**a. Method Area**
+* Stores:
+  * Class metadata.
+  * Static variables.
+  * Method information (bytecode, names, return types, etc.).
+  * Shared among all threads.
+  
+**b. Heap**
+* Stores:
+  * Objects and their corresponding instance variables.
+  * Arrays.
+  * Shared among all threads.
+  * Garbage collection is primarily focused on this region.
+  
+**c. Stack**
+* Stores:
+  * Local variables.
+  * Method call information (stack frames).
+  * Partial results.
+* Each thread has its own stack.
+* Operates in a LIFO (Last In, First Out) manner.
+
+**d. Program Counter (PC) Register**
+  * Each thread has its own PC register.
+  * Tracks the address of the current bytecode instruction being executed.
+
+**e. Native Method Stack**
+  * Holds information related to native methods written in languages like C or C++.
+  * Works alongside the Java stack when native methods are invoked.
+
+
+**3. Execution Engine**\
+   Responsible for executing bytecode. Converts bytecode into native machine code for the underlying system.
+
+**Components of the Execution Engine:**
+* **Interpreter:**
+  * Executes bytecode line by line.
+  * Slower because of repeated bytecode interpretation.
+* **Just-In-Time (JIT) Compiler:**
+  * Converts frequently executed bytecode into native machine code for faster execution.
+  * Works alongside the interpreter to optimize performance.
+* **Garbage Collector:**
+  * Automatically manages memory by reclaiming unused objects in the heap.
+  * Uses algorithms like Mark-and-Sweep and Generational Garbage Collection.
+* **Native Interface:**
+  * Provides a link to native libraries and methods.
+
+**4. Native Method Interface (JNI)**\
+  * A framework that allows Java code to interact with native code (e.g., C or C++).
+  * Used for platform-specific tasks like accessing hardware or performing operations that Java cannot handle directly.
+
+**5. Native Method Libraries**
+  * Contains native libraries required for JNI and native method execution.
+  * Accessed by the Native Interface.
+
+**Workflow of the JVM**
+1. **Class Loading:** The ClassLoader subsystem loads the .class file into memory.
+2. **Bytecode Verification:** The bytecode is verified for validity and security.
+3. **Execution:**
+   - The Execution Engine interprets or compiles the bytecode into native machine code.
+4. **Memory Management:** Garbage Collector reclaims memory from unused objects.
+5. **Thread Execution:** Threads execute their tasks with the help of the stack, heap, and PC registers.
+
+**JVM Architecture Diagram**\
+To visualize, the JVM can be structured as follows:
+```
++----------------------------+
+|        ClassLoader         |
++----------------------------+
+|   Runtime Data Area        |
+|  +----------------------+  |
+|  | Method Area          |  |
+|  | Heap                 |  |
+|  | Stack                |  |
+|  | PC Register          |  |
+|  | Native Method Stack  |  |
+|  +----------------------+  |
++----------------------------+
+|    Execution Engine         |
+|  +----------------------+  |
+|  | Interpreter          |  |
+|  | JIT Compiler         |  |
+|  | Garbage Collector    |  |
+|  +----------------------+  |
++----------------------------+
+| Native Method Interface     |
++----------------------------+
+| Native Method Libraries     |
++----------------------------+
+```
+
+![img_81.png](img_81.png)
+
+### 112. What is the difference between heap and stack memory?
+
+The **heap** and **stack** are two key memory areas used by the JVM (Java Virtual Machine) to manage memory allocation. They serve different purposes and are managed differently.
+
+**Heap Memory**
+1. **Purpose:**
+
+   * Used for **dynamic memory allocation**.
+   * Stores objects and their instance variables.
+   * Memory in the heap is shared among all threads.
+2. **Characteristics:**
+
+   * **Global Access:** Objects in the heap are globally accessible to any thread.
+   * **Garbage Collection:** Memory is managed automatically by the Garbage Collector, which removes unused objects.
+   * **Larger Size:** Heap memory is typically much larger than stack memory.
+   * **Slower Access:** Accessing data in the heap is slower because it involves global management and garbage collection.
+3. **Allocation and Deallocation:**
+
+   * Memory is allocated at runtime when objects are created using the `new` keyword.
+   * Deallocated when the Garbage Collector determines that the object is no longer reachable.
+4. **Use Case:**
+
+   * Objects with a longer lifecycle (e.g., objects that need to persist across method calls).
+
+**Stack Memory**
+1. **Purpose:**
+
+   * Used for method execution.
+   * Stores method-local variables, primitive data, and references to objects in the heap.
+   * Each thread has its own stack (thread-local).
+2. **Characteristics:**
+
+   * **Last-In-First-Out (LIFO):** Operates like a stack data structure, where the last item pushed is the first to be popped.
+   * **Thread-Specific:** Each thread gets its own stack, ensuring thread safety for local variables.
+   * **Faster Access:** Access to stack memory is faster compared to heap memory.
+3. **Allocation and Deallocation:**
+
+   * Memory is allocated when a method is invoked.
+   * Deallocated automatically when the method call ends (the stack frame is popped off).
+4. **Use Case:**
+
+   * Temporary variables and method call management (e.g., function parameters, return addresses).
+
+![img_82.png](img_82.png)
+
+**Example**
+```java
+public class MemoryExample {
+    public static void main(String[] args) {
+        int localVariable = 10; // Stored in stack
+        String message = "Hello"; // String object in heap, reference in stack
+
+        Person person = new Person("Alice"); // Person object in heap, reference in stack
+        person.sayHello(); // Stack stores the method call frame
+    }
+}
+
+class Person {
+    private String name; // Stored in heap as part of the object
+    public Person(String name) {
+        this.name = name;
+    }
+    public void sayHello() {
+        System.out.println("Hello, " + name); // Local variables in stack
+    }
+}
+
+```
+**Explanation:**
+
+* **Stack**: `localVariable`, `message` (reference), and person (reference) are stored in the main method’s stack frame.
+* **Heap**: The `String` object ("Hello") and the `Person` object are stored in the heap.
+
+### 113. Explain the purpose of garbage collection in Java.
+
+Garbage collection (GC) in Java is an automated process designed to manage memory by reclaiming unused memory, making it available for future use. It ensures that objects no longer referenced by the application are removed from memory, helping to prevent memory leaks and optimize application performance.
+
+**Purpose of Garbage Collection**
+1. **Automatic Memory Management:**
+
+    - Developers don’t need to manually allocate and deallocate memory (as required in languages like C or C++). The JVM handles memory cleanup.
+2. **Prevention of Memory Leaks:**
+
+    - By reclaiming memory occupied by unreferenced objects, GC helps prevent memory leaks, where objects remain in memory but are no longer usable.
+3. **Optimization of Memory Usage:**
+
+    - Recycles memory efficiently to ensure that the application has enough resources to allocate for new objects.
+4. **Simplifies Development:**
+
+    - Frees developers from managing memory directly, reducing the risk of errors like dangling pointers or double frees, common in manual memory management.
+
+**How Garbage Collection Works**\
+The JVM monitors objects in the heap and automatically determines when an object is no longer needed. This typically happens when:
+
+* An object has no active references.
+* Objects are out of scope.
+
+The Garbage Collector then removes these objects to free up memory.
+
+**Phases of Garbage Collection**
+1. **Mark Phase:**
+
+    - The GC identifies all objects that are still reachable from the application’s roots (such as static references, local variables in stack frames, and active threads).
+2. **Sweep Phase:**
+
+    - The GC removes all unreferenced objects identified during the mark phase, freeing up their memory.
+3. **Compaction (Optional):**
+
+    - The GC compacts the remaining objects to eliminate memory fragmentation, ensuring efficient use of the heap.
+
+**When Does Garbage Collection Happen?**\
+Garbage collection is triggered when:
+
+- The JVM runs out of free memory.
+- The application explicitly requests it using System.gc() (though this is only a suggestion to the JVM).
+
+**Limitations of Garbage Collection**
+1. **Unpredictable Timing:**
+
+    - Developers cannot control exactly when GC will run, which can lead to unpredictable application pauses.
+2. **Performance Overhead:**
+
+    - GC requires computational resources, which may introduce latency during collection.
+3. **Cannot Collect All Unused Objects:**
+
+    - Objects that are part of cyclic dependencies may not be collected unless specific GC implementations (e.g., G1) handle them.
+
+**Example of Objects Eligible for GC**
+```java
+public class GarbageCollectionExample {
+    public static void main(String[] args) {
+        Person person = new Person("John");
+        person = null; // The object is now eligible for garbage collection
+        
+        System.gc(); // Suggest garbage collection
+    }
+}
+
+class Person {
+    private String name;
+    public Person(String name) {
+        this.name = name;
+    }
+    @Override
+    protected void finalize() {
+        System.out.println("Person object is being garbage collected.");
+    }
+}
+
+```
+**Explanation:**
+
+* The `Person` object becomes eligible for garbage collection when its reference (`person`) is set to null.
+* The `finalize()` method (deprecated in modern Java) is called before the object is destroyed (if implemented).
+
+**Best Practices**
+1. Avoid relying on `System.gc()` as it only suggests GC to the JVM.
+2. Minimize the creation of unnecessary objects.
+3. Use proper data structures to avoid memory wastage.
+4. Profile and monitor applications to identify memory leaks.
+
+### 114. What are garbage collection algorithms in Java?
+
+**Key Garbage Collection Algorithms**
+1. **Serial Garbage Collector**
+
+* **Description:** A simple, single-threaded garbage collection algorithm.
+* **Best For:** Applications running in single-threaded environments or with small heaps.
+* **How It Works:**
+  * Uses a "stop-the-world" approach, pausing the application during garbage collection.
+* **Advantages:**
+  * Easy to implement and has minimal overhead.
+* **Disadvantages:**
+  * Not suitable for applications requiring high concurrency.
+2. **Parallel Garbage Collector (Throughput Collector)**
+
+* **Description:** Uses multiple threads to perform garbage collection tasks.
+* **Best For:** Applications with large heaps and running on multi-core processors.
+* **How It Works:**
+  * Stops the application threads during garbage collection but uses multiple threads for faster cleanup.
+* **Advantages:**
+  * High throughput due to parallel processing.
+* **Disadvantages:**
+  * May introduce longer pause times compared to other collectors.
+3. **CMS (Concurrent Mark-Sweep) Garbage Collector**
+
+* **Description:** Reduces application pause times by performing most garbage collection work concurrently with the application.
+* **Best For:** Applications needing low latency and minimal pauses.
+* **How It Works:**
+  * Splits the GC process into marking and sweeping phases, running marking concurrently with the application.
+* **Advantages:**
+  * Lower latency.
+* **Disadvantages:**
+  * Higher CPU overhead and potential fragmentation of the heap.
+4. **G1 Garbage Collector (Garbage-First)**
+
+* **Description:** Divides the heap into regions and prioritizes collecting regions with the most garbage.
+* **Best For:** Applications with large heaps requiring predictable pause times.
+* **How It Works:**
+  * Performs marking, evacuation, and compaction, collecting garbage in high-yield regions first.
+* **Advantages:**
+  * Better pause time predictability.
+  * Avoids heap fragmentation.
+* **Disadvantages:**
+  * More complex than other collectors.
+5. **Z Garbage Collector (ZGC)**
+
+* **Description:** A low-latency collector designed for sub-millisecond pause times, even with very large heaps (terabytes in size).
+* **Best For:** Large-scale applications requiring minimal interruption.
+* **How It Works:**
+  * Performs most work concurrently, with pause times independent of heap size.
+* **Advantages:**
+  * Extremely low pause times.
+* **Disadvantages:**
+  * Higher CPU and memory overhead.
+6. **Shenandoah Garbage Collector**
+
+* **Description:** Similar to ZGC, focuses on low latency but works with smaller heaps.
+* **Best For:** Applications needing consistent performance with minimal pauses.
+* **How It Works:**
+  * Uses concurrent compaction to avoid fragmentation and long pause times.
+* **Advantages:**
+  * Minimal pause times.
+* **Disadvantages:**
+  * Requires additional CPU resources.
+7. **Epsilon Garbage Collector**
+
+* **Description:** A "no-op" garbage collector that does no memory reclamation.
+* **Best For:** Performance testing and situations where the application manages memory explicitly.
+* **How It Works:**
+  * Allocates memory but does not perform garbage collection.
+* **Advantages:**
+  * Zero overhead for GC.
+* **Disadvantages:**
+  * Can lead to out-of-memory errors.
+
+**Phases Common to Most Algorithms**
+1. **Mark Phase:**
+
+    - Identifies all live objects by traversing object references from GC roots (e.g., static variables and active threads).
+2. **Sweep Phase:**
+
+    - Removes objects that are not marked as live, reclaiming their memory.
+3. **Compaction Phase (Optional):**
+
+    - Moves live objects to a contiguous memory space to eliminate fragmentation.
+
+**Choosing the Right Algorithm**
+* **Small applications or development environments:** Serial GC.
+* **Throughput-focused applications (batch jobs):** Parallel GC.
+* **Low-latency, interactive applications:** CMS or G1 GC.
+* **Large heaps with stringent pause-time requirements:** G1 GC, ZGC, or Shenandoah.
+
+**Configuring Garbage Collection**\
+Use JVM options to select and customize GC algorithms:
+
+* `-XX:+UseSerialGC` (Serial GC)
+* `-XX:+UseParallelGC` (Parallel GC)
+* `-XX:+UseConcMarkSweepGC` (CMS GC)
+* `-XX:+UseG1GC` (G1 GC)
+* `-XX:+UnlockExperimentalVMOptions -XX:+UseZGC` (ZGC)
+* `-XX:+UseShenandoahGC` (Shenandoah GC)
+
+### 115. What are the different types of class loaders in Java?
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
