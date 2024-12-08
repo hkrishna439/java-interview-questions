@@ -1,8 +1,7 @@
 # java-interview-questions
 
 **Java Basics**
-**Object-Oriented Programming (OOP)**
-**Java Collections Framework**
+
 1. [What are the key features of Java?](https://github.com/hkrishna439/java-interview-questions#1-what-are-the-key-features-of-java)
 2. [What is the difference between JDK, JRE, and JVM?](https://github.com/hkrishna439/java-interview-questions#2-what-is-the-difference-between-jdk-jre-and-jvm)
 3. [Why is Java platform-independent?](https://github.com/hkrishna439/java-interview-questions#3-why-is-java-platform-independent)
@@ -23,6 +22,9 @@
 18. [What is the use of the instanceof operator?](https://github.com/hkrishna439/java-interview-questions#18-what-is-the-use-of-the-instanceof-operator)
 19. [What is the difference between checked and unchecked exceptions?](https://github.com/hkrishna439/java-interview-questions#19-what-is-the-difference-between-checked-and-unchecked-exceptions)
 20. [What is the purpose of the try-catch block?](https://github.com/hkrishna439/java-interview-questions#20-what-is-the-purpose-of-the-try-catch-block)
+
+**Object-Oriented Programming (OOP)**
+
 21. [Explain abstraction with an example.](https://github.com/hkrishna439/java-interview-questions#21-explain-abstraction-with-an-example)
 22. [Explain encapsulation with an example.](https://github.com/hkrishna439/java-interview-questions#22-explain-encapsulation-with-an-example)
 23. [Explain inheritance with an example.](https://github.com/hkrishna439/java-interview-questions#23-explain-inheritance-with-an-example)
@@ -41,6 +43,9 @@
 36. [Explain the super keyword with an example.](https://github.com/hkrishna439/java-interview-questions#36-explain-the-super-keyword-with-an-example)
 37. [What is the difference between IS-A and HAS-A relationships?](https://github.com/hkrishna439/java-interview-questions#37-what-is-the-difference-between-is-a-and-has-a-relationships)
 38. [How do you implement a singleton class in Java?](https://github.com/hkrishna439/java-interview-questions#38-how-do-you-implement-a-singleton-class-in-java)
+
+**Java Collections Framework**
+
 39. [What is the Java Collections Framework?](https://github.com/hkrishna439/java-interview-questions#39-what-is-the-java-collections-framework)
 40. [What is the difference between ArrayList and LinkedList?](https://github.com/hkrishna439/java-interview-questions#40-what-is-the-difference-between-arraylist-and-linkedlist)
 41. [What is the difference between HashSet and TreeSet?](https://github.com/hkrishna439/java-interview-questions#41-what-is-the-difference-between-hashset-and-treeset)
@@ -65,6 +70,9 @@
 60. [Explain the forEach() method in Java.](https://github.com/hkrishna439/java-interview-questions#60-explain-the-foreach-method-in-java)
 61. [What is the purpose of EnumSet?](https://github.com/hkrishna439/java-interview-questions#61-what-is-the-purpose-of-enumset)
 62. [What is the difference between shallow and deep copying in collections?](https://github.com/hkrishna439/java-interview-questions#62-what-is-the-difference-between-shallow-and-deep-copying-in-collections)
+
+**Multithreading and Concurrency**
+
 63. [What is a thread in Java?](https://github.com/hkrishna439/java-interview-questions#63-what-is-a-thread-in-java)
 64. [Explain the life cycle of a thread.](https://github.com/hkrishna439/java-interview-questions#64-explain-the-life-cycle-of-a-thread)
 65. [What is the purpose of the synchronized keyword?](https://github.com/hkrishna439/java-interview-questions#65-what-is-the-purpose-of-the-synchronized-keyword)
@@ -91,13 +99,55 @@
 86. [What is the purpose of the ScheduledExecutorService?](https://github.com/hkrishna439/java-interview-questions#85-what-is-the-purpose-of-the-scheduledexecutorservice)
 87. [What is the difference between parallelism and concurrency?](https://github.com/hkrishna439/java-interview-questions#86-what-is-the-difference-between-parallelism-and-concurrency)
 88. [Explain thread synchronization with an example.](https://github.com/hkrishna439/java-interview-questions#87-explain-thread-synchronization-with-an-example)
+
+**Functional Programming and Streams**
+
 89. [What is functional programming in Java?](https://github.com/hkrishna439/java-interview-questions#88-what-is-functional-programming-in-java)
 90. [What are lambda expressions in Java?](https://github.com/hkrishna439/java-interview-questions#89-what-are-lambda-expressions-in-java)
 91. [What are method references in Java?](https://github.com/hkrishna439/java-interview-questions#90-what-are-method-references-in-java)
 92. [What is the difference between map() and flatMap() in streams?](https://github.com/hkrishna439/java-interview-questions#91-what-is-the-difference-between-map-and-flatmap-in-streams)
 93. [How do you filter elements in a stream?](https://github.com/hkrishna439/java-interview-questions#92-how-do-you-filter-elements-in-a-stream)
 94. [What is the purpose of reduce() in streams?](https://github.com/hkrishna439/java-interview-questions#93-what-is-the-purpose-of-reduce-in-streams)
+95. [What is the difference between forEach() and map()?](https://github.com/hkrishna439/java-interview-questions#95-what-is-the-difference-between-foreach-and-map)
+96. [What are terminal and intermediate operations in streams?](https://github.com/hkrishna439/java-interview-questions#96-what-are-terminal-and-intermediate-operations-in-streams)
+97. [How do you sort a list using streams?](https://github.com/hkrishna439/java-interview-questions#97-how-do-you-sort-a-list-using-streams)
+98. [What is a parallel stream?](https://github.com/hkrishna439/java-interview-questions#98-what-is-a-parallel-stream)
+99. [What is the difference between collect() and reduce()?](https://github.com/hkrishna439/java-interview-questions#99-what-is-the-difference-between-collect-and-reduce)
+100. [How do you group elements in a stream?](https://github.com/hkrishna439/java-interview-questions#100-how-do-you-group-elements-in-a-stream)
+101. [What is the Collectors utility class?](https://github.com/hkrishna439/java-interview-questions#101-what-is-the-collectors-utility-class)
+102. [How do you count elements in a stream?](https://github.com/hkrishna439/java-interview-questions#102-how-do-you-count-elements-in-a-stream)
+103. [What is the difference between findFirst() and findAny()?](https://github.com/hkrishna439/java-interview-questions#103-what-is-the-difference-between-findfirst-and-findany)
+104. [Explain Optional and its use in Java.](https://github.com/hkrishna439/java-interview-questions#104-explain-optional-and-its-use-in-java)
+105. [What are Stream.of() and Arrays.stream()?](https://github.com/hkrishna439/java-interview-questions#105-what-are-streamof-and-arraysstream)
+106. [Can streams be reused in Java?](https://github.com/hkrishna439/java-interview-questions#106-can-streams-be-reused-in-java)
+107. [How do you create infinite streams?](https://github.com/hkrishna439/java-interview-questions#107-how-do-you-create-infinite-streams)
+108. [What are the benefits of using functional programming over imperative programming?](https://github.com/hkrishna439/java-interview-questions#108-what-are-the-benefits-of-using-functional-programming-over-imperative-programming)
 
+**JVM Internals and Performance**
+
+109. [What is the role of the JVM?](https://github.com/hkrishna439/java-interview-questions#109-what-is-the-role-of-the-jvm)
+110. [Explain the Java memory model.](https://github.com/hkrishna439/java-interview-questions#110-explain-the-java-memory-model)
+111. [What are the key components of JVM architecture?](https://github.com/hkrishna439/java-interview-questions#111-what-are-the-key-components-of-jvm-architecture)
+112. [What is the difference between heap and stack memory?](https://github.com/hkrishna439/java-interview-questions#112-what-is-the-difference-between-heap-and-stack-memory)
+113. [Explain the purpose of garbage collection in Java.](https://github.com/hkrishna439/java-interview-questions#113-explain-the-purpose-of-garbage-collection-in-java)
+114. [What are garbage collection algorithms in Java?](https://github.com/hkrishna439/java-interview-questions#114-what-are-garbage-collection-algorithms-in-java)
+115. [What are the different types of class loaders in Java?](https://github.com/hkrishna439/java-interview-questions#115-what-are-the-different-types-of-class-loaders-in-java)
+116. [What is the purpose of the ClassLoader class?](https://github.com/hkrishna439/java-interview-questions#116-what-is-the-purpose-of-the-classloader-class)
+117. [What is the difference between loadClass() and forName()?](https://github.com/hkrishna439/java-interview-questions#117-what-is-the-difference-between-loadclass-and-forname)
+118. [What are strong, weak, soft, and phantom references?](https://github.com/hkrishna439/java-interview-questions#118-what-are-strong-weak-soft-and-phantom-references)
+119. [What are the different JVM options for performance tuning?](https://github.com/hkrishna439/java-interview-questions#119-what-are-the-different-jvm-options-for-performance-tuning)
+120. [What is the difference between -Xms and -Xmx?](https://github.com/hkrishna439/java-interview-questions#120-what-is-the-difference-between--xms-and--xmx)
+121. [What are JIT and AOT compilation?](https://github.com/hkrishna439/java-interview-questions#121-what-are-jit-and-aot-compilation)
+122. [How does JVM handle method area memory?](https://github.com/hkrishna439/java-interview-questions#122-how-does-jvm-handle-method-area-memory)
+123. [What is a memory leak in Java, and how do you prevent it?](https://github.com/hkrishna439/java-interview-questions#123-what-is-a-memory-leak-in-java-and-how-do-you-prevent-it)
+124. [What are thread dumps and heap dumps?](https://github.com/hkrishna439/java-interview-questions#124-what-are-thread-dumps-and-heap-dumps)
+125. [How do you debug JVM issues?](https://github.com/hkrishna439/java-interview-questions#125-how-do-you-debug-jvm-issues)
+
+**Java Database Connectivity**
+
+126. [What is a Statement, PreparedStatement, and CallableStatement?](https://github.com/hkrishna439/java-interview-questions#126-what-is-a-statement-preparedstatement-and-callablestatement)
+127. [What is the difference between lazy and eager loading?](https://github.com/hkrishna439/java-interview-questions#127-what-is-the-difference-between-lazy-and-eager-loading)
+128. [What is a second-level cache in Hibernate?](https://github.com/hkrishna439/java-interview-questions#128-what-is-a-second-level-cache-in-hibernate)
 
 ### 1. What are the key features of Java?
 
