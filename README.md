@@ -12229,3 +12229,705 @@ java -Xms1g -Xmx1g -jar myapp.jar
   * `-Xmx` might default to 1/4th of system memory.
 
 By fine-tuning `-Xms` and `-Xmx`, you can ensure better resource utilization and performance for your Java applications.
+
+### 121. What are JIT and AOT compilation?
+**JIT (Just-In-Time) Compilation and AOT (Ahead-Of-Time) Compilation** are techniques used to convert high-level programming languages into machine code that can be executed by the system's processor. Both have distinct advantages and are used in different contexts. Here's a detailed breakdown:
+
+**1. JIT (Just-In-Time) Compilation**\
+- **Definition**: JIT compilation happens at runtime. The Java Virtual Machine (JVM) compiles the bytecode into native machine code just before execution.
+
+* **Workflow:**
+  1. The JVM loads the `.class` files containing bytecode.
+  2. A JIT compiler translates the bytecode into machine code during program execution.
+  3. The machine code is then executed directly by the processor.
+* **Advantages:**
+  * **Optimized for runtime performance:** The JIT compiler can optimize code based on runtime profiling (e.g., identifying frequently executed paths).
+  * **Platform independence:** Since bytecode is compiled at runtime, the same application can run on any platform with a JVM.
+  * **HotSpot optimizations:** JIT focuses on frequently used code paths (hotspots), optimizing them for faster execution.
+* **Disadvantages:**
+  * **Startup overhead:** Initial execution might be slower because the JIT compiler works on-the-fly.
+  * **Memory usage:** The additional runtime compilation process can consume more memory.
+* **Usage in Java:**
+  * The JVM employs JIT as part of its execution strategy.
+  * Example: **HotSpot JVM**, used in Java, leverages JIT compilation for performance optimization.
+
+**2. AOT (Ahead-Of-Time) Compilation**\
+- **Definition**: AOT compilation happens before runtime. The source code or bytecode is compiled into native machine code before the program is executed.
+
+* **Workflow:**
+  * The source code is compiled directly into native machine code.
+  * The compiled binary is distributed and executed directly on the target system.
+* **Advantages:**
+  * **Faster startup:** Since the program is precompiled, there’s no runtime compilation overhead.
+  * **Reduced runtime overhead:** No need for a JIT compiler during execution, saving resources.
+  * **Predictable performance:** AOT removes the need for runtime optimizations, resulting in consistent performance.
+* **Disadvantages:**
+  * **Lack of runtime optimizations:** AOT cannot adapt to runtime conditions, potentially leading to less efficient execution.
+  * **Platform dependence:** The compiled binary is tied to a specific platform or architecture.
+  * **Larger binaries:** AOT compilation might generate larger executable files.
+* **Usage in Java:**
+  * **GraalVM** supports AOT compilation in Java.
+  * AOT is used in environments where fast startup and predictable performance are critical, such as microservices and serverless applications.
+
+![img_94.png](img_94.png)
+
+* **Which to Use?**
+* **JIT:**
+  * Ideal for general-purpose applications requiring portability.
+  * Great for long-running processes where runtime optimizations pay off.
+* **AOT:**
+  * Suitable for resource-constrained environments or applications requiring fast startup times, such as microservices.
+
+Both approaches can complement each other. For example, some modern JVM implementations combine JIT and AOT to leverage the best of both worlds.
+
+### 122. How does JVM handle method area memory?
+The **method area** is a key component of the JVM memory model, responsible for storing class-level data. Here's a detailed explanation of how the JVM handles method area memory:
+
+**What is the Method Area?**
+* The **method area** is part of the **heap** in JVM memory and is shared among all threads.
+* It holds per-class data, including:
+  * **Class structure** (metadata).
+  * **Runtime constant pool** (e.g., literals and symbolic references).
+  * **Field and method information** (including method bytecode).
+  * **Static variables**.
+  * **Final constants.**
+  * **Information for special methods**, such as constructors and `<clinit>` (static initializer).
+
+**Memory Management in the Method Area**
+1. **Class Loading:**
+
+    - When a class is loaded by the JVM, its binary representation is read from `.class` files by the **ClassLoader**.
+    - The class metadata, along with static fields and methods, is stored in the method area.
+2. **Runtime Constant Pool:**
+
+    - Each class has a runtime constant pool, which is part of the method area.
+    - It stores:
+      - Literals (e.g., string literals defined in the class).
+      - Symbolic references (e.g., method or field names, class names).
+    - The pool is dynamic; new constants can be added at runtime (e.g., via reflection).
+3. **Thread Safety:**
+
+    - Since the method area is shared across threads, JVM ensures thread safety when multiple threads access the same data.
+4. **Garbage Collection:**
+
+    - The method area is subject to garbage collection, although the process is different from other parts of the heap.
+    - Classes and metadata can be removed if no longer referenced (e.g., if a class loader is garbage-collected).
+5. **Memory Limit:**
+
+    - The JVM imposes a configurable limit on the method area size.
+    - If the method area runs out of memory, the JVM throws a `java.lang.OutOfMemoryError`: `Metaspace` error.
+
+**Evolution of Method Area: PermGen vs Metaspace**
+* **Before Java 8:**
+  * The method area was implemented using **PermGen** (Permanent Generation).
+  * PermGen was part of the heap, with a fixed size that could be configured using the `-XX:PermSize` and `-XX:MaxPermSize` options.
+  * Issues with PermGen:
+    * Difficult to resize dynamically.
+    * Frequent `OutOfMemoryError` due to limited size.
+* **From Java 8 onwards:**
+  * **PermGen** was replaced by **Metaspace**.
+  * Metaspace is not part of the heap but resides in **native memory**.
+  * It has dynamic sizing, with an initial size that grows as needed.
+  * Configurable using:
+    * `-XX:MetaspaceSize` (initial size).
+    * `-XX:MaxMetaspaceSize` (maximum size).
+* Advantages of Metaspace:
+    * Eliminates the fixed-size limitation of PermGen.
+    * Improves garbage collection efficiency for class metadata.
+
+![img_95.png](img_95.png)
+
+**Common Issues**
+1. **OutOfMemoryError: Metaspace:**
+   * Occurs when the method area exceeds the configured maximum size.
+   * Mitigation:
+     * Increase Metaspace size using `-XX:MaxMetaspaceSize`.
+     * Reduce the number of loaded classes (e.g., by avoiding excessive use of dynamic proxies or class loading).
+2. **ClassLoader Memory Leaks:**
+   * Occurs when class loaders are not properly garbage collected, leading to stale data in the method area.
+
+### 123. What is a memory leak in Java, and how do you prevent it?
+
+A **memory leak** in Java occurs when objects that are no longer needed by the application remain in memory because they are still being referenced, preventing the garbage collector from reclaiming that memory. Over time, this can lead to **OutOfMemoryError** and degrade application performance.
+
+**Causes of Memory Leaks**
+1. **Unclosed Resources:**
+
+    -bFailure to close I/O streams, database connections, or network sockets.
+2. **Static References:**
+
+    - Objects referenced by static fields persist for the lifetime of the application.
+3. **Listeners and Callbacks:**
+
+    - Registered event listeners or callbacks that are not explicitly unregistered.
+4. **Thread Locals:**
+
+    - Improper use of `ThreadLocal` variables can cause memory leaks, especially in application servers with thread pools.
+5. **Custom Data Structures:**
+
+    - Improperly designed data structures that grow indefinitely.
+6. **Inner Classes:**
+
+    - Non-static inner classes retain references to their enclosing classes, which can cause leaks if the enclosing instance is no longer needed.
+7. **Caching:**
+
+    - Over-retention of objects in caches without a proper eviction policy.
+
+**Detecting Memory Leaks**
+1. **Using Profiling Tools:**
+
+    - Tools like **VisualVM**, **JProfiler**, and **Eclipse Memory Analyzer (MAT)** can help identify objects retained in memory unnecessarily.
+2. **Heap Dumps:**
+
+    - Analyze heap dumps to inspect objects that are consuming memory and identify their references.
+3. **GC Logs:**
+
+    - Enable garbage collection logs to monitor memory usage patterns over time.
+4. **Leak Detection Libraries:**
+
+    - Use libraries like **Apache Commons Pool** or **Guava** for tracking object retention in pools and caches.
+
+**Preventing Memory Leaks**
+1. **Close Resources:**
+
+   - use **try-with-resources** to ensure that streams, readers, and connections are closed automatically:
+```java
+try (BufferedReader br = new BufferedReader(new FileReader("file.txt"))) {
+    // Read the file
+}
+
+```
+2. **Unregister Listeners and Callbacks:**
+
+    - Explicitly remove listeners or callbacks when they are no longer needed.
+```java
+button.removeActionListener(listener);
+
+```
+3. **Avoid Static References:**
+
+    - Minimize the use of static fields for objects that hold large amounts of data.
+4. **Use Weak References:**
+
+    - For caches or mappings, use `WeakReference` or `WeakHashMap` to allow garbage collection of unused objects:
+```java
+Map<Key, Value> map = new WeakHashMap<>();
+
+```
+5. **Thread Local Cleanup**:
+
+    - Explicitly remove ThreadLocal variables after use
+```java
+threadLocal.remove();
+
+```
+6. **Implement Proper Cache Management:**
+    - Use eviction policies in caches:
+```java
+Cache<String, Object> cache = CacheBuilder.newBuilder()
+    .maximumSize(100)
+    .build();
+
+```
+7. **Avoid Retaining References:**
+
+    - Nullify references when objects are no longer needed:
+```java
+object = null;
+
+```
+8. **Monitor and Profile Regularly:**
+
+    - Regular profiling during development and testing can catch memory leaks early.
+
+**Example of Preventing a Memory Leak**\
+**Problem**: Static collection holding references to objects.
+```java
+class MemoryLeakExample {
+    private static List<Object> staticList = new ArrayList<>();
+    
+    public void addObject(Object obj) {
+        staticList.add(obj); // Causes memory leak
+    }
+}
+```
+**Solution**: Use a `WeakReference` to avoid holding objects unnecessarily:
+```java
+import java.lang.ref.WeakReference;
+
+class FixedMemoryLeakExample {
+    private static List<WeakReference<Object>> staticList = new ArrayList<>();
+
+    public void addObject(Object obj) {
+        staticList.add(new WeakReference<>(obj));
+    }
+}
+
+```
+### 124. What are thread dumps and heap dumps?
+1. **Thread Dumps**\
+   A **thread dump** is a snapshot of all the threads in a Java application at a specific point in time. It includes the state, stack trace, and execution details of every thread. Thread dumps are typically used for diagnosing issues like deadlocks, high CPU usage, and thread contention.
+
+**Key Details in a Thread Dump**
+* **Thread Name**: The name of the thread.
+* **Thread State:** States such as `RUNNABLE`, `BLOCKED`, `WAITING`, or `TIMED_WAITING`.
+* **Stack Trace:** The method calls that the thread is executing.
+* **Thread Priority:** The priority level of the thread.
+* **Locks Held**: Information about any locks the thread holds or is waiting for.
+
+**How to Generate a Thread Dump**
+1. **Using** `jstack`:
+
+- Run the following command:
+```
+jstack <PID>
+
+```
+- Replace <PID> with the process ID of the Java application.
+2. **Using** `kill -3` (**Linux/Unix**):
+
+- Sends a signal to generate a thread dump
+```
+kill -3 <PID>
+
+```
+- The dump is printed to the standard error output or logs.
+
+3. **Using IDEs:**
+
+    - Tools like IntelliJ IDEA or Eclipse provide thread dump functionality in their debugging tools.
+4. **Monitoring Tools:**
+
+    - Tools like VisualVM or JConsole allow you to generate thread dumps interactively.
+
+**When to Use a Thread Dump**
+* **Diagnosing Deadlocks:** Identify threads waiting for each other to release locks.
+* **High CPU Utilization:** Identify threads consuming excessive CPU time.
+* **Application Hangs:** Pinpoint threads causing delays or blocking.
+
+**2. Heap Dumps**\
+   A **heap dump** is a snapshot of the Java heap memory, showing all objects in memory, their types, fields, and references at a particular moment. It is primarily used for diagnosing memory issues like memory leaks and OutOfMemoryError.
+
+**Key Details in a Heap Dump**
+* **Object Instances**: Types and counts of objects in memory.
+* **References**: The objects referenced by others.
+* **Memory Usage**: Breakdown of heap usage by different parts of the application.
+* **Garbage Collection**: Insights into which objects are eligible for garbage collection.
+
+**How to Generate a Heap Dump**
+1. **Using** `jmap`:
+
+- Generate a heap dump for a running process
+```
+jmap -dump:live,format=b,file=heapdump.hprof <PID>
+
+```
+
+2. **Using JVM Options:**
+
+- Automatically generate a heap dump on `OutOfMemoryError`
+```
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/dump
+
+```
+3. **Monitoring Tools:**
+
+    - Tools like VisualVM, JConsole, and Eclipse MAT can generate heap dumps interactively.
+4. **Programmatically:**
+
+    - Use the `com.sun.management.HotSpotDiagnosticMXBean` API to create heap dumps from within the application.
+
+**When to Use a Heap Dump**
+* **Memory Leaks**: Identify objects that are unnecessarily retained.
+* **OutOfMemoryError**: Analyze the state of heap memory at the time of the error.
+* **High Memory Usage**: Investigate which parts of the application consume the most memory.
+
+**Analyzing Dumps**
+1. **Thread Dumps:**
+
+    - Use tools like IntelliJ IDEA, Eclipse, or text editors to analyze stack traces.
+    - Look for blocked threads, deadlocks, or threads in a high number of `RUNNABLE` states.
+2. **Heap Dumps:**
+
+    - Use tools like:
+        - **Eclipse Memory Analyzer Tool (MAT)**
+        - **VisualVM**
+        - **JProfiler**
+    - Identify objects with unusually high retention or references.
+
+![img_96.png](img_96.png)
+
+### 125. How do you debug JVM issues?
+Debugging JVM issues involves analyzing performance bottlenecks, memory leaks, crashes, high CPU usage, or application hangs. Below is a step-by-step approach to debugging common JVM issues.
+
+1. **Identifying the Issue**
+**a. Common Symptoms**
+   * **High CPU usage**: Threads consuming excessive CPU time.
+   * **OutOfMemoryError**: Insufficient memory in the heap or metaspace.
+   * **Application hangs or slowness**: Threads are blocked or stuck.
+   * **Crashes**: JVM exits unexpectedly with core dumps or error logs.
+**b. Tools Needed**
+   * **Monitoring Tools**: VisualVM, JConsole, Java Mission Control (JMC).
+   * **Command-Line Tools**: `jstack`, `jmap`, `jstat`, `jcmd`, `jps`.
+   * **Profiling Tools**: YourKit, JProfiler.
+   * **Logs**: Application and GC logs, along with thread/heap dumps.
+
+2. **High CPU Usage**
+Steps to Debug
+1. **Identify High CPU Threads:**
+
+* Use tools like `top` (Linux) or Task Manager (Windows) to find the JVM process consuming CPU.
+* Map the thread causing high CPU
+```
+top -H -p <JVM_PID>
+```
+2. **Convert TID to Hexadecimal:**
+
+- Convert the TID to hexadecimal to match the thread dump format.
+3. **Analyze the Thread Dump:**
+
+- Generate a thread dump using `jstack` or similar tools:
+```
+jstack <JVM_PID>
+
+```
+- Search for the thread (in hex) in the dump and check its stack trace for the root cause.
+
+
+3. **Memory Leaks or OutOfMemoryError**
+Steps to Debug
+1. **Enable Heap Dump on OOM:**
+
+- Add JVM options
+```
+-XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/path/to/heapdump
+
+```
+2. **Analyze the Heap Dump:**
+
+* Use tools like Eclipse MAT or VisualVM to analyze the heap dump.
+* Look for:
+    - Objects with high retention.
+    - Unnecessary references preventing garbage collection.
+3. **Profiling Memory Usage:**
+
+- Use tools like JProfiler or YourKit to track memory usage over time.
+
+**4. Application Hangs or Slowness**
+**Steps to Debug**
+1. **Generate a Thread Dump:**
+
+* Use `jstack` or `kill -3 <PID>` to capture thread information.
+* Analyze for:
+  * Deadlocks.
+  * Threads in `BLOCKED`, `WAITING`, or `TIMED_WAITING` states.
+2. **Analyze Database/IO Calls:**
+
+- Identify long-running operations or blocked threads due to external resources.
+3. **Use APM Tools:**
+
+- Application Performance Monitoring (APM) tools like New Relic or AppDynamics provide runtime insights.
+
+**5. Garbage Collection (GC) Issues**
+**Steps to Debug**
+1. **Enable GC Logs:**
+
+- Add JVM options
+```
+-XX:+PrintGCDetails -XX:+PrintGCDateStamps -Xloggc:/path/to/gc.log
+
+```
+
+2. **Analyze GC Logs:**
+
+* Use tools like GCEasy, GCViewer, or Eclipse MAT.
+* Check for:
+  * Long GC pauses.
+  * Excessive garbage collection frequency (possible memory pressure).
+3. **Tune GC Parameters:**
+
+* Experiment with different collectors like G1GC, ParallelGC, or ZGC.
+* Example options
+```
+-XX:+UseG1GC -XX:MaxGCPauseMillis=200
+```
+
+**6. JVM Crashes**
+**Steps to Debug**
+1. **Examine the Error Log:**
+
+* When the JVM crashes, it generates a log file (`hs_err_pid<XXXX>.log`).
+* Check for:
+  * Error type (e.g., SIGSEGV, OutOfMemory).
+  * Faulting module (e.g., native library issues).
+2. **Check Core Dumps:**
+
+* Analyze core dumps using debugging tools like `gdb`.
+3. **Verify Native Code:**
+
+* If using JNI (Java Native Interface), ensure native code is correct and well-tested.
+4. **Check JVM Version:**
+
+* Bugs in specific JVM versions may cause crashes. Consider updating the JVM.
+
+**7. Deadlocks**
+**Steps to Debug**
+1. **Generate a Thread Dump:**
+
+- Use `jstack` to identify threads waiting on each other's locks.
+2. **Analyze Locks:**
+
+* Look for `Found one Java-level deadlock` in the dump.
+* Refactor code to acquire locks in a consistent order.
+
+**8. Analyze Logs and Metrics**
+**Enable Detailed Logging:**
+* Add logging frameworks like SLF4J or Logback to capture runtime behavior.
+**Monitor JVM Metrics:**
+* Use tools like Prometheus and Grafana to monitor:
+  * Memory usage.
+  * Thread counts.
+  * GC activity.
+
+**9. JVM Command-Line Tools**
+![img_99.png](img_99.png)
+
+**10. Proactive Debugging Tips**
+1. **Use APM Tools:**
+
+    - Tools like AppDynamics, Dynatrace, or New Relic help track live performance.
+2. **Implement Health Checks:**
+
+    - Use frameworks like Spring Boot Actuator to expose application health endpoints.
+3.**Profiling:**
+
+    - Use profilers (e.g., VisualVM, JProfiler) during development to identify bottlenecks.
+4. **Performance Testing:**
+
+    - Use tools like JMeter to simulate high load and identify potential issues.
+
+
+### 126. What is a Statement, PreparedStatement, and CallableStatement?
+In Java's JDBC API, **Statement**, **PreparedStatement**, and **CallableStatement** are used to interact with the database. Each serves a specific purpose and has distinct features. Here's an explanation of each:
+
+**1. Statement**
+* **Purpose**: Used for executing simple SQL queries.
+* **Key Features:**
+  * Executes SQL queries that are dynamically constructed at runtime.
+  * Does not support query parameterization.
+  * Suitable for executing static or non-repetitive SQL commands.
+* **Methods:**
+  * `executeQuery(String sql)`: For SELECT queries (returns a `ResultSet`).
+  * `executeUpdate(String sql)`: For INSERT, UPDATE, DELETE queries (returns an int indicating affected rows).
+  * `execute(String sql)`: For running any SQL command.
+* **Disadvantages:**
+  * Prone to **SQL injection attacks** due to dynamic query construction.
+  * Less efficient for repeated queries since the query is compiled every time it is executed.
+
+**Example**:
+```java
+Statement stmt = connection.createStatement();
+ResultSet rs = stmt.executeQuery("SELECT * FROM employees");
+while (rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+
+```
+**2. PreparedStatement**
+* **Purpose**: Used for executing parameterized SQL queries.
+* **Key Features:**
+  * Pre-compiles the SQL query for better performance, especially for repeated executions.
+  * Supports placeholders (`?`) for parameter binding, reducing the risk of **SQL injection**.
+  * Can handle binary data like BLOBs and CLOBs.
+* **Methods:**
+  * `setString(int parameterIndex, String value)`: Sets a string parameter.
+  * `setInt(int parameterIndex, int value)`: Sets an integer parameter.
+  * `executeQuery()`: Executes SELECT queries.
+  * `executeUpdate()`: Executes INSERT, UPDATE, DELETE queries.
+* **Advantages:**
+  * Safer and more efficient than `Statement`.
+  * Parameters are automatically escaped.
+* **Use Case:**
+  * Useful when the same query is executed multiple times with different parameters.
+   
+**Example**:
+```java
+String sql = "SELECT * FROM employees WHERE department = ?";
+PreparedStatement pstmt = connection.prepareStatement(sql);
+pstmt.setString(1, "IT");
+ResultSet rs = pstmt.executeQuery();
+while (rs.next()) {
+    System.out.println(rs.getString("name"));
+}
+
+```
+**3. CallableStatement**
+* **Purpose**: Used to execute stored procedures in the database.
+* **Key Features:**
+  * Supports input, output, and input-output parameters for stored procedures.
+  * Extends the `PreparedStatement` interface to allow calling stored procedures.
+  * Reduces network traffic by executing server-side code.
+* **Methods**:
+  * `registerOutParameter(int parameterIndex, int sqlType)`: Registers an output parameter.
+  * `setString(int parameterIndex, String value)`: Sets an input parameter.
+  * `execute()`: Executes the stored procedure.
+  * `getString(int parameterIndex)`: Retrieves the value of an output parameter.
+* **Advantages:**
+  * Efficient for complex operations that require server-side logic.
+  * Supports returning multiple result sets or update counts.
+* **Use Case:**
+  * Useful when interacting with pre-defined database logic encapsulated in stored procedures.
+   
+**Example**:
+```java
+CallableStatement cstmt = connection.prepareCall("{call getEmployeeDetails(?, ?)}");
+cstmt.setInt(1, 101); // Input parameter
+cstmt.registerOutParameter(2, Types.VARCHAR); // Output parameter
+cstmt.execute();
+String employeeName = cstmt.getString(2);
+System.out.println("Employee Name: " + employeeName);
+
+```
+
+![img_98.png](img_98.png)
+
+### 127. What is the difference between lazy and eager loading?
+**Lazy Loading** and **Eager Loading** are two design patterns used to manage the loading of data in applications, especially in the context of object-relational mapping (ORM) frameworks like Hibernate. They determine when related data is fetched from the database.
+
+**1. Lazy Loading**
+* **Definition**: Data is fetched from the database only when it is accessed for the first time.
+* **Behavior**:
+  * Initial query retrieves only the main object(s).
+  * Associated or dependent objects are loaded only when explicitly accessed.
+* **Advantages**:
+  * Improves performance by fetching only the data you need, reducing the initial query's size.
+  * Saves memory by not loading unnecessary data upfront.
+* **Disadvantages**:
+  * Can lead to the **N+1 problem**: Multiple queries are executed for associated data.
+  * Requires a persistent context (e.g., Hibernate `Session`) to fetch the related data. Accessing lazy-loaded data outside this context leads to exceptions like `LazyInitializationException`.
+
+**Example**: Suppose you have an `Employee` entity with a `List<Project>`:
+```java
+@Entity
+public class Employee {
+    @Id
+    private Long id;
+    private String name;
+
+    @OneToMany(fetch = FetchType.LAZY) // Lazy loading
+    private List<Project> projects;
+}
+
+```
+**Behavior:**
+
+* Initially, only the `Employee` data is fetched.
+* When `employee.getProjects()` is accessed, a separate query fetches the `projects`.
+
+**2. Eager Loading**
+* **Definition**: All related data is fetched from the database along with the main object(s) in a single query.
+* **Behavior**:
+  * Associated or dependent objects are loaded immediately with the primary entity.
+* **Advantages**:
+  * Reduces the number of queries by fetching everything in one go.
+  * Avoids issues like `LazyInitializationException`.
+* **Disadvantages**:
+  * Can fetch unnecessary data, increasing memory consumption and query size.
+  * May affect performance when loading a large amount of related data.
+
+**Example**: Using the same `Employee` entity:
+```java
+@Entity
+public class Employee {
+    @Id
+    private Long id;
+    private String name;
+
+    @OneToMany(fetch = FetchType.EAGER) // Eager loading
+    private List<Project> projects;
+}
+
+```
+**Behavior:**
+
+* When `Employee` is fetched, `Project` data is also fetched in the same query.
+
+![img_100.png](img_100.png)
+
+**Choosing Between Lazy and Eager Loading**
+* **Lazy Loading** is suitable when:
+  * The associated data is not always required.
+  * You want to minimize the initial data load.
+  * You can handle the additional queries appropriately.
+* **Eager Loading** is suitable when:
+  * The associated data is frequently required and should be readily available.
+  * You want to avoid issues related to `LazyInitializationException`.
+  * The dataset size is manageable within a single query.
+
+Understanding your application's data access patterns is crucial to choosing the right approach for optimizing performance and resource utilization.
+
+### 128. What is a second-level cache in Hibernate?
+The **second-level cache** in Hibernate is a **session-independent cache** that stores objects across multiple sessions. It is designed to reduce the number of database queries by caching frequently accessed data at the application level.
+
+**Key Characteristics of Second-Level Cache:**
+1. **Global Scope**: Unlike the first-level cache (associated with a specific session), the second-level cache is shared across multiple sessions.
+2. **Optional**: It must be explicitly configured as it is not enabled by default.
+3. **Improves Performance**: Reduces database load by reusing cached data instead of querying the database for the same data repeatedly.
+
+**How It Works:**
+* Hibernate first checks the **second-level cach**e to see if the required data is available.
+* If the data is **not found** in the second-level cache, it checks the **database**.
+* Once retrieved, the data can be cached for future use.
+
+**Configuration of Second-Level Cache:**
+1. **Enable Second-Level Cache in** `hibernate.cfg.xml`
+```xml
+<property name="hibernate.cache.use_second_level_cache">true</property>
+<property name="hibernate.cache.region.factory_class">org.hibernate.cache.jcache.JCacheRegionFactory</property>
+```
+2. **Add Cache Provider Dependency**: Hibernate supports several cache providers like **Ehcache**, **Redis**, **Hazelcast**, etc.
+
+For example, if using Ehcache:
+```xml
+<dependency>
+    <groupId>org.hibernate</groupId>
+    <artifactId>hibernate-ehcache</artifactId>
+    <version>[Your Hibernate Version]</version>
+</dependency>
+```
+
+3. **Annotate Entities with Cache Configuration**: Use the `@Cache` annotation on entities to specify that they should be cached.
+
+```java
+@Entity
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+public class Employee {
+    @Id
+    private Long id;
+    private String name;
+    private String department;
+}
+
+```
+* `READ_ONLY`: Use for entities that never change.
+* `NONSTRICT_READ_WRITE`: Allows minimal staleness but provides better performance.
+* `READ_WRITE`: Guarantees strong consistency but might have a performance cost.
+  
+4. **Cache Configuration File**: If using Ehcache, you need to define an `ehcache.xml` configuration file:
+```xml
+<ehcache>
+    <cache name="com.example.Employee"
+           maxEntriesLocalHeap="100"
+           timeToLiveSeconds="3600"
+           eternal="false" />
+</ehcache>
+```
+
+**Common Use Cases:**
+* **Static Data**: Data that doesn’t change frequently, like categories, countries, etc.
+* **Ref**eference Dataef: Reusable data that is accessed frequently across sessions.
+
+**Limitations:**
+* **Complexity**: Requires careful configuration and tuning.
+* **Consistency Issues**: Can lead to stale data if not managed properly.
+* **Not Suitable for Volatile Data**: Frequent updates can invalidate cache benefits.
