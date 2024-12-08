@@ -11816,45 +11816,416 @@ Use JVM options to select and customize GC algorithms:
 
 ### 115. What are the different types of class loaders in Java?
 
+In Java, class loaders are responsible for dynamically loading classes into the JVM during runtime. The Java ClassLoader API provides a mechanism for loading classes from different sources, and there are several types of class loaders based on their responsibilities and scope of operation.
+
+Here are the different types of class loaders in Java:
+
+**1. Bootstrap ClassLoader**
+* **Description:** The Bootstrap ClassLoader is the parent of all class loaders in Java and is part of the core JVM. It is responsible for loading the essential classes required for the Java runtime environment (such as classes in `java.lang.*` like `String`, `Object`, etc.).
+* **Where It Loads From**: It loads classes from the JRE’s lib directory, where the core Java libraries (`rt.jar` or `modules` in JDK 9 and later) are located.
+* **Responsibilities**:
+  * Loading classes from the Java runtime environment (JRE).
+  * It does not have a parent class loader.
+* **Example**: Classes like `java.lang.String`, `java.lang.Object`, etc.
+
+**2. Extension ClassLoader**
+* **Description**: The Extension ClassLoader is a part of the JRE and is responsible for loading classes from the extension directories, typically located in the `lib/ext` directory in the JRE.
+* **Where It Loads From:** It loads classes from the `jre/lib/ext` directory or from directories specified by the `java.ext.dirs` system property.
+* **Responsibilities**:
+  * Loading classes from the extension libraries (e.g., `javax.*`, `sun.*`).
+  * It is a child of the Bootstrap ClassLoader.
+* **Example**: Classes in the `javax` or `sun` packages.
+
+**3. System/Application ClassLoader (AppClassLoader)**
+* **Description**: The **System/Application ClassLoader**, also called the **AppClassLoader**, is responsible for loading classes from the **classpath**.
+* **Where It Loads From:** It loads classes from locations specified by the `CLASSPATH` environment variable or from directories and JAR files passed via the `-cp` or `-classpath` option when starting the JVM.
+* **Responsibilities**:
+  * Loading application-specific classes (i.e., classes defined in the application’s JAR files or classes on the classpath).
+  * It is a child of the **Extension ClassLoader**.
+* **Example**: Classes in your project or external libraries added to the classpath.
+
+**4. Custom ClassLoader**
+* **Description**: A Custom ClassLoader is a user-defined class loader that extends the `ClassLoader` class. It is used to load classes from specific sources, such as databases, network locations, or custom paths that are not covered by the default class loaders.
+* **Where It Loads From:** A custom class loader can load classes from any source (e.g., files, URLs, databases) as defined by the user.
+* **Responsibilities**:
+  * Loading classes from custom sources or implementing specialized class-loading logic.
+* **Example**: A class loader that loads classes from a database or network location.
+
+**ClassLoader Hierarchy**
+- The ClassLoader hierarchy follows a parent-child structure, where each class loader has a parent loader, except for the **Bootstrap ClassLoader**.
+1. **Bootstrap ClassLoader** → Loads core Java libraries.
+2. **Extension ClassLoader** → Loads extension libraries (like `javax`).
+3. **Application ClassLoader** → Loads classes from the classpath.
+4. **Custom ClassLoaders** → Loads classes from custom sources.
+
+**ClassLoader Delegation Model**
+- The class loader follows a **delegation model** where each class loader delegates the task of loading classes to its parent before attempting to load the class itself. This ensures that core Java classes are loaded by the Bootstrap ClassLoader, and classes are loaded in a hierarchical order.
+
+### 116. What is the purpose of the ClassLoader class?
+The `ClassLoader` class in Java is part of the **Java ClassLoader mechanism**, which is responsible for dynamically loading Java classes into the **Java Virtual Machine (JVM)** during runtime. It is a crucial component of the JVM, enabling the runtime to locate, load, and define Java classes and resources as needed.
+
+**Purpose of the ClassLoader Class**
+1. **Dynamic Class Loading**
+
+* Classes are not loaded into memory until they are required. The `ClassLoader` dynamically loads the required classes at runtime, which helps improve memory utilization and application performance.
+2. **Custom Class Loading**
+
+* Developers can define their own `ClassLoader` to load classes from non-standard locations (e.g., network, database, or encrypted files), enabling customization of the class-loading process.
+3. **Support for Modular Applications**
+
+* `ClassLoader` allows different parts of an application to load their classes independently, enabling modular and plugin-based architectures.
+4. **Delegation Model**
+
+* The `ClassLoader` class implements a **parent delegation model** to ensure that:
+  - Classes are loaded in a hierarchical manner.
+  - Core classes are loaded by the parent loaders (e.g., `BootstrapClassLoader`) before attempting to load them with child loaders.
+5. **Loading Resources**
+
+* In addition to loading classes, the `ClassLoader` can load resources (e.g., configuration files, images) from various sources.
+
+**Core Methods of the `ClassLoader` Class**\
+The ClassLoader class provides various methods to perform class loading tasks:
+
+1. **Loading Classes**
+- `Class<?> loadClass(String name)`
+
+    - Dynamically loads a class with the specified name.
+    - Delegates the loading to the parent class loader.
+- `Class<?> findClass(String name)`
+
+    - Finds and loads a class by its name.
+    - Can be overridden in custom class loaders.
+
+2. **Defining Classes**
+- `Class<?> defineClass(String name, byte[] b, int off, int len)`
+   - Converts an array of bytes into a Java Class object.
+   - Typically used in custom class loaders to define classes dynamically.
+
+3. **Loading Resources**
+- `URL getResource(String name)`
+   - Finds a resource by name (e.g., properties file, image).
+- `InputStream getResourceAsStream(String name)`
+   - Returns an input stream to read a resource.
+4. **Parent Class Loader Access**
+- `ClassLoader getParent()`
+   - Returns the parent class loader for delegation.
+
+**Hierarchy of Class Loaders**\
+The `ClassLoader` works as part of a hierarchy:
+
+1. **Bootstrap ClassLoader**
+
+* Loads core Java classes (e.g., `java.lang.*`).
+* Implemented in native code and does not extend `ClassLoader`.
+2. **Extension ClassLoader**
+
+* Loads classes from the Java extensions directory (e.g., `jre/lib/ext`).
+3. **Application ClassLoader**
+
+* Loads classes from the application classpath.
+4. **Custom ClassLoader**
+
+* User-defined class loaders for specific use cases (e.g., loading classes from a database or over the network).
+
+**Use Cases of the** `ClassLoader` **Class**
+1. **Dynamic Module Loading**
+
+* Applications like IDEs, web servers, or frameworks can dynamically load and unload modules or plugins using custom `ClassLoader` implementations.
+2. **Securing the Class-Loading Process**
+
+* `ClassLoader` can enforce security policies to restrict what classes can be loaded, ensuring application safety.
+3. **Custom Bytecode Loading**
+
+* Useful for advanced scenarios like loading classes from encrypted bytecode files or generating classes dynamically (e.g., proxy objects in frameworks like Spring).
+4. **Hot Deployment**
+
+* Enables reloading of classes in web or application servers without restarting the server, which is a common feature in development environments.
+
+**Example: Custom ClassLoader**
+```java
+public class CustomClassLoader extends ClassLoader {
+    @Override
+    protected Class<?> findClass(String name) throws ClassNotFoundException {
+        // Load class bytes from a custom source
+        byte[] classBytes = loadClassFromCustomSource(name);
+        return defineClass(name, classBytes, 0, classBytes.length);
+    }
+
+    private byte[] loadClassFromCustomSource(String className) {
+        // Logic to fetch byte array of the class (e.g., from a file or database)
+        return new byte[0]; // Replace with actual bytecode
+    }
+}
+
+```
+**Advantages of the ClassLoader Class**
+1. **Flexibility**
+
+* Allows applications to load classes and resources from non-standard locations.
+2. **Modularity**
+
+* Supports dynamic loading of application modules or plugins.
+3. **Efficiency**
+
+* Classes are loaded only when they are required, improving memory usage.
+4. **Security**
+
+* Controls and restricts what classes are loaded into the JVM, preventing unauthorized or malicious code from being executed.
+
+### 117. What is the difference between loadClass() and forName()?
+In Java, both `loadClass()` and `forName()` are used to load a class at runtime. However, they serve different purposes and behave differently in terms of class loading, initialization, and usage.
+
+* `ClassLoader.loadClass()`
+  - **Purpose**: Loads the class without initializing it.
+  - **Method** Signature:
+```java
+Class<?> loadClass(String name) throws ClassNotFoundException
+
+```
+* **Key Characteristics:**
+  * **Loads a Class Without Initialization:**
+    * This method loads the class into memory but does not execute its static initialization block or initialize static fields.
+  * **Delegation Model:**
+      * Follows the parent delegation model, where the request to load a class is passed to the parent class loader first.
+  * **Primarily Used In:**
+      * Custom class loading scenarios where initialization is not immediately required.
+  * **Does Not Throw Checked Exceptions:**
+      * Will not throw checked exceptions related to the static initialization of the class.
+
+**Example**:
+```java
+ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+Class<?> clazz = classLoader.loadClass("com.example.MyClass");
+System.out.println("Class Loaded: " + clazz.getName());
+
+```
+2. `Class.forName()`
+   - Purpose: Loads and initializes the class.
+   - Method Signature:
+   
+```java
+Class<?> forName(String className) throws ClassNotFoundException
+
+```
+* **Key Characteristics:**
+  * **Loads and Initializes a Class:**
+    * This method loads the class into memory and executes its static initialization block and static fields during the process.
+  * **Initialization Behavior:**
+    * If the class has static blocks or fields, they will be executed/initialized immediately.
+  * **Does Not Follow Delegation Model:**
+    * Directly attempts to load the class using the current class loader or the specified one (when an optional `ClassLoader` argument is provided in the overloaded version).
+  * **Primarily Used In:**
+    * Scenarios where immediate class initialization is required, such as reflective operations.
+
+**Example**:
+```java
+Class<?> clazz = Class.forName("com.example.MyClass");
+System.out.println("Class Loaded and Initialized: " + clazz.getName());
+
+```
+![img_83.png](img_83.png)
+
+**Comparison Example:**\
+**Class with Static Block**
+```java
+public class TestClass {
+    static {
+        System.out.println("Static Block Executed");
+    }
+}
+
+```
+Using `loadClass()`
+```java
+ClassLoader classLoader = ClassLoader.getSystemClassLoader();
+Class<?> clazz = classLoader.loadClass("TestClass"); // No output
+System.out.println("Class Loaded: " + clazz.getName());
+
+```
+Using `forName()`
+```java
+Class<?> clazz = Class.forName("TestClass"); // Output: "Static Block Executed"
+System.out.println("Class Loaded and Initialized: " + clazz.getName());
+
+```
+
+### 118. What are strong, weak, soft, and phantom references?
+Java provides different types of references to objects, which help manage memory more effectively. These references are part of the `java.lang.ref` package and are primarily used in memory-sensitive applications to optimize garbage collection behavior.
+
+1. **Strong Reference**
+* **Definition**: A strong reference is the default type of reference in Java. Any object referenced by a strong reference is not eligible for garbage collection unless the reference is explicitly set to `null`.
+* **Garbage Collection:** Objects with strong references are not collected by the garbage collector.
+* **Use Case:** Commonly used in application development for most object references.
+   
+**Example**:
+```java
+Object strongRef = new Object(); // Strong reference
+
+```
+**Key Point:**\
+The object remains in memory as long as the strongRef variable points to it.
+
+2. **Weak Reference**
+   - **Definition**: A weak reference allows an object to be garbage collected if it is only weakly reachable (i.e., no strong references exist).
+   - **Garbage Collection**: The garbage collector can reclaim the object when memory is needed, even if weak references to the object exist.
+   - **Use Case**: Used for caching mechanisms or memory-sensitive applications where objects should not prevent garbage collection.
+
+**Example**:
+```java
+import java.lang.ref.WeakReference;
+
+Object obj = new Object();
+WeakReference<Object> weakRef = new WeakReference<>(obj);
+
+obj = null; // Strong reference removed
+// The object can now be garbage collected.
+
+```
+**Key Point:**\
+You can access the object using `weakRef.get()`, but it may return `null` if the object has been collected.
+
+3. **Soft Reference**
+- **Definition**: A soft reference points to an object that the garbage collector can reclaim only if the JVM is low on memory.
+- **Garbage Collection:** Objects referenced only by soft references are garbage collected when the JVM decides it needs memory, but they may survive multiple garbage collection cycles.
+- **Use Case**: Used in memory-sensitive caching to retain objects longer than weak references.
+
+**Example**:
+```java
+import java.lang.ref.SoftReference;
+
+Object obj = new Object();
+SoftReference<Object> softRef = new SoftReference<>(obj);
+
+obj = null; // Strong reference removed
+// The object will be reclaimed only when memory is low.
+
+```
+**Key Point:**\
+`softRef.get()` retrieves the object, or `null` if it has been garbage collected.
+
+4. **Phantom Reference**
+- **Definition**: A phantom reference is used to track when an object is about to be garbage collected. It is enqueued in a reference queue after the object has been finalized and is eligible for collection.
+- **Garbage Collection:** The object is unreachable and has been finalized but has not yet been removed from memory.
+- **Use Case**: Used in advanced memory management scenarios, such as resource cleanup.
+
+**Example**:
+```java
+import java.lang.ref.PhantomReference;
+import java.lang.ref.ReferenceQueue;
+
+Object obj = new Object();
+ReferenceQueue<Object> refQueue = new ReferenceQueue<>();
+PhantomReference<Object> phantomRef = new PhantomReference<>(obj, refQueue);
+
+obj = null; // Strong reference removed
+// The object cannot be accessed through the phantom reference.
+
+```
+**Key Point:**\
+`phantomRef.get()` always returns `null`, as phantom references are intended for cleanup actions, not for accessing the object.
+![img_84.png](img_84.png)
+
+**Practical Use Cases**
+1. **Caching:**
+
+    - **WeakReference** for keys in a `WeakHashMap`, allowing keys to be garbage collected.
+    - **SoftReference** for cache values, retaining them until memory is needed.
+2. **Resource Cleanup:**
+
+    - **PhantomReference** can be used with a `ReferenceQueue` to perform cleanup tasks like closing file streams when objects are finalized.
 
 
+### 119. What are the different JVM options for performance tuning?
+JVM (Java Virtual Machine) options play a crucial role in tuning the performance of Java applications. These options can be used to adjust memory settings, garbage collection behavior, threading, and debugging. Here's a breakdown of the various JVM options:
 
+1. **Memory Management Options**\
+   These options configure the heap, stack, and memory regions.
+![img_85.png](img_85.png)
 
+2. **Garbage Collection (GC) Options**\
+   These options control how the JVM manages memory reclamation.
 
+![img_86.png](img_86.png)
 
+3. **Thread and CPU Options**\
+   Control the number of threads and how the JVM interacts with the CPU.
+![img_87.png](img_87.png)
 
+4. **Class Loading and Compilation**\
+   Optimize class loading and compilation behavior.
+![img_88.png](img_88.png)
 
+5. **Debugging and Monitoring**\
+   For debugging, profiling, and understanding application behavior.
 
+![img_89.png](img_89.png)
 
+6. **Logging and Unified Logging Framework**\
+   Java 9 introduced a unified logging framework for better monitoring.
+![img_90.png](img_90.png)
 
+7. Performance Tuning for Applications
+![img_91.png](img_91.png)
 
+**Sample Command**\
+To start a JVM with specific options:
+```java
+java -Xms512m -Xmx1g -XX:+UseG1GC -XX:MaxGCPauseMillis=200 -Xlog:gc -XX:+HeapDumpOnOutOfMemoryError -jar myapp.jar
 
+```
+**Best Practices for Performance Tuning**
+1. **Start with Defaults:** Modern JVMs (like those in Java 11 and beyond) are highly optimized. Test your application with default settings first.
+2. **Monitor with Tools:** Use tools like JVisualVM, JConsole, or Application Performance Monitoring (APM) software.
+3. **Incremental Changes:** Modify one setting at a time and observe its impact.
+4. **Profile Regularly:** Use profilers to analyze CPU, memory, and threading bottlenecks.
+5. **Match Workload:** Choose GC and memory settings suited to your application (e.g., low latency vs. throughput).
 
+These options can help balance application performance, stability, and resource usage effectively.
 
+### 120. What is the difference between -Xms and -Xmx?
+The JVM options `-Xms` and `-Xmx` are used to configure the memory allocated to the Java Virtual Machine's heap. Here's a detailed explanation of their differences and purposes:
 
+**1. Definition**
+![img_92.png](img_92.png)
 
+**2. Purpose**
+- `-Xms` (**Initial Heap Size**):
 
+  * Determines the minimum amount of heap memory allocated when the JVM starts.
+  * Useful for applications that require a large amount of memory immediately upon startup.
+  * Avoids the overhead of dynamically increasing the heap during the initial stages of execution.
 
+- `-Xmx` (**Maximum Heap Size**):
 
+  * Limits the maximum heap memory the **JVM** can use.
+  * Helps in controlling the application's memory footprint and prevents it from consuming too much system memory.
+  * If the application attempts to use more memory than this limit, an **OutOfMemoryError** will occur.
 
+**3. Key Differences**
+![img_93.png](img_93.png)
 
+**4. Example Usage**
+- If you know your application needs at least 512 MB but might grow up to 1 GB:
+```java
+java -Xms512m -Xmx1g -jar myapp.jar
 
+```
+- **Behavior:**
+  * At startup, the JVM will allocate 512 MB.
+  * As the application runs, the JVM may increase the heap size up to 1 GB, but no more than that.
 
+**5. Why Use Both Together?**
+  - Setting -Xms and -Xmx to the same value can reduce the overhead of dynamic memory allocation and garbage collection, especially in high-performance applications.
+```java
+java -Xms1g -Xmx1g -jar myapp.jar
 
+```
+- However, setting them differently allows the JVM to grow or shrink the heap as needed, which might be better for applications with unpredictable memory requirements.
 
+**6. What Happens If They Are Not Set?**
+* The JVM will use default values for `-Xms` and `-Xmx`, which depend on the JVM version and the system's available memory.
+* For example:
+  * `-Xms` might default to a small value like 1/64th of system memory.
+  * `-Xmx` might default to 1/4th of system memory.
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+By fine-tuning `-Xms` and `-Xmx`, you can ensure better resource utilization and performance for your Java applications.
